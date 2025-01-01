@@ -105,6 +105,7 @@ const initCharts = () => {
     });
 };
 
+localStorage.setItem("theme", "dark");
 // Initialize charts after DOM content is loaded
 document.addEventListener('DOMContentLoaded', initCharts);
 
