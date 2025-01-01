@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF - Understand returns</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav>
+	    <div class="logo">
+			<img src="assets/img/abstract_logo_final.png" alt="Logo">
+			<span>UNDERSTANDING RETURNS</span>
+		</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <button id="setup-button"><i class="fas fa-cogs"></i></button>
+			<button id="theme-toggle">Toggle Theme</button>
+		</div>
+    </nav>
+
+    <main>
+        <section class="intro">
+            <h1>Welcome to the Modern Website</h1>
+            <p>Explore the power of simplicity and style.</p>
+        </section>
+
+        <section class="charts">
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="histogram"></canvas>
+            </div>
+        </section>
+
+        <section class="content">
+            <article>
+                <h2>Section 1</h2>
+                <p>Some interesting content goes here.</p>
+            </article>
+            <article>
+                <h2>Section 2</h2>
+                <p>More fascinating details here.</p>
+            </article>
+        </section>
+
+        <section class="content">
+            <h2>Investment Returns and Risk Metrics</h2>
+            <div class="investment-grid">
+                <div class="investment-item">
+                    <h3>Return on Investment (ROI)</h3>
+                    <p>An essential metric for evaluating the profitability of your investments over time.</p>
+                    <div class="icon">📈</div>
+                </div>
+                <div class="investment-item">
+                    <h3>Risk-Adjusted Returns</h3>
+                    <p>Understand how returns compare to the amount of risk taken to achieve them.</p>
+                    <div class="icon">⚖️</div>
+                </div>
+                <div class="investment-item">
+                    <h3>Volatility</h3>
+                    <p>Measure the degree of variation of your investment returns over a period.</p>
+                    <div class="icon">📊</div>
+                </div>
+                <div class="investment-item">
+                    <h3>Sharpe Ratio</h3>
+                    <p>A calculation to help investors understand the return of an investment compared to its risk.</p>
+                    <div class="icon">🔍</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Website</p>
+    </footer>
+
+    <script src="script.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
