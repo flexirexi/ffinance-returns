@@ -7,28 +7,35 @@ const root = document.documentElement;
 // Funktion zum Setzen der CSS-Variablen basierend auf dem aktuellen Theme
 function applyTheme(theme) {
     const nav = document.querySelector('nav');
+	const toggle = document.getElementById("theme-toggle");
 
     if (theme === 'bright') {
 		
         root.style.setProperty('--primary-text', 'var(--secondary-text)');
         root.style.setProperty('--primary-bg', 'var(--secondary-bg)');
+		root.style.setProperty('--primary-title', 'var(--secondary-title')
         root.style.setProperty('--gradient-color-1', '#f0f0f0');
         root.style.setProperty('--gradient-color-2', '#e0e0e0');
         root.style.setProperty('--gradient-color-3', '#d0d0d0');
-
-        // Navbar remains primary-bg in bright mode
+		nav.classList.remove('scrolled'); // Zurück zum Standardzustand
+		toggle.innerText = "dark mode";
+		// Navbar remains primary-bg in bright mode
         if (nav) nav.style.background = 'var(--primary-bg)';
+		
 		console.log("Theme is now:   " + theme);
-		console.log("primary-text: " + getComputedStyle(root).getPropertyValue("--primary-text").trim());
+		console.log("nav-text: " + getComputedStyle(root).getPropertyValue("--nav-text").trim());
     } else {
-        root.style.setProperty('--primary-text', '#ffffff');
-        root.style.setProperty('--primary-bg', '#2e3b4e');
-        root.style.setProperty('--gradient-color-1', '#1b2838');
-        root.style.setProperty('--gradient-color-2', '#2e3b4e');
-        root.style.setProperty('--gradient-color-3', '#34495e');
-
-        // Navbar becomes transparent in dark mode
-        if (nav) nav.style.background = 'transparent';
+        root.style.setProperty('--primary-text', '#FFFFFF');
+        root.style.setProperty('--primary-bg', '#2E3B4E');
+		root.style.setProperty('--primary-title', '#F5F5F5')
+        root.style.setProperty('--gradient-color-1', '#1B2838');
+        root.style.setProperty('--gradient-color-2', '#2E3B4E');
+        root.style.setProperty('--gradient-color-3', '#34495E');
+		window.dispatchEvent(new Event("scroll"));
+        toggle.innerText = "light mode";
+		// Navbar becomes transparent in dark mode
+        //if (nav) nav.style.backgroundColor = 'transparent';
+		
     }
 }
 
@@ -100,3 +107,23 @@ const initCharts = () => {
 
 // Initialize charts after DOM content is loaded
 document.addEventListener('DOMContentLoaded', initCharts);
+
+// Scroll-Event Listener für die Navigationsleiste
+window.addEventListener('scroll', () => {
+	const theme = localStorage.getItem('theme');
+	if (theme === "dark") {
+		const nav = document.querySelector('nav');
+		if (window.scrollY > 10) {
+			//nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
+			nav.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+			nav.style.backgroundColor = 'rgba(30, 40, 50, 0.9)';
+			nav.style.backdropFilter = "blur(3px)";
+			
+		} else {
+			//nav.classList.remove('scrolled'); // Zurück zum Standardzustand
+			nav.style.boxShadow = "none";
+			nav.style.backgroundColor = 'transparent';
+			nav.style.backdropFilter = "none";
+		}		
+	}
+});

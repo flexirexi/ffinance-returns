@@ -1,13 +1,15 @@
 /* General Parameters */
 :root {
-    --primary-text: #ffffff;
+    --primary-text: #FFFFFF;
     --primary-title: #F5F5F5; /* not used yet */
 	--primary-link-text: #48C9B0; /* not used yet */
-	--primary-bg: #2e3b4e;
+	--primary-bg: #2E3B4E;
 	--primary-acc: #FFC44C; /* not used yet */
 	
-	--secondary-text: #d1d1d1;
-	--secondary-title: #2A4CAB; /* not used yet */
+	--nav-text: #FFFFFF;
+	
+	--secondary-text: #333333;
+	--secondary-title: #2A4C4B; /* not used yet */
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #1e2836; 
 	--secondary-acc: #FFB84D; /* not used yet */
@@ -64,11 +66,27 @@ body::after {
 
 nav, footer {
     background: transparent;
-    color: var(--primary-text);
+    color: var(--nav-text);
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+nav {
+    position: fixed; /* Macht die Navigationsleiste fixiert */
+    top: 0; /* Hält sie oben auf der Seite */
+    left: 0; /* Linksbündig */
+    width: 100%; /* Breite auf die gesamte Seite setzen */
+	z-index: 1000;
+	backdrop-filter: none; /* Kein Blur standardmäßig */
+    transition: background 0.5s ease, backdrop-filter 0.5s, opacity 0.5s ease; /* Weicher Übergang */
+}
+
+nav.scrolled {
+    backdrop-filter: blur(3px); /* Blur-Effekt bei Scrollen */
+	background: rgba(30, 40, 50, 0.9);
+	
 }
 
 nav .logo {
@@ -94,7 +112,7 @@ nav .nav-links a {
 
 nav button {
     color: var(--act-text);
-    margin: 0 10px;
+    margin: 0 5px;
 	padding: 7px;
 	border-radius: 99px;
     font-size: 1rem;
@@ -103,6 +121,10 @@ nav button {
     border: none;
     cursor: pointer;
     transition: color 0.3s ease;
+}
+
+#setup-button {
+	margin-right: 20px;
 }
 
 nav span {
