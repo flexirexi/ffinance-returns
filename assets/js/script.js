@@ -3,6 +3,21 @@
 // Theme toggle functionality
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
+const menuButton = document.getElementById('menu-button');
+const navLinks = document.querySelector('.nav-links');
+
+// Menü öffnen/schließen
+menuButton.addEventListener('click', () => {
+    navLinks.classList.toggle('open'); // Schaltet die 'open'-Klasse ein/aus
+});
+
+// Menü ausblenden, wenn außerhalb geklickt wird
+document.addEventListener('click', (e) => {
+    // Überprüfe, ob der Klick NICHT auf das Menü oder den Button war
+    if (!navLinks.contains(e.target) && !menuButton.contains(e.target)) {
+        navLinks.classList.remove('open'); // Schließt das Menü
+    }
+});
 
 // Funktion zum Setzen der CSS-Variablen basierend auf dem aktuellen Theme
 function applyTheme(theme) {
@@ -25,7 +40,7 @@ function applyTheme(theme) {
 		console.log("Theme is now:   " + theme);
 		console.log("nav-text: " + getComputedStyle(root).getPropertyValue("--nav-text").trim());
     } else {
-        root.style.setProperty('--primary-text', '#FFFFFF');
+        root.style.setProperty('--primary-text', '#E9F4F3');
         root.style.setProperty('--primary-bg', '#2E3B4E');
 		root.style.setProperty('--primary-title', '#F5F5F5')
         root.style.setProperty('--gradient-color-1', '#1B2838');

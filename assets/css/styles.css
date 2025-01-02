@@ -1,6 +1,6 @@
 /* General Parameters */
 :root {
-    --primary-text: #FFFFFF;
+    --primary-text: #E9F4F3;
     --primary-title: #F5F5F5; /* not used yet */
 	--primary-link-text: #48C9B0; /* not used yet */
 	--primary-bg: #2E3B4E;
@@ -14,7 +14,7 @@
     --secondary-bg: #1e2836; 
 	--secondary-acc: #FFB84D; /* not used yet */
 	
-	--act-bg: #000000; /* not used yet */
+	--act-bg: #000000CC; /* not used yet */
 	--act-text: #FFFFFF; /* not used yet */
 	--act-border: #48C9B0; /* not used yet */
 	
@@ -80,12 +80,12 @@ nav {
     width: 100%; /* Breite auf die gesamte Seite setzen */
 	z-index: 1000;
 	backdrop-filter: none; /* Kein Blur standardmäßig */
-    transition: background 0.5s ease, backdrop-filter 0.5s, opacity 0.5s ease; /* Weicher Übergang */
+    transition: background-color 0.5s ease, backdrop-filter 0.5s, opacity 0.5s ease; /* Weicher Übergang */
 }
 
 nav.scrolled {
     backdrop-filter: blur(3px); /* Blur-Effekt bei Scrollen */
-	background: rgba(30, 40, 50, 0.9);
+	background-color: rgba(30, 40, 50, 0.9);
 	
 }
 
@@ -99,49 +99,106 @@ nav .logo img {
     margin-right: 10px;
 }
 
-nav .nav-links a {
-    color: var(--primary-link-text);
-    text-decoration: none;
-    margin: 0 10px;
-    font-size: 1rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
+.menu {
+    margin-right: 15px;
 }
 
-nav button {
-    color: var(--act-text);
+.button {
+    color: var(--link-text);
     margin: 0 5px;
 	padding: 7px;
 	border-radius: 99px;
     font-size: 1rem;
     background: var(--act-bg);
-	opacity: 0.8;
     border: none;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.5s ease;
 }
 
-#setup-button {
-	margin-right: 20px;
+.link {
+    color: var(--link-text);
+    background-color: transparent;
 }
 
-nav span {
-	margin-left: 25px;
-}
-
-nav .nav-links a:hover {
+.link:hover {
     color: var(--link-text-hover);
-	text-decoration: underline;
-	text-underline-offset: 4px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    background-color: var(--link-bg-hover);
+    transition: all 0.5s ease;
+    
 }
 
-nav button:hover {
+.button:hover {
+    background-color: var(--act-bg-hover);
     color: var(--act-text-hover);
-	background-color: var(--act-bg-hover);
-	border: var(--act-border-hover);
-	opacity:1;
+}
+
+/* Standard-Styles */
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none; /* Standardmäßig ausgeblendet */
+    flex-direction: column; /* Mobile: Links untereinander */
+    position: absolute;
+    top: 60px; /* Unterhalb der Navigationsleiste */
+    right: 10px; /* Rechtsbündig */
+    width: calc(100% - 20px); /* Feste Breite innerhalb des Bildschirms */
+    max-width: 300px; /* Maximale Breite */
+    background: var(--primary-bg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 0; /* Standard: Menü geschlossen */
+    opacity: 0; /* Unsichtbar */
+    transition: max-height 0.5s ease, opacity 0.5s ease; /* Sanfte Animation */
+}
+
+/* Zeige das Menü an, wenn die Klasse 'open' hinzugefügt wird */
+.nav-links.open {
+    display: flex; /* Zeigt das Menü an */
+    max-height: 500px; /* Genug Platz für alle Links */
+    opacity: 1; /* Sichtbar */
+}
+
+/* Links innerhalb des Dropdowns */
+.nav-links li {
+    position: relative; /* Ermöglicht, dass das <a> die Fläche ausfüllt */
+    padding: 0; /* Entfernt Standard-Padding */
+    transition: all 0.5s ease;
+}
+
+.nav-links li a {
+    display: block; /* Das <a> nimmt jetzt die gesamte Fläche ein */
+    width: 100%; /* Breite auf 100% des Eltern-Elements setzen */
+    height: 100%; /* Höhe auf 100% des Eltern-Elements setzen */
+    padding: 10px 15px; /* Padding innerhalb des Links hinzufügen */
+    margin: auto 0;
+    text-align: left; /* Text zentrieren */
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.nav-links li a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.5s ease;
+}
+
+#theme-toggle {
+    margin-left: 10px;
+}
+
+/* Zahnrad-Button */
+#menu-button {
+    background: none;
+    border: none;
+    color: var(--link-text);
+    cursor: pointer;
+    font-size: 1.5rem;
 }
 
 main {
@@ -226,7 +283,64 @@ footer {
     align-items: center;    /* Zentriert den Inhalt vertikal */
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex !important; /* Immer sichtbar im Desktop-Modus */
+        flex-direction: row; /* Horizontal ausrichten */
+        position: static; /* Standardposition */
+        width: auto; /* Breite automatisch */
+        max-width: none;
+        max-height: none; /* Keine Höhenbegrenzung */
+        opacity: 1; /* Sichtbar */
+        background: none; /* Kein Hintergrund */
+        box-shadow: none; /* Kein Schatten */
+        overflow: visible; /* Kein Abschneiden */
+        transition: none; /* Keine Animation */
+    }
+
+    /* Entferne die mobile Klasse `.open` im Desktop-Modus */
+    .nav-links.open {
+        display: flex; /* Immer sichtbar */
+        max-height: none; /* Deaktiviere Höhenbegrenzung */
+        opacity: 1; /* Volle Sichtbarkeit */
+    }
+
+    .nav-links li {
+        height: fit-content;
+        padding: 0;
+        text-align: center;
+        margin: auto 5px;
+
+    }
+    
+    .nav-links li a {
+        display: inline; /* Zurück zum Inline-Element */
+        width: auto; /* Standard-Breite */
+        height: auto; /* Standard-Höhe */
+        padding: 0; /* Kein zusätzliches Padding */
+        margin: auto 5px;
+        text-align: center; /* Textausrichtung links */
+        text-decoration: none;
+        transition: all 0.5s ease;
+    }
+
+    .nav-links li a:hover {
+        background-color: var(--link-bg-hover);
+    }
+
+    .nav-links li button {
+
+    }
+    
+    .nav-links li button:hover {
+
+    }
+
+
+    #menu-button {
+        display: none; /* Verstecke den Menübutton auf großen Bildschirmen */
+    }
+    
     .chart-container {
         width: 100%; /* Vollbreite bei kleinen Bildschirmen */
 		height: 300px; 
