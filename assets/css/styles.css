@@ -4,7 +4,7 @@
     --primary-title: #2DC9BA; 
 	--primary-link-text: #48C9B0;
 	--primary-bg: #2E3B4E;
-	--primary-acc: #FFC44C; /* not used yet */
+	--primary-acc: #ffb325; /* not used yet */
 	
 	--nav-text: #FFFFFF;
 	
@@ -12,7 +12,7 @@
 	--secondary-title: #2A4C4B; /* not used yet */
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #1e2836; 
-	--secondary-acc: #FFB84D; /* not used yet */
+	--secondary-acc: #ff953e; /* not used yet */
 	
 	--act-bg: #000000CC; /* not used yet */
 	--act-text: #FFFFFF; /* not used yet */
@@ -238,6 +238,7 @@ aside.dataset-summary {
     border-image-source: linear-gradient(to right,transparent, #229A8F, transparent);
     border-image-slice: 1;
     backdrop-filter: blur(5px);
+     text-shadow: none !important; 
 }
 
 .aside-below-title {
@@ -342,7 +343,7 @@ footer {
 
 @media (min-width: 768px) {
     body {
-        grid-template-columns: 1fr 30vw; /* Hauptinhalt + Platz für aside */
+        grid-template-columns: 1fr 31vw; /* Hauptinhalt + Platz für aside */
         grid-template-areas: 
             "intro intro"
             "main aside"; /* Anordnung der Bereiche */
