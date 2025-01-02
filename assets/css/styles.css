@@ -44,6 +44,11 @@ body {
     color: var(--primary-text);
     transition: background 0.5s ease;
     position: relative;
+
+    display: grid;
+    grid-template-columns: 1fr; /* Standard: Nur eine Spalte */
+    grid-template-rows: auto; /* Automatische Zeilenhöhe */
+    gap: 20px; /* Abstand zwischen den Elementen */
 }
 
 body::after {
@@ -204,11 +209,14 @@ nav .logo img {
     font-size: 1.5rem;
 }
 
+
+
 main {
     padding: 20px;
     background: transparent;
     backdrop-filter: none;
     border-radius: 10px;
+    
 }
 
 section.intro {
@@ -232,7 +240,7 @@ section.charts {
 
 .chart-container {
     width: 100%; /* Standardgröße bei großen Bildschirmen */
-    
+    height: 40vh;
 	padding: 10px;
     background: transparent;
     backdrop-filter: none;
@@ -287,6 +295,13 @@ footer {
 }
 
 @media (min-width: 768px) {
+    body {
+        grid-template-columns: 1fr 300px; /* Hauptinhalt + Platz für aside */
+        grid-template-areas: 
+            "main aside"; /* Anordnung der Bereiche */
+    }
+
+    
     .nav-links {
         display: flex !important; /* Immer sichtbar im Desktop-Modus */
         flex-direction: row; /* Horizontal ausrichten */
@@ -300,20 +315,20 @@ footer {
         overflow: visible; /* Kein Abschneiden */
         transition: none; /* Keine Animation */
     }
-
+    
     /* Entferne die mobile Klasse `.open` im Desktop-Modus */
     .nav-links.open {
         display: flex; /* Immer sichtbar */
         max-height: none; /* Deaktiviere Höhenbegrenzung */
         opacity: 1; /* Volle Sichtbarkeit */
     }
-
+    
     .nav-links li {
         height: fit-content;
         padding: 0;
         text-align: center;
         margin: auto 5px;
-
+        
     }
     
     .nav-links li a {
@@ -326,27 +341,41 @@ footer {
         text-decoration: none;
         transition: all 0.5s ease;
     }
-
+    
     .nav-links li a:hover {
         background-color: var(--link-bg-hover);
     }
-
+    
     .nav-links li button {
-
+        
     }
     
     .nav-links li button:hover {
-
+        
     }
-
-
+    
+    
     #menu-button {
         display: none; /* Verstecke den Menübutton auf großen Bildschirmen */
     }
     
+    main {
+        grid-area: main;
+    }
+
+    aside.dataset-summary {
+        grid-area: aside;
+        display: block; /* Sicherstellen, dass aside angezeigt wird */
+    }
+
     .chart-container {
-        width: 100%; /* Vollbreite bei kleinen Bildschirmen */
-		height: 300px; 
-        margin-bottom: 20px; /* Abstand zwischen den Charts */
+        width: 100%; /* Stellt sicher, dass die Breite 100% beträgt */
+        height: 400px; /* Feste Höhe für die Charts */
+        margin-bottom: 40px; /* Abstand zwischen den Charts */
+        position: relative; /* Wichtig für Canvas-Positionierung */
+    }
+    .chart-container canvas {
+        width: 100% !important; /* Verhindert automatische Verkleinerung */
+        height: 100% !important; /* Füllt den Container vollständig aus */
     }
 }
