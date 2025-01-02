@@ -5,6 +5,8 @@ const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 const menuButton = document.getElementById('menu-button');
 const navLinks = document.querySelector('.nav-links');
+let lineChartPrice;
+let barChartReturns;
 
 // Menü öffnen/schließen
 menuButton.addEventListener('click', () => {
@@ -41,6 +43,9 @@ function applyTheme(theme) {
         root.style.setProperty('--gradient-color-1', '#f0f0f0');
         root.style.setProperty('--gradient-color-2', '#e0e0e0');
         root.style.setProperty('--gradient-color-3', '#d0d0d0');
+        root.style.setProperty("--glass", "#00000011");
+        root.style.setProperty("--glass2", "#00000006");
+        root.style.setProperty("--glass-color", "#2e8f853e");
 		nav.classList.remove('scrolled'); // Zurück zum Standardzustand
 		toggle.innerText = "dark mode";
 		// Navbar remains primary-bg in bright mode
@@ -49,12 +54,15 @@ function applyTheme(theme) {
 		console.log("Theme is now:   " + theme);
 		console.log("nav-text: " + getComputedStyle(root).getPropertyValue("--nav-text").trim());
     } else {
-        root.style.setProperty('--primary-text', '#E9F4F3');
+        root.style.setProperty('--primary-text', '#dae6e5');
         root.style.setProperty('--primary-bg', '#2E3B4E');
-		root.style.setProperty('--primary-title', '#F5F5F5')
+		root.style.setProperty('--primary-title', '#2DC9BA')
         root.style.setProperty('--gradient-color-1', '#1B2838');
         root.style.setProperty('--gradient-color-2', '#2E3B4E');
         root.style.setProperty('--gradient-color-3', '#34495E');
+        root.style.setProperty("--glass", "#00000000");
+        root.style.setProperty("--glass2", "#00000000");
+        root.style.setProperty("--glass-color", "#0b24225f");
 		window.dispatchEvent(new Event("scroll"));
         toggle.innerText = "light mode";
 		// Navbar becomes transparent in dark mode
@@ -74,31 +82,33 @@ if (savedTheme) {
 }
 
 // Toggle theme on button click
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = root.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'bright' : 'dark';
-        root.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        applyTheme(newTheme); // Aktualisiere die CSS-Variablen
-        navLinks.classList.remove('open'); // Schließt das Menü
+themeToggle.addEventListener('click', () => {
+    const currentTheme = root.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'bright' : 'dark';
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    applyTheme(newTheme); // Aktualisiere die CSS-Variablen
+    navLinks.classList.remove('open'); // Schließt das Menü
 
-    });
-}
+    //Aktualisiere die Farben der Charts
+    updateChartColors(lineChartPrice);
+    updateChartColors(barChartReturns);
+});
+
 
 // Initialize charts (dummy data for line chart and histogram)
 const initCharts = () => {
     const lineCtx = document.getElementById('lineChart').getContext('2d');
     const histogramCtx = document.getElementById('histogram').getContext('2d');
 
-    new Chart(lineCtx, {
+    lineChartPrice = new Chart(lineCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
             datasets: [{
                 label: 'Monthly Returns',
                 data: [3, 2, -1, 5, 4],
-                borderColor: '#48C9B0',
+                borderColor: getComputedStyle(root).getPropertyValue("--primary-link-text").trim(),
                 backgroundColor: 'rgba(72, 201, 176, 0.2)',
                 fill: true,
             }]
@@ -112,7 +122,7 @@ const initCharts = () => {
         },
     });
 
-    new Chart(histogramCtx, {
+    barChartReturns = new Chart(histogramCtx, {
         type: 'bar',
         data: {
             labels: ['Low', 'Medium', 'High'],
@@ -129,6 +139,15 @@ const initCharts = () => {
             },
         },
     });
+};
+
+const updateChartColors = (chart) => {
+    const lineColor = getComputedStyle(root).getPropertyValue('--primary-title').trim();
+    //const bgColor = getComputedStyle(root).getPropertyValue('--chart-bg-color').trim();
+
+    chart.data.datasets[0].borderColor = lineColor;
+    //chart.data.datasets[0].backgroundColor = bgColor;
+    chart.update();
 };
 
 localStorage.setItem("theme", "dark");

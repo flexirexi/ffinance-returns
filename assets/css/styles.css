@@ -1,8 +1,8 @@
 /* General Parameters */
 :root {
-    --primary-text: #E9F4F3;
-    --primary-title: #F5F5F5; /* not used yet */
-	--primary-link-text: #48C9B0; /* not used yet */
+    --primary-text: #dae6e5;
+    --primary-title: #2DC9BA; 
+	--primary-link-text: #48C9B0;
 	--primary-bg: #2E3B4E;
 	--primary-acc: #FFC44C; /* not used yet */
 	
@@ -33,6 +33,10 @@
     --gradient-color-1: #1b2838;
     --gradient-color-2: #202020;
     --gradient-color-3: #34495e;
+
+    --glass: #00000000;
+    --glass2: #00000000;
+    --glass-color: #1e5f593e;
 }
 
 body {
@@ -42,13 +46,11 @@ body {
     background-size: 300% 300%;
     animation: gradient-animation 15s ease infinite;
     color: var(--primary-text);
-    transition: background 0.5s ease;
     position: relative;
-
     display: grid;
     grid-template-columns: 1fr; /* Standard: Nur eine Spalte */
     grid-template-rows: auto; /* Automatische Zeilenhöhe */
-    gap: 20px; /* Abstand zwischen den Elementen */
+    gap: 15px; /* Abstand zwischen den Elementen */
 }
 
 body::after {
@@ -69,6 +71,13 @@ body::after {
     100% { background-position: 0% 50%; }
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-title);
+    padding: 0;
+    margin: 9px 0;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
 nav, footer {
     background: transparent;
     color: var(--nav-text);
@@ -76,6 +85,7 @@ nav, footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    grid-column: 1 / -1; /* Footer nimmt die gesamte Breite ein */
 }
 
 nav {
@@ -102,6 +112,10 @@ nav .logo {
 nav .logo img {
     height: 40px;
     margin-right: 10px;
+}
+
+#nav-header {
+    margin-left: 10px;
 }
 
 .menu {
@@ -139,8 +153,6 @@ nav .logo img {
     transition: all 0.5s ease;
     
 }
-
-
 
 /* Standard-Styles */
 .nav-links {
@@ -209,7 +221,41 @@ nav .logo img {
     font-size: 1.5rem;
 }
 
+aside.dataset-summary {
+    display: none;
+    line-height: 1.2;
+}
 
+.aside-header {
+    text-align: center;
+    display: inline;
+    padding: 3px 16px;
+    margin-left: -12px;
+    background: linear-gradient(to right, transparent, var(--glass-color), var(--glass-color), transparent);
+    color: var(--primary-title);
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-image-source: linear-gradient(to right,transparent, #229A8F, transparent);
+    border-image-slice: 1;
+    backdrop-filter: blur(5px);
+}
+
+.aside-below-title {
+    margin-top: 17px;
+}
+
+.aside-above-title {
+    margin-bottom: 35px;
+}
+
+.aside-text {
+    font-size: 13px;
+    color: var(--primary-text);
+}
+
+aside li {
+    margin-left: -15px; /* Verschiebt die Bullet Points weiter nach links */
+}
 
 main {
     padding: 20px;
@@ -221,11 +267,11 @@ main {
 
 section.intro {
     text-align: center;
-    padding: 50px 20px;
+    padding: 40px 30px;
     background: transparent;
     backdrop-filter: none;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin: 70px 0 30px;
 }
 
 section.charts {
@@ -240,7 +286,8 @@ section.charts {
 
 .chart-container {
     width: 100%; /* Standardgröße bei großen Bildschirmen */
-    height: 40vh;
+    height: 60vh;
+    max-height: 200px;
 	padding: 10px;
     background: transparent;
     backdrop-filter: none;
@@ -249,7 +296,7 @@ section.charts {
 
 canvas {
     width: 100% !important; /* Stellt sicher, dass das Canvas skaliert wird */
-    height: auto !important; /* Verhindert verzerrte Skalierung */
+    height: 100% !important; /* Verhindert verzerrte Skalierung */
 }
 
 section.content {
@@ -285,7 +332,6 @@ section.content {
     transform: translateY(-5px);
 }
 
-
 footer {
     text-align: center;
     padding: 10px;
@@ -296,9 +342,11 @@ footer {
 
 @media (min-width: 768px) {
     body {
-        grid-template-columns: 1fr 300px; /* Hauptinhalt + Platz für aside */
+        grid-template-columns: 1fr 30vw; /* Hauptinhalt + Platz für aside */
         grid-template-areas: 
+            "intro intro"
             "main aside"; /* Anordnung der Bereiche */
+        grid-template-rows: auto 1fr;
     }
 
     
@@ -359,6 +407,10 @@ footer {
         display: none; /* Verstecke den Menübutton auf großen Bildschirmen */
     }
     
+    .intro {
+        grid-area: intro;
+    }
+
     main {
         grid-area: main;
     }
@@ -366,11 +418,17 @@ footer {
     aside.dataset-summary {
         grid-area: aside;
         display: block; /* Sicherstellen, dass aside angezeigt wird */
+        margin: 10px 13px 0;
+        height: fit-content;
+        padding: 20px;
+        background: linear-gradient(90deg, var(--glass), var(--glass), var(--glass), var(--glass2));
     }
+
 
     .chart-container {
         width: 100%; /* Stellt sicher, dass die Breite 100% beträgt */
-        height: 400px; /* Feste Höhe für die Charts */
+        height: 60vh; /* Feste Höhe für die Charts */
+        max-height: 450px;
         margin-bottom: 40px; /* Abstand zwischen den Charts */
         position: relative; /* Wichtig für Canvas-Positionierung */
     }

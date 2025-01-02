@@ -26,22 +26,41 @@
         </div>
     </nav>
 
+    <section class="intro">
+        <h1>UNDERSTANDING RETURNS</h1>
+        <p><br>Upload a financial time series. Get a short descriptive summary. Visualize return distribution. Put it into perspective of a normal distribution. <br><br>Make it make sense.  </p>
+    </section>
+
     <aside class="dataset-summary">
-        <h2>Dataset Summary</h2>
-        <p>No dataset uploaded yet. Please upload a file to see its summary.</p>
-        <ul id="dataset-summary">
-            <li><strong>Number of Rows:</strong> N/A</li>
-            <li><strong>Number of Columns:</strong> N/A</li>
-            <li><strong>Missing Values:</strong> N/A</li>
-        </ul>
+        <article class="aside-card" id="aside1">
+            <h4 class="aside-header">Dataset</h4>
+            <p class="aside-text aside-below-title">There are enough data for daily and monthly analysis but not for annual analysis.</p>
+            <ul id="dataset-summary" class="aside-text aside-above-title">
+                <li><strong>Number of rows:</strong> N/A</li>
+                <li><strong>Number of columns:</strong> N/A</li>
+                <li><strong>Date range:</strong> 2022-10-31 - 2024-12-31</li>
+                <li><strong>Missing values (daily):</strong> N/A</li>
+                <li><strong>Missing values (monthly):</strong> N/A</li>
+                <li><strong>Missing values (annual):</strong> N/A</li>
+            </ul>
+        </article>
+        <article class="aside-card" id="aside2">
+            <h4 class="aside-header">Financial data</h4>
+            <p class="aside-text aside-below-title">TWR calculation is possible, no approximation needed.</p>
+            <ul id="dataset-summary" class="aside-text aside-below-title aside-above-title">
+                <li><strong>Kind:</strong> price data</li>
+                <li><strong>Movements:</strong> none</li>
+                <li><strong>Corporate actions:</strong> none</li>
+            </ul>
+        </article>
+        <article class="aside-card" id="aside3">
+            <h4 class="aside-header">Descriptive summary</h4>
+            <p class="aside-text aside-below-title">TWR is technically possible. However, you loaded return/growth data with missing values. The TWR (and any other return) will be at least inaccurate.</p>
+            <p class="aside-text aside-below-title">If you had invested regularly a constant amount you'd have benefit from the cost average effect. You'd have paid an average price of ###.##€ in XX installments to an end price of ###.##€</p>
+        </article>
     </aside>
 
     <main>
-        <section class="intro">
-            <h1>Welcome to FLEXI FINANCE</h1>
-            <p>Your one-stop solution for understanding returns and financial metrics.</p>
-        </section>
-
         <section class="charts">
             <div class="chart-container">
                 <canvas id="lineChart"></canvas>
