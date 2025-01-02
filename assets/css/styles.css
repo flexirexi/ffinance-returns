@@ -112,27 +112,30 @@ nav .logo img {
     background: var(--act-bg);
     border: none;
     cursor: pointer;
-    transition: color 0.5s ease;
+    transition: all 0.5s ease;
 }
 
 .link {
     color: var(--link-text);
-    background-color: transparent;
+    background: transparent;
 }
 
 .link:hover {
     color: var(--link-text-hover);
     text-decoration: underline;
     text-underline-offset: 4px;
-    background-color: var(--link-bg-hover);
+    background: var(--link-bg-hover);
+    transition: all 0.5s ease;
+}
+
+.button:hover {
+    background: var(--act-bg-hover);
+    color: var(--act-text-hover);
     transition: all 0.5s ease;
     
 }
 
-.button:hover {
-    background-color: var(--act-bg-hover);
-    color: var(--act-text-hover);
-}
+
 
 /* Standard-Styles */
 .nav-links {

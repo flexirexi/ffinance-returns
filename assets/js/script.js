@@ -8,7 +8,15 @@ const navLinks = document.querySelector('.nav-links');
 
 // Menü öffnen/schließen
 menuButton.addEventListener('click', () => {
-    navLinks.classList.toggle('open'); // Schaltet die 'open'-Klasse ein/aus
+    
+    // Wenn das Menü geschlossen wird, setze die ursprünglichen Farben zurück
+    if (navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open'); // Schließt das Menü
+
+    } else {
+        navLinks.classList.toggle('open'); // Schaltet die 'open'-Klasse ein/aus
+    }
+
 });
 
 // Menü ausblenden, wenn außerhalb geklickt wird
@@ -16,6 +24,7 @@ document.addEventListener('click', (e) => {
     // Überprüfe, ob der Klick NICHT auf das Menü oder den Button war
     if (!navLinks.contains(e.target) && !menuButton.contains(e.target)) {
         navLinks.classList.remove('open'); // Schließt das Menü
+
     }
 });
 
@@ -72,6 +81,8 @@ if (themeToggle) {
         root.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         applyTheme(newTheme); // Aktualisiere die CSS-Variablen
+        navLinks.classList.remove('open'); // Schließt das Menü
+
     });
 }
 
@@ -127,6 +138,8 @@ document.addEventListener('DOMContentLoaded', initCharts);
 // Scroll-Event Listener für die Navigationsleiste
 window.addEventListener('scroll', () => {
 	const theme = localStorage.getItem('theme');
+
+    navLinks.classList.remove('open'); // Schließt das Menü
 	if (theme === "dark") {
 		const nav = document.querySelector('nav');
 		if (window.scrollY > 10) {
@@ -142,4 +155,5 @@ window.addEventListener('scroll', () => {
 			nav.style.backdropFilter = "none";
 		}		
 	}
+
 });
