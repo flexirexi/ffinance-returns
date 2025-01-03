@@ -249,7 +249,7 @@ aside.dataset-summary {
     height: 100%; /* Voller Bildschirmhöhe */
     background: linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg));
     z-index: 1000; /* Über allen anderen Elementen */
-    transition: right 0.3s ease-in-out; /* Smooth Transition */
+    transition: right 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth Transition */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Optionaler Schatten */
     overflow-y: auto; /* Scrollbar bei Bedarf */
 }
@@ -259,6 +259,11 @@ aside.dataset-summary {
     right: 0; /* Position innerhalb des Bildschirms */
     box-sizing: border-box;
     padding: 20px;
+}
+
+.dataset-summary.active[style] {
+    right: 0; /* Überschreibt den Style von transform */
+    transform: none; /* Zurücksetzen */
 }
 
 #close-aside {
