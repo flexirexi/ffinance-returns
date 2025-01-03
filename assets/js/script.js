@@ -488,17 +488,20 @@ document.addEventListener("DOMContentLoaded", () => {
     showAsideButton.addEventListener('click', function(event) {
         event.preventDefault();
         aside.classList.add('active');
+        document.body.style.overflow = "hidden";
     });
 
     // Schließen des Aside
     closeAsideButton.addEventListener('click', () => {
         aside.classList.remove('active');
+        document.body.style.overflow = "";
     });
 
     // Überwache Fenstergröße und entferne "active", wenn Desktop-Modus aktiv wird
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) { // Passe die Breite an deine Media Query an
             aside.classList.remove('active');
+            document.body.style.overflow = "";
         }
     });
 
@@ -506,6 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener('click', (event) => {
         if (!aside.contains(event.target) && !showAsideButton.contains(event.target)) {
             aside.classList.remove('active');
+            document.body.style.overflow = "";
         }
     });
     
