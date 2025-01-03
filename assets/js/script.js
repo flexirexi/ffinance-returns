@@ -487,10 +487,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const aside = document.querySelector('.dataset-summary');
     const showAsideButton = document.getElementById('show-aside');
     const closeAsideButton = document.getElementById('close-aside');
-    localStorage.setItem("onload", true);
-    //console.log("current mode:  " + localStorage.getItem("onload"));
+    const slideView = document.getElementById("slideView");
+    const actionButton = document.querySelector('.action-button');
+    let startX = 0;
+    let currentX = 0;
+    let isSwiping = false;
+    let startY = 0;
+    let currentY = 0;
 
-    // Öffnen des Aside
+    localStorage.setItem("onload", true);
+
+    // Aside: Öffnen
     showAsideButton.addEventListener('click', function(event) {
         event.preventDefault();
         navLinks.classList.remove('open');
@@ -498,19 +505,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "hidden";
     });
 
-    // Schließen des Aside
+    // Aside: Schließen
     closeAsideButton.addEventListener('click', () => {
         aside.classList.remove('active');
         document.body.style.overflow = "";
     });
 
-    let startX = 0;
-    let currentX = 0;
-    let isSwiping = false;
-
-
-
-    // Touchstart-Event
+    // Aside: Touchstart-Event
     aside.addEventListener("touchstart", (e) => {
         startX = e.touches[0].clientX;
         isSwiping = true;
@@ -518,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
         aside.style.transition = "none"; // Transition während des Swipens deaktivieren
     });
 
-    // Touchmove-Event
+    // Aside: Touchmove-Event
     aside.addEventListener("touchmove", (e) => {
         if (!isSwiping) return;
 
@@ -527,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
         aside.style.transform = `translateX(${currentX}px)`;
     });
 
-    // Touchend-Event
+    // Aside: Touchend-Event
     aside.addEventListener("touchend", () => {
         isSwiping = false;
 
@@ -540,6 +541,54 @@ document.addEventListener("DOMContentLoaded", () => {
             aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
             aside.style.transform = "translateX(0)";
         }
+    });
+
+
+    // SlideView: Funktion zum Öffnen des Slide-Views
+    function openSlideView() {
+        slideView.style.bottom = "0"; // Schiebt das Slide-View in den sichtbaren Bereich
+        document.body.style.overflow = "hidden";
+    }
+
+    // SlideView: Funktion zum Schließen des Slide-Views
+    function closeSlideView() {
+        slideView.style.bottom = "-100%"; // Schiebt das Slide-View aus dem Bildschirm
+        document.body.style.overflow = "";
+    }
+
+    // SlideView: Event für Swipen nach unten
+    slideView.addEventListener("touchstart", (e) => {
+        startY = e.touches[0].clientY;
+        isSwiping = true;
+    });
+
+    slideView.addEventListener("touchmove", (e) => {
+        if (!isSwiping) return;
+
+        currentY = e.touches[0].clientY - startY;
+
+        if (currentY > 0) { // Erlaubt nur Bewegung nach unten
+            slideView.style.bottom = `-${currentY}px`;
+        }
+    });
+
+    slideView.addEventListener("touchend", () => {
+        isSwiping = false;
+
+        if (currentY > 100) {
+            // Wenn ausreichend nach unten gewischt wurde
+            closeSlideView();
+        } else {
+            // Zurück zur Originalposition
+            slideView.style.bottom = "0";
+            document.body.style.overflow = "hidden";
+        }
+    });
+
+    // SlideView: Beispiel für das Öffnen des Slide-Views
+    actionButton.addEventListener('click', () => {
+        openSlideView();
+        document.body.style.overflow = "hidden";
     });
 
 
@@ -566,7 +615,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener('click', (event) => {
         if (!aside.contains(event.target) && !showAsideButton.contains(event.target)) {
             aside.classList.remove('active');
-            document.body.style.overflow = "";
         }
     });
     

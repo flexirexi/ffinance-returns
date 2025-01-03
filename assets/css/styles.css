@@ -54,6 +54,8 @@ body {
     grid-template-columns: 1fr; /* Standard: Nur eine Spalte */
     grid-template-rows: auto; /* Automatische Zeilenhöhe */
     gap: 15px; /* Abstand zwischen den Elementen */
+
+    overflow-x: hidden; /* Verhindert horizontalen Scrollen */
 }
 
 body::after {
@@ -389,6 +391,71 @@ footer {
     align-items: center;    /* Zentriert den Inhalt vertikal */
 }
 
+.action-button {
+    position: fixed;
+    bottom: 23px; /* Abstand von der unteren Kante */
+    right: 23px; /* Abstand von der rechten Kante */
+    width: 60px; /* Größe des Buttons */
+    height: 60px;
+    background-color: var(--act-bg-hover);
+    color: var(--act-bg);
+    border-radius: 50%; /* Rundes Design */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Schatteneffekt */
+    cursor: pointer;
+    z-index: 1001; /* Über anderen Elementen */
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth Animation */
+}
+
+.action-button:hover {
+    transform: scale(1.1); /* Leichtes Vergrößern bei Hover */
+    background: #229A8F; /* Dunklere Farbe bei Hover */
+}
+
+.action-button i {
+    font-size: 24px; /* Größe des Plus-Symbols */
+
+}
+
+#action-header {
+    display: none;
+    padding-right: 15px;
+    font-size: 18px;
+    text-shadow: 0px 1px 1px #00000039;
+    
+}
+
+.slide-view {
+    position: fixed;
+    bottom: -100%; /* Startet außerhalb des Bildschirms */
+    left: 0;
+    width: 100%;
+    height: 100%; /* Höhe des Slide-Views */
+    background: #f8f8f8; /* Hintergrundfarbe */
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px 20px 0 0; /* Abgerundete Ecken */
+    transition: bottom 0.3s ease-in-out; /* Smooth Animation */
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.slide-view-content {
+    height: 100%;
+    overflow-y: auto; /* Ermöglicht Scrollen, falls Inhalt länger als Viewport */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.handle {
+    width: 50px;
+    height: 5px;
+    background: #ccc;
+    border-radius: 3px;
+    margin: 10px auto;
+}
+
 @media (min-width: 768px) {
     body {
         grid-template-columns: 1fr 31vw; /* Hauptinhalt + Platz für aside */
@@ -398,7 +465,6 @@ footer {
         grid-template-rows: auto 1fr;
     }
 
-    
     .nav-links {
         display: flex !important; /* Immer sichtbar im Desktop-Modus */
         flex-direction: row; /* Horizontal ausrichten */
@@ -503,5 +569,33 @@ footer {
     .chart-container canvas {
         width: 100% !important; /* Verhindert automatische Verkleinerung */
         height: 100% !important; /* Füllt den Container vollständig aus */
+    }
+
+    .action-button {
+        position: fixed;
+        bottom: 23px; /* Abstand von der unteren Kante */
+        right: 23px; /* Abstand von der rechten Kante */
+        width: 130px; /* Größe des Buttons */
+        height: 50px;
+        background-color: var(--act-bg-hover);
+        color: var(--act-bg);
+        border-radius: 500px; /* Rundes Design */
+        display: flex;
+        justify-content: right;
+        align-items: right;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Schatteneffekt */
+        cursor: pointer;
+        z-index: 1001; /* Über anderen Elementen */
+        transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth Animation */
+    
+        padding-right: 18px;
+    }
+
+    #action-header {
+        display: flex;
+        padding-right: 15px;
+        font-size: 18px;
+        text-shadow: 0px 1px 1px #00000039;
+        
     }
 }
