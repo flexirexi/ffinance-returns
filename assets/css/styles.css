@@ -54,7 +54,7 @@ body {
     grid-template-columns: 1fr; /* Standard: Nur eine Spalte */
     grid-template-rows: auto; /* Automatische Zeilenhöhe */
     gap: 15px; /* Abstand zwischen den Elementen */
-
+    z-index: 0;
     overflow-x: hidden; /* Verhindert horizontalen Scrollen */
 }
 
@@ -99,7 +99,7 @@ nav {
     top: 0; /* Hält sie oben auf der Seite */
     left: 0; /* Linksbündig */
     width: 100%; /* Breite auf die gesamte Seite setzen */
-	z-index: 1000;
+	z-index: 2;
 	backdrop-filter: none; /* Kein Blur standardmäßig */
     transition: background-color 0.5s ease, backdrop-filter 0.5s, opacity 0.5s ease; /* Weicher Übergang */
 }
@@ -254,7 +254,7 @@ aside.dataset-summary {
     width: 100%; /* Über den gesamten Bildschirm */
     height: 100%; /* Voller Bildschirmhöhe */
     background: linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg));
-    z-index: 1000; /* Über allen anderen Elementen */
+    z-index: 5; /* Über allen anderen Elementen */
     transition: right 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth Transition */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Optionaler Schatten */
     overflow-y: auto; /* Scrollbar bei Bedarf */
@@ -409,7 +409,7 @@ footer {
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Schatteneffekt */
     cursor: pointer;
-    z-index: 1001; /* Über anderen Elementen */
+    z-index: 4; /* Über anderen Elementen */
     transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth Animation */
 }
 
@@ -441,7 +441,7 @@ footer {
     box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 20px 20px 0 0; /* Abgerundete Ecken */
     transition: bottom 0.3s ease-in-out; /* Smooth Animation */
-    z-index: 1000;
+    z-index: 3;
     overflow: hidden;
 }
 
@@ -549,7 +549,7 @@ footer {
         width: unset; /* Über den gesamten Bildschirm */
         height: fit-content; /* Voller Bildschirmhöhe */
         background-color: unset; /* Hintergrundfarbe */
-        z-index: 1; /* Über allen anderen Elementen */
+        z-index: 2; /* Über allen anderen Elementen */
         transition: right 0.3s ease-in-out; /* Smooth Transition */
         box-shadow: unset; /* Optionaler Schatten */
         overflow-y: auto; /* Scrollbar bei Bedarf */
@@ -589,7 +589,7 @@ footer {
         align-items: right;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Schatteneffekt */
         cursor: pointer;
-        z-index: 1001; /* Über anderen Elementen */
+        z-index: 4; /* Über anderen Elementen */
         transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth Animation */
     
         padding-right: 18px;
