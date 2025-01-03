@@ -254,8 +254,6 @@ aside.dataset-summary {
     overflow-y: auto; /* Scrollbar bei Bedarf */
 }
 
-
-
 /* Sichtbar: In den Bildschirm geslided */
 .dataset-summary.active {
     right: 0; /* Position innerhalb des Bildschirms */
@@ -266,8 +264,6 @@ aside.dataset-summary {
 #close-aside {
     display: block;
 }
-
-
 
 .aside-header {
     text-align: center;

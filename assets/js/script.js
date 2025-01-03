@@ -33,9 +33,9 @@ document.addEventListener('click', (e) => {
 function applyTheme(theme) {
     const nav = document.querySelector('nav');
 	const toggle = document.getElementById("theme-toggle");
+    const aside = document.getElementsByClassName("dataset-summary");
 
     if (theme === 'light mode') {
-		
         root.style.setProperty('--primary-text', 'var(--secondary-text)');
         root.style.setProperty('--primary-bg', 'var(--secondary-bg)');
 		root.style.setProperty('--primary-title', 'var(--secondary-title');
@@ -66,11 +66,10 @@ function applyTheme(theme) {
         toggle.innerText = "light mode";
 		// Navbar becomes transparent in dark mode
         //if (nav) nav.style.backgroundColor = 'transparent';
-		
+		if (window.innerWidth < 768) {
+            aside[0].style.background =  getComputedStyle(root).getPropertyValue('--primary-bg').trim();
+        }
     }
-
-
-
 }
 
 // Toggle theme on button click
