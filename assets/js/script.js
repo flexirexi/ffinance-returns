@@ -442,15 +442,20 @@ window.addEventListener('scroll', () => {
     //erst am ende des scrollens ausführen:
     clearTimeout(scrollTimeout); // Lösche vorherigen Timeout
     scrollTimeout = setTimeout(() => {
-        const nav_header = document.getElementById("nav-header");
-        
+        //console.log("should end onload now ..");
+        localStorage.removeItem("onload");
+    }, 200); 
+    const nav_header = document.getElementById("nav-header");
+    
+    if (localStorage.getItem("onload") == null) {
+        //console.log("scroll event should work now");
         if (window.scrollY > 10) {
             nav_header.classList.remove("hidden");
         } else {
             nav_header.classList.add("hidden");
         }
         
-        if (theme === "dark mode") {
+        if (theme === "dark mode" ) {
             const nav = document.querySelector('nav');
             if (window.scrollY > 10) {
                 //nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
@@ -466,13 +471,14 @@ window.addEventListener('scroll', () => {
             }		
         }
 
-    }, 0); 
+    }
     navLinks.classList.remove('open'); // Schließt das Menü
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme");
-    console.log("current mode:  " + savedTheme);
+    localStorage.setItem("onload", true);
+    //console.log("current mode:  " + localStorage.getItem("onload"));
 
     // Load saved theme from local storage
     if (savedTheme) {
