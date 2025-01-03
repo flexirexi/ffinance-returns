@@ -1,6 +1,4 @@
 // JavaScript for Theme Toggle and Interactivity
-
-// Theme toggle functionality
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 const menuButton = document.getElementById('menu-button');
@@ -475,12 +473,15 @@ window.addEventListener('scroll', () => {
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme");
     console.log("current mode:  " + savedTheme);
+
     // Load saved theme from local storage
     if (savedTheme) {
         root.setAttribute('data-theme', savedTheme);
         applyTheme(savedTheme);
     } else {
         root.setAttribute('data-theme', 'dark mode'); // Default theme
+        localStorage.setItem("theme", "dark mode");
+        console.log("no current theme - set to dark mode");
         applyTheme('dark mode');
     }
 
