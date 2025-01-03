@@ -434,7 +434,7 @@ footer {
     .chart-container {
         width: 100%; /* Stellt sicher, dass die Breite 100% beträgt */
         height: 70vh; /* Feste Höhe für die Charts */
-        max-height: 750px;
+        max-height: 650px;
         margin-bottom: 40px; /* Abstand zwischen den Charts */
         position: relative; /* Wichtig für Canvas-Positionierung */
     }
