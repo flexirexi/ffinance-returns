@@ -430,15 +430,15 @@ footer {
 
     main {
         grid-area: main;
-        padding: 20px 30px 20px;
+        padding: 20px 5px 20px 20px;
     }
 
     aside.dataset-summary {
         grid-area: aside;
         display: block; /* Sicherstellen, dass aside angezeigt wird */
-        margin: 10px 13px 0;
+        margin: 10px 13px 10px 5px;
         height: fit-content;
-        padding: 20px;
+        padding: 20px 15px;
         background: linear-gradient(90deg, var(--glass), var(--glass), var(--glass), var(--glass2));
     }
 
