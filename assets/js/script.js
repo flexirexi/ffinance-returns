@@ -51,8 +51,6 @@ function applyTheme(theme) {
 		// Navbar remains primary-bg in bright mode
         if (nav) nav.style.background = 'var(--primary-bg)';
 		
-		console.log("Theme is now:   " + theme);
-		console.log("nav-text: " + getComputedStyle(root).getPropertyValue("--nav-text").trim());
     } else {
         root.style.setProperty('--primary-text', '#dae6e5');
         root.style.setProperty('--primary-bg', '#2E3B4E');
@@ -70,6 +68,9 @@ function applyTheme(theme) {
         //if (nav) nav.style.backgroundColor = 'transparent';
 		
     }
+
+
+
 }
 
 // Toggle theme on button click
@@ -477,9 +478,37 @@ window.addEventListener('scroll', () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme");
+    const aside = document.querySelector('.dataset-summary');
+    const showAsideButton = document.getElementById('show-aside');
+    const closeAsideButton = document.getElementById('close-aside');
     localStorage.setItem("onload", true);
     //console.log("current mode:  " + localStorage.getItem("onload"));
 
+    // Öffnen des Aside
+    showAsideButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        aside.classList.add('active');
+    });
+
+    // Schließen des Aside
+    closeAsideButton.addEventListener('click', () => {
+        aside.classList.remove('active');
+    });
+
+    // Überwache Fenstergröße und entferne "active", wenn Desktop-Modus aktiv wird
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) { // Passe die Breite an deine Media Query an
+            aside.classList.remove('active');
+        }
+    });
+
+    // Schließen bei Klick außerhalb des Aside
+    document.addEventListener('click', (event) => {
+        if (!aside.contains(event.target) && !showAsideButton.contains(event.target)) {
+            aside.classList.remove('active');
+        }
+    });
+    
     // Load saved theme from local storage
     if (savedTheme) {
         root.setAttribute('data-theme', savedTheme);

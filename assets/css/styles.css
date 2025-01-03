@@ -134,6 +134,7 @@ nav .logo img {
     visibility: hidden; /* Deaktiviert nach Übergang */
 }
 
+
 .menu {
     margin-right: 15px;
 }
@@ -219,7 +220,7 @@ nav .logo img {
     transition: all 0.5s ease;
 }
 
-.nav-links li a:hover {
+.nav-links li a:hover, .link-hover {
     background: rgba(255, 255, 255, 0.1);
     transition: all 0.5s ease;
 }
@@ -238,9 +239,35 @@ nav .logo img {
 }
 
 aside.dataset-summary {
-    display: none;
+    display: block;
     line-height: 1.2;
+
+    position: fixed; /* Fixiert am Bildschirm */
+    top: 0;
+    right: -130%; /* Komplett außerhalb des Bildschirms */
+    width: 100%; /* Über den gesamten Bildschirm */
+    height: 100%; /* Voller Bildschirmhöhe */
+    background: linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg));
+    z-index: 1000; /* Über allen anderen Elementen */
+    transition: right 0.3s ease-in-out; /* Smooth Transition */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Optionaler Schatten */
+    overflow-y: auto; /* Scrollbar bei Bedarf */
 }
+
+
+
+/* Sichtbar: In den Bildschirm geslided */
+.dataset-summary.active {
+    right: 0; /* Position innerhalb des Bildschirms */
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+#close-aside {
+    display: block;
+}
+
+
 
 .aside-header {
     text-align: center;
@@ -254,7 +281,8 @@ aside.dataset-summary {
     border-image-source: linear-gradient(to right,transparent, #229A8F, transparent);
     border-image-slice: 1;
     backdrop-filter: blur(5px);
-     text-shadow: none !important; 
+    text-shadow: none !important; 
+
 }
 
 .aside-below-title {
@@ -443,8 +471,26 @@ footer {
         height: fit-content;
         padding: 20px 15px;
         background: linear-gradient(90deg, var(--glass), var(--glass), var(--glass), var(--glass2));
+
+        position: unset; /* Fixiert am Bildschirm */
+        top: unset;
+        right: unset; /* Komplett außerhalb des Bildschirms */
+        width: unset; /* Über den gesamten Bildschirm */
+        height: fit-content; /* Voller Bildschirmhöhe */
+        background-color: unset; /* Hintergrundfarbe */
+        z-index: 1000; /* Über allen anderen Elementen */
+        transition: right 0.3s ease-in-out; /* Smooth Transition */
+        box-shadow: unset; /* Optionaler Schatten */
+        overflow-y: auto; /* Scrollbar bei Bedarf */
     }
 
+    #close-aside {
+        display: none;
+    }
+
+    #show-aside {
+        display: none;
+    }
 
     .chart-container {
         width: 100%; /* Stellt sicher, dass die Breite 100% beträgt */

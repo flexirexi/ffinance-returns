@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html data-theme="dark mode" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,6 +26,7 @@
                 <li><a class="link" href="#">Home</a></li>
                 <li><a class="link" href="#">About</a></li>
                 <li><a class="link" href="#">Contact</a></li>
+                <li><a class="link" href="#" id="show-aside">Summary</a></li>
                 <li><button id="theme-toggle" class="button">light mode</button></li>
             </ul>
         </div>
@@ -37,6 +38,7 @@
     </section>
 
     <aside class="dataset-summary">
+        <button id="close-aside">X</button>
         <article class="aside-card" id="aside1">
             <h4 class="aside-header">Dataset</h4>
             <p class="aside-text aside-below-title">There are enough data for daily and monthly analysis but not for annual analysis.</p>
