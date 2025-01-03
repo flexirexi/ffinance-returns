@@ -98,6 +98,7 @@ themeToggle.addEventListener('click', () => {
 });
 
 
+
 // Initialize charts (dummy data for line chart and histogram)
 const initCharts = () => {
     const lineCtx = document.getElementById('lineChart').getContext('2d');
@@ -111,8 +112,8 @@ const initCharts = () => {
         113.13, 112.66, 113.41, 114.41, 112.63, 110.61, 111.65, 111.22, 
         112.27, 110.98, 111.28, 110.19, 108.49, 110.07, 113.15];
 
-    let data3 = [0, 0, 27040, 0, 0, -14674, 0, 0, -55000, 0, 0, 0, 0, 0, 92260, 
-        0, 0, 0, 99820, 0, 88900, 0, 0, 0];
+    let data3 = [, , 27040, , , -14674, , , -55000, , , , , , 92260, 
+        , , , 99820, , 88900, , , ];
 
 
     let big = bigNumber(data1);
@@ -131,7 +132,77 @@ const initCharts = () => {
 
     scale_min = Math.min(Math.min(...data1)/data1[0], Math.min(...data2)/data2[0]);
     scale_max = Math.max(Math.max(...data1)/data1[0], Math.max(...data2)/data2[0]);
-    console.log(data1_cur);
+    
+    const horizontalLinePlugin = {
+        id: 'horizontalLine',
+        beforeDraw: (chart, args, options) => {
+            const { ctx, chartArea } = chart;
+    
+            if (!chart._active || !chart._active.length) return;
+    
+            // Iteriere über alle Linien, die gezeichnet werden sollen
+            options.lines.forEach((line) => {
+                const activePoint = chart._active.find(
+                    (item) => item.datasetIndex === line.targetDatasetIndex
+                )?.element;
+    
+                if (!activePoint) return;
+    
+                const y = activePoint.y;
+    
+                let startX = chartArea.left;
+                let endX = chartArea.right;
+    
+                if (line.lineDirection === 'right') {
+                    startX = activePoint.x; // Linie startet am Punkt und geht nach rechts
+                } else if (line.lineDirection === 'left') {
+                    endX = activePoint.x; // Linie startet links und endet am Punkt
+                } else if (line.lineDirection === 'middle') {
+                    startX = activePoint.x - 50; // Beispiel: 50px links vom Punkt
+                    endX = activePoint.x + 50; // Beispiel: 50px rechts vom Punkt
+                }
+    
+                // Zeichnen der Linie
+                ctx.save();
+                ctx.beginPath();
+                ctx.setLineDash(line.lineDash || []); // Strichmuster (falls angegeben)
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
+                ctx.lineWidth = line.lineWidth || 1;
+                ctx.strokeStyle = line.color || 'rgba(0, 0, 0, 0.5)';
+                ctx.stroke();
+                ctx.restore();
+            });
+        },
+    };
+    Chart.register(horizontalLinePlugin);
+
+    const verticalLinePlugin = {
+        id: 'verticalLine',
+        beforeDraw: (chart, args, options) => {
+            const { ctx, chartArea } = chart;
+    
+            if (!chart._active || !chart._active.length) return;
+    
+            // Aktives Element abrufen
+            const activePoint = chart._active[0].element;
+    
+            if (!activePoint) return;
+    
+            const x = activePoint.x; // X-Koordinate des aktiven Punktes
+    
+            // Zeichnen der vertikalen Linie
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, activePoint.y); // Startpunkt (oben)
+            ctx.lineTo(x, chartArea.bottom); // Endpunkt (unten)
+            ctx.lineWidth = options.lineWidth || 1; // Breite der Linie
+            ctx.strokeStyle = options.color || 'rgba(0, 0, 0, 0.5)'; // Farbe der Linie
+            ctx.stroke();
+            ctx.restore();
+        },
+    };
+    Chart.register(verticalLinePlugin);
 
     lineChartPrice = new Chart(lineCtx, {
         type: 'line',
@@ -170,6 +241,7 @@ const initCharts = () => {
                     type: 'bar', // Balkendiagramm
                     label: 'Movements',
                     data: data3, // Beispielwerte
+                    fill: false,
                     backgroundColor: data3.map(value => value >= 0 ? 'rgba(0, 200, 0, 1)' : 'rgba(200, 0, 0, 1)'),
                     borderWidth: 0, // Kein Rand
                     barThickness: 1, // Dünne Balken
@@ -179,44 +251,82 @@ const initCharts = () => {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index', // Interaktion für alle Datensätze
+                intersect: false, // Keine direkten Schnitte erforderlich
+            },
             scales: {
                 x: {
-                    type: 'category', // Alternative zur Zeitachse (falls 'time' Probleme macht)
+                    type: 'category',
                     title: {
                         display: true,
-                        text: 'Date', // Beschriftung der X-Achse
+                        text: 'Date',
+                    },
+                    grid: {
+                        drawOnChartArea: false,
+                        drawTicks: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        color: 'rgba(148, 148, 148, 0.85)',
+                        align: 'center', // Sorgt dafür, dass die Ticks genau auf die Gridlinien ausgerichtet sind
+                        callback: function (value, index) {
+                            return index % 3 === 0 ? this.getLabelForValue(value) : '';
+                        },
+                        autoSkip: false, // Deaktiviert automatisches Überspringen
                     },
                 },
                 y: {
                     type: 'linear',
-                    position: 'left', // Linke Skala
+                    position: 'left',
                     title: {
                         display: true,
-                        text: 'Monetary Value ' + data1_cur, // Beschriftung der linken Skala
+                        text: 'Monetary Value (in Mio.)',
+                    },
+                    grid: {
+                        drawOnChartArea: true,
+                        color: 'rgba(0, 0, 0, 0.65)',
+                        lineWidth: 0.3,
+                        drawTicks: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        color: 'rgba(148, 148, 148, 0.85)',
                     },
                     min: data1[0] * scale_min * 0.98,
-                    max: data1[0] * scale_max * 1.02,
+                    max: data1[0] * scale_max * 1.09,
                 },
                 y1: {
                     type: 'linear',
-                    position: 'right', // Rechte Skala
+                    position: 'right',
                     title: {
                         display: true,
-                        text: 'Indexed Value (Base 100)', // Beschriftung der rechten Skala
+                        text: 'Indexed Value (Base 100)',
                     },
                     grid: {
-                        drawOnChartArea: false, // Keine Gitterlinien auf der rechten Seite
+                        drawOnChartArea: false,
+                        drawTicks: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        color: 'rgba(148, 148, 148, 0.85)',
                     },
                     min: data2[0] * scale_min * 0.98,
-                    max: data2[0] * scale_max * 1.02,
+                    max: data2[0] * scale_max * 1.09,
                 },
                 y2: {
                     type: 'linear',
-                    position: 'left',
+                    position: 'none',
                     min: -50000, // ±10% der Skala
                     max: 1000000,
                     grid: {
-                        display: false, // Keine Gitterlinien
+
+                        color: (ctx) => {
+                            return ctx.tick.value === 0 ? 'rgba(0, 0, 0, 0.27)' : 'rgba(255, 255, 255, 0)'; // 0-Linie hervorheben
+                        },
+                        lineWidth: (ctx) => {
+                            return ctx.tick.value === 0 ? 2 : 0.5; // 0-Linie dicker machen
+                        },
                     },
                     ticks: {
                         display: false, // Keine Skalierungen
@@ -229,12 +339,45 @@ const initCharts = () => {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top', // Legende oben platzieren
+                    position: 'bottom', // Legende oben platzieren
                 },
+                verticalLine: {
+                    color: 'rgba(0, 0, 0, 0.98)', // Farbe der Linie
+                    lineWidth: 0.8, // Breite der Linie
+                },
+                horizontalLine: { 
+                    lines: [ { 
+                        targetDatasetIndex: 0, // Erste Linie für Dataset 0 
+                        color: 'rgba(0, 154, 123, 0.91)', // Farbe der Linie 
+                        lineWidth: 0.7, // Breite der Linie 
+                        lineDirection: 'left', // Optionen: 'full', 'right', 'left', 'middle' 
+                    }, { 
+                        targetDatasetIndex: 1, // Zweite Linie für Dataset 1 
+                        color: 'rgba(177, 139, 0, 0.95)', // Farbe der Linie 
+                        lineWidth: 0.7, // Breite der Linie 
+                        lineDirection: 'right', // Optionen: 'full', 'right', 'left', 'middle' 
+                    },], 
+                }, 
                 tooltip: {
-                    mode: 'index', // Synchronisierte Tooltips
+                    yAlign: "bottom",
+                    caretPadding: 550, // Optional: Abstand zwischen Tooltip und Punkt
+                    mode: 'index', // Synchronisierter Tooltip
                     intersect: false,
+                    callbacks: {
+                        // Tooltip-Werte anpassen
+                        label: (context) => {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('en-US').format(context.parsed.y);
+                            }
+                            return label;
+                        },
+                    },
                 },
+                
             },
         },
     });
@@ -270,7 +413,7 @@ const updateChartColors = (chart) => {
     if (chartArea) {
         // Erstelle einen Farbverlauf von oben nach unten
         const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-        gradient.addColorStop(0, `${primaryColor}28`); // Farbe oben (volle Deckkraft)
+        gradient.addColorStop(0, `${primaryColor}29`); // Farbe oben (volle Deckkraft)
         gradient.addColorStop(1, `${primaryColor}00`); // Transparent unten (0% Deckkraft)
 
         // Wende den Farbverlauf als Hintergrundfarbe an
@@ -287,6 +430,8 @@ const updateChartColors = (chart) => {
     //chart.data.datasets[0].backgroundColor = bgColor;
     chart.update();
 };
+
+
 
 function bigNumber(data) {
     const average = data.reduce((sum, value) => sum + value, 0) / data.length;

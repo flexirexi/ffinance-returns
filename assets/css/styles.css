@@ -74,8 +74,9 @@ body::after {
 h1, h2, h3, h4, h5, h6 {
     color: var(--primary-title);
     padding: 0;
-    margin: 9px 0;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin: 9px 10px;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    
 }
 
 nav, footer {
@@ -259,7 +260,7 @@ aside li {
 }
 
 main {
-    padding: 20px;
+    padding: 10px;
     background: transparent;
     backdrop-filter: none;
     border-radius: 10px;
@@ -287,13 +288,16 @@ section.charts {
 
 .chart-container {
     width: 100%; /* Standardgröße bei großen Bildschirmen */
-    height: 60vh;
-    max-height: 200px;
-	padding: 10px;
+    height: 80vh;
+    max-height: 350px;
+	padding: 10px 0;
     background: transparent;
     backdrop-filter: none;
     border-radius: 10px;
+    
 }
+
+
 
 canvas {
     width: 100% !important; /* Stellt sicher, dass das Canvas skaliert wird */
@@ -414,6 +418,7 @@ footer {
 
     main {
         grid-area: main;
+        padding: 20px 30px 20px;
     }
 
     aside.dataset-summary {
@@ -428,8 +433,8 @@ footer {
 
     .chart-container {
         width: 100%; /* Stellt sicher, dass die Breite 100% beträgt */
-        height: 60vh; /* Feste Höhe für die Charts */
-        max-height: 450px;
+        height: 70vh; /* Feste Höhe für die Charts */
+        max-height: 750px;
         margin-bottom: 40px; /* Abstand zwischen den Charts */
         position: relative; /* Wichtig für Canvas-Positionierung */
     }
