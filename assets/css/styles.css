@@ -142,8 +142,8 @@ nav .logo img {
 .button {
     color: var(--link-text);
     margin: 0 5px;
-	padding: 7px;
-	border-radius: 99px;
+	padding: 9px 7px;
+	border-radius: 500px;
     font-size: 1rem;
     background: var(--act-bg);
     border: none;
