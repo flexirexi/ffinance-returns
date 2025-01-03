@@ -50,6 +50,11 @@ function applyTheme(theme) {
 		toggle.innerText = "dark mode";
 		// Navbar remains primary-bg in bright mode
         if (nav) nav.style.background = 'var(--primary-bg)';
+        if (window.innerWidth < 768) {
+            aside[0].style.background =  'linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg))';
+        } else {
+            aside[0].style.background =  'linear-gradient(90deg, var(--glass), var(--glass), var(--glass), var(--glass2))';
+        }
 		
     } else {
         root.style.setProperty('--primary-text', '#dae6e5');
@@ -68,6 +73,8 @@ function applyTheme(theme) {
         //if (nav) nav.style.backgroundColor = 'transparent';
 		if (window.innerWidth < 768) {
             aside[0].style.background =  getComputedStyle(root).getPropertyValue('--primary-bg').trim();
+        } else {
+            aside[0].style.background =  "transparent";
         }
     }
 }
@@ -501,6 +508,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.innerWidth > 768) { // Passe die Breite an deine Media Query an
             aside.classList.remove('active');
             document.body.style.overflow = "";
+            if(localStorage.getItem("theme")==="light mode") {
+                aside.style.background =  'linear-gradient(90deg, var(--glass), var(--glass), var(--glass), var(--glass2))';
+            } else {
+                aside.style.background = "transparent";
+            }
+        } else {
+            if(localStorage.getItem("theme")==="light mode") {
+                aside.style.background =  'linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg))';
+            } else {
+                aside.style.background = getComputedStyle(root).getPropertyValue('--primary-bg').trim();
+            }
         }
     });
 
