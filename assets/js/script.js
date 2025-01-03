@@ -466,7 +466,7 @@ window.addEventListener('scroll', () => {
             }		
         }
 
-    }, 200); 
+    }, 0); 
     navLinks.classList.remove('open'); // Schließt das Menü
 });
 
