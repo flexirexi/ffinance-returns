@@ -5,12 +5,13 @@ const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 const menuButton = document.getElementById('menu-button');
 const navLinks = document.querySelector('.nav-links');
+const nav_header = document.getElementById("nav-header");
 let lineChartPrice;
 let barChartReturns;
+let scrollTimeout;
 
 // Menü öffnen/schließen
 menuButton.addEventListener('click', () => {
-    
     // Wenn das Menü geschlossen wird, setze die ursprünglichen Farben zurück
     if (navLinks.classList.contains('open')) {
         navLinks.classList.remove('open'); // Schließt das Menü
@@ -35,7 +36,7 @@ function applyTheme(theme) {
     const nav = document.querySelector('nav');
 	const toggle = document.getElementById("theme-toggle");
 
-    if (theme === 'bright') {
+    if (theme === 'light mode') {
 		
         root.style.setProperty('--primary-text', 'var(--secondary-text)');
         root.style.setProperty('--primary-bg', 'var(--secondary-bg)');
@@ -73,20 +74,10 @@ function applyTheme(theme) {
     }
 }
 
-// Load saved theme from local storage
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-    root.setAttribute('data-theme', savedTheme);
-    applyTheme(savedTheme);
-} else {
-    root.setAttribute('data-theme', 'dark'); // Default theme
-    applyTheme('dark');
-}
-
 // Toggle theme on button click
 themeToggle.addEventListener('click', () => {
     const currentTheme = root.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'bright' : 'dark';
+    const newTheme = currentTheme === 'dark mode' ? 'light mode' : 'dark mode';
     root.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     applyTheme(newTheme); // Aktualisiere die CSS-Variablen
@@ -96,7 +87,6 @@ themeToggle.addEventListener('click', () => {
     updateChartColors(lineChartPrice);
     updateChartColors(barChartReturns);
 });
-
 
 
 // Initialize charts (dummy data for line chart and histogram)
@@ -138,7 +128,7 @@ const initCharts = () => {
         beforeDraw: (chart, args, options) => {
             const { ctx, chartArea } = chart;
     
-            if (!chart._active || !chart._active.length) return;
+            if (!chart._active || !chart._active.length || !options.lines) return;
     
             // Iteriere über alle Linien, die gezeichnet werden sollen
             options.lines.forEach((line) => {
@@ -394,6 +384,7 @@ const initCharts = () => {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: true },
             },
@@ -410,7 +401,7 @@ const updateChartColors = (chart) => {
     const ctx = chart.ctx;
     const chartArea = chart.chartArea;
 
-    if (chartArea) {
+    if (chartArea && chart.config.type === "line") {
         // Erstelle einen Farbverlauf von oben nach unten
         const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
         gradient.addColorStop(0, `${primaryColor}29`); // Farbe oben (volle Deckkraft)
@@ -431,8 +422,6 @@ const updateChartColors = (chart) => {
     chart.update();
 };
 
-
-
 function bigNumber(data) {
     const average = data.reduce((sum, value) => sum + value, 0) / data.length;
     count = Math.floor(Math.abs(average)).toString().length;
@@ -448,30 +437,62 @@ function bigNumber(data) {
     }
 }
 
-
-localStorage.setItem("theme", "dark");
-// Initialize charts after DOM content is loaded
-document.addEventListener('DOMContentLoaded', initCharts);
-
 // Scroll-Event Listener für die Navigationsleiste
 window.addEventListener('scroll', () => {
 	const theme = localStorage.getItem('theme');
+    
+    //erst am ende des scrollens ausführen:
+    clearTimeout(scrollTimeout); // Lösche vorherigen Timeout
+    scrollTimeout = setTimeout(() => {
+        const nav_header = document.getElementById("nav-header");
+        
+        if (window.scrollY > 10) {
+            nav_header.classList.remove("hidden");
+        } else {
+            nav_header.classList.add("hidden");
+        }
+        
+        if (theme === "dark mode") {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 10) {
+                //nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
+                nav.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+                nav.style.backgroundColor = 'rgba(30, 40, 50, 0.9)';
+                nav.style.backdropFilter = "blur(3px)";
+                
+            } else {
+                //nav.classList.remove('scrolled'); // Zurück zum Standardzustand
+                nav.style.boxShadow = "none";
+                nav.style.backgroundColor = 'transparent';
+                nav.style.backdropFilter = "none";
+            }		
+        }
 
+    }, 200); 
     navLinks.classList.remove('open'); // Schließt das Menü
-	if (theme === "dark") {
-		const nav = document.querySelector('nav');
-		if (window.scrollY > 10) {
-			//nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
-			nav.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-			nav.style.backgroundColor = 'rgba(30, 40, 50, 0.9)';
-			nav.style.backdropFilter = "blur(3px)";
-			
-		} else {
-			//nav.classList.remove('scrolled'); // Zurück zum Standardzustand
-			nav.style.boxShadow = "none";
-			nav.style.backgroundColor = 'transparent';
-			nav.style.backdropFilter = "none";
-		}		
-	}
+});
 
+document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme");
+    console.log("current mode:  " + savedTheme);
+    // Load saved theme from local storage
+    if (savedTheme) {
+        root.setAttribute('data-theme', savedTheme);
+        applyTheme(savedTheme);
+    } else {
+        root.setAttribute('data-theme', 'dark mode'); // Default theme
+        applyTheme('dark mode');
+    }
+
+    //localStorage.setItem("theme", "dark mode");
+    // Initialize charts after DOM content is loaded
+    initCharts();
+    
+    //beim Neuladen der Seite: nav-header grundsätzlich verbergen(in css), dann scroll-event auslösen
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }, 10);
 });
