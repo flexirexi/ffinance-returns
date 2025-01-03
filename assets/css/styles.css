@@ -478,7 +478,7 @@ footer {
         width: unset; /* Über den gesamten Bildschirm */
         height: fit-content; /* Voller Bildschirmhöhe */
         background-color: unset; /* Hintergrundfarbe */
-        z-index: 1000; /* Über allen anderen Elementen */
+        z-index: 1; /* Über allen anderen Elementen */
         transition: right 0.3s ease-in-out; /* Smooth Transition */
         box-shadow: unset; /* Optionaler Schatten */
         overflow-y: auto; /* Scrollbar bei Bedarf */
