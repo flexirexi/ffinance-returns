@@ -482,6 +482,17 @@ window.addEventListener('scroll', () => {
     navLinks.classList.remove('open'); // Schließt das Menü
 });
 
+function disableScroll() {
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll'); // Für den gesamten Dokumentbereich
+}
+
+// Funktion, um Scrollen zu aktivieren
+function enableScroll() {
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll'); // Für den gesamten Dokumentbereich
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme");
     const aside = document.querySelector('.dataset-summary');
@@ -489,6 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeAsideButton = document.getElementById('close-aside');
     const slideView = document.getElementById("slideView");
     const actionButton = document.querySelector('.action-button');
+    const actionLink = document.getElementById("action-link");
     let startX = 0;
     let currentX = 0;
     let isSwiping = false;
@@ -536,10 +548,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentX > 100) {
             aside.style.transform = ""; // Rücksetzen von transform
             aside.classList.remove("active");
+            document.body.style.overflow = "";
         } else {
             // Zurück zur Ausgangsposition
             aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
             aside.style.transform = "translateX(0)";
+            document.body.style.overflow = "hidden";
         }
     });
 
@@ -547,23 +561,33 @@ document.addEventListener("DOMContentLoaded", () => {
     // SlideView: Funktion zum Öffnen des Slide-Views
     function openSlideView() {
         slideView.style.bottom = "0"; // Schiebt das Slide-View in den sichtbaren Bereich
-        document.body.style.overflow = "hidden";
+        if (window.innerWidth < 768) {
+            actionButton.style.display = "none";
+        } else {
+            actionButton.style.top = "23px";
+            actionLink.className="fas fa-chevron-down"
+        }
     }
 
     // SlideView: Funktion zum Schließen des Slide-Views
     function closeSlideView() {
+        enableScroll();
+        actionButton.style.display = "flex";
+        actionButton.style.top = "unset";
         slideView.style.bottom = "-100%"; // Schiebt das Slide-View aus dem Bildschirm
-        document.body.style.overflow = "";
+        actionLink.classList = "fas fa-plus";
     }
 
     // SlideView: Event für Swipen nach unten
     slideView.addEventListener("touchstart", (e) => {
+        //document.body.style.overflow = "";
         startY = e.touches[0].clientY;
         isSwiping = true;
     });
 
     slideView.addEventListener("touchmove", (e) => {
         if (!isSwiping) return;
+        //document.body.style.overflow = "";
 
         currentY = e.touches[0].clientY - startY;
 
@@ -581,14 +605,20 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             // Zurück zur Originalposition
             slideView.style.bottom = "0";
-            document.body.style.overflow = "hidden";
+            //document.body.style.overflow = "hidden";
         }
     });
 
     // SlideView: Beispiel für das Öffnen des Slide-Views
     actionButton.addEventListener('click', () => {
-        openSlideView();
-        document.body.style.overflow = "hidden";
+        //Checke, ob die slideview gerade ausgeklappt ist
+        if (slideView.style.bottom === "0px") {
+            closeSlideView();
+            enableScroll();
+        } else {
+            disableScroll();
+            openSlideView();
+        }
     });
 
 
@@ -613,8 +643,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Schließen bei Klick außerhalb des Aside
     document.addEventListener('click', (event) => {
-        if (!aside.contains(event.target) && !showAsideButton.contains(event.target)) {
+        if (!aside.contains(event.target) && !showAsideButton.contains(event.target) && !slideView.contains(event.target)) {
             aside.classList.remove('active');
+            document.body.style.overflow = "";
         }
     });
     

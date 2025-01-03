@@ -136,6 +136,10 @@ nav .logo img {
     visibility: hidden; /* Deaktiviert nach Übergang */
 }
 
+.no-scroll {
+    overflow: hidden;
+    height: 100%; /* Verhindert, dass der Inhalt sichtbar wird */
+}
 
 .menu {
     margin-right: 15px;
@@ -395,8 +399,8 @@ footer {
     position: fixed;
     bottom: 23px; /* Abstand von der unteren Kante */
     right: 23px; /* Abstand von der rechten Kante */
-    width: 60px; /* Größe des Buttons */
-    height: 60px;
+    width: 50px; /* Größe des Buttons */
+    height: 50px;
     background-color: var(--act-bg-hover);
     color: var(--act-bg);
     border-radius: 50%; /* Rundes Design */
