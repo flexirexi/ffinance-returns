@@ -259,16 +259,19 @@ document.addEventListener("DOMContentLoaded", () => {
         isSwiping = false;
 
         // Wenn genug geswiped wurde, schließe das Aside
-        if (currentX > 100) {
-            aside.style.transform = ""; // Rücksetzen von transform
-            aside.classList.remove("active");
-            enableScroll();
-        } else {
-            // Zurück zur Ausgangsposition
-            aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
-            aside.style.transform = "translateX(0)";
-            //document.body.style.overflow = "hidden";
-            disableScroll();
+        if(window.innerWidth < 768) {
+            if (currentX > 100) {
+                aside.style.transform = ""; // Rücksetzen von transform
+                aside.classList.remove("active");
+                enableScroll();
+            } else {
+                // Zurück zur Ausgangsposition
+                aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
+                aside.style.transform = "translateX(0)";
+                //document.body.style.overflow = "hidden";
+                console.log("disable scroll on aside touchend....");
+                disableScroll();
+            }
         }
     });
 
