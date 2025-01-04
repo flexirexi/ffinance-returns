@@ -5,6 +5,10 @@
 	--primary-link-text: #48C9B0;
 	--primary-bg: #2E3B4E;
 	--primary-acc: #ffb325; /* not used yet */
+    --primary-glass1: #00000030;
+    --primary-glass2: #00000035;
+    --primary-glass3: #00000044;
+    --primary-glass4: #00000055;
 	
 	--nav-text: #FFFFFF;
 	
@@ -13,7 +17,12 @@
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #1e2836; 
 	--secondary-acc: #ff953e; /* not used yet */
-	
+	--secondary-glass1: #ffffff55;
+    --secondary-glass2: #ffffff49;
+    --secondary-glass3: #ffffff40;
+    --secondary-glass4: #ffffff33;
+
+    
 	--act-bg: #000000CC; /* not used yet */
 	--act-text: #FFFFFF; /* not used yet */
 	--act-border: #48C9B0; /* not used yet */
@@ -37,6 +46,8 @@
     --glass: #00000000;
     --glass2: #00000000;
     --glass-color: #1e5f593e;
+
+
 }
 
 body {
@@ -449,11 +460,18 @@ footer {
     padding: 20px;
     margin-top: -1px;
     box-sizing: border-box;
-    /* background: linear-gradient(to bottom, var(--primary-bg), #1e2836); /* Dunkler Verlauf nach unten */
-    background: linear-gradient(to bottom, #00000030 , #00000030 20%,  #00000035, #00000044 , #00000055 ); /* Dunkler Verlauf nach unten */
-    
     backdrop-filter: blur(10px); /* Frosted-Glass-Effekt */
     -webkit-backdrop-filter: blur(10px);
+}
+
+[data-theme="dark mode"] .slide-view-content {
+    background: linear-gradient(to bottom, var(--primary-glass1) , var(--primary-glass1) 20%, var(--primary-glass2), 
+        var(--primary-glass3) , var(--primary-glass4) ); /* Dunkler Verlauf nach unten */
+}
+
+[data-theme="light mode"] .slide-view-content {
+    background: linear-gradient(to bottom, var(--secondary-glass1) , var(--secondary-glass1) 20%, var(--secondary-glass2), 
+        var(--secondary-glass3) , var(--secondary-glass4) ); /* heller Verlauf nach unten */
 }
 
 #handle-container {
