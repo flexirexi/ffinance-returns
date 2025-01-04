@@ -502,12 +502,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const actionButton = document.querySelector('.action-button');
     const actionLink = document.getElementById("action-link");
     const handleContainer = document.getElementById('handle-container');
+    let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
     let startX = 0;
     let currentX = 0;
     let startY = 0;
     let currentY = 0;
+
 
     localStorage.setItem("onload", true);
 
@@ -566,7 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.innerWidth < 768) {
             actionButton.style.display = "none";
         } else {
-            actionButton.style.top = "35px";
+            actionButton.style.top = "50px";
             actionLink.className="fas fa-chevron-down"
         }
     }
@@ -581,33 +583,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // SlideView: Event für Swipen nach unten
-    slideView.addEventListener("touchstart", (e) => {
-        //document.body.style.overflow = "";
+    handleContainer.addEventListener("touchstart", (e) => {
         startY = e.touches[0].clientY;
         isSwiping = true;
+        const computedStyle = window.getComputedStyle(slideView);
+        initialBottom = parseInt(computedStyle.bottom, 10); // Aktuelle Position speichern
+        slideView.style.transition = "none"; // Deaktiviere die Transition während der Bewegung
     });
-
-    slideView.addEventListener("touchmove", (e) => {
+    
+    handleContainer.addEventListener("touchmove", (e) => {
         if (!isSwiping) return;
-        //document.body.style.overflow = "";
-
+    
         currentY = e.touches[0].clientY - startY;
-
-        if (currentY > 0) { // Erlaubt nur Bewegung nach unten
-            slideView.style.bottom = `-${currentY}px`;
-        }
+    
+        // Berechne die neue Position
+        const newBottom = Math.max(-window.innerHeight, initialBottom - currentY);
+        slideView.style.bottom = `${newBottom}px`;
     });
-
-    slideView.addEventListener("touchend", () => {
+    
+    handleContainer.addEventListener("touchend", () => {
         isSwiping = false;
-
+        slideView.style.transition = "bottom 0.3s ease-in-out"; // Transition wieder aktivieren
+    
+        // Entscheide basierend auf der Endposition
         if (currentY > 100) {
-            // Wenn ausreichend nach unten gewischt wurde
             closeSlideView();
         } else {
-            // Zurück zur Originalposition
-            slideView.style.bottom = "0";
-            //document.body.style.overflow = "hidden";
+            slideView.style.bottom = "0"; // Zurück zur Originalposition
         }
     });
 

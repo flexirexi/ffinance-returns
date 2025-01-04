@@ -454,8 +454,8 @@ footer {
 
 #handle-container {
     width: 100%;
-    height: 20px;
-    padding-top: 12px;
+    height: 25px;
+    padding-top: 18px;
     cursor: grab;
     background: linear-gradient(to bottom, #18181830 , #00000038 20%,  #00000048, #00000038 80%, #18181830 ); /* Dunkler Verlauf nach unten */
     backdrop-filter: blur(6px); /* Frosted-Glass-Effekt */
@@ -596,8 +596,8 @@ footer {
         position: fixed;
         bottom: 23px; /* Abstand von der unteren Kante */
         right: 23px; /* Abstand von der rechten Kante */
-        width: 130px; /* Größe des Buttons */
-        height: 50px;
+        width: 120px; /* Größe des Buttons */
+        height: 40px;
         background-color: var(--act-bg-hover);
         color: var(--act-bg);
         border-radius: 500px; /* Rundes Design */
