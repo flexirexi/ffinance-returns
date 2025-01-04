@@ -1,3 +1,5 @@
+import * as CManager from "./assets/js/chartmanager.js";
+
 // JavaScript for Theme Toggle and Interactivity
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
