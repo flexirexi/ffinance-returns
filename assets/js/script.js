@@ -1,4 +1,4 @@
-import * as CManager from "./assets/js/chartmanager.js";
+import * as CManager from "./chartmanager.js";
 
 // JavaScript for Theme Toggle and Interactivity
 const themeToggle = document.getElementById('theme-toggle');
@@ -10,26 +10,6 @@ let lineChartPrice;
 let barChartReturns;
 let scrollTimeout;
 
-// Menü öffnen/schließen
-menuButton.addEventListener('click', () => {
-    // Wenn das Menü geschlossen wird, setze die ursprünglichen Farben zurück
-    if (navLinks.classList.contains('open')) {
-        navLinks.classList.remove('open'); // Schließt das Menü
-
-    } else {
-        navLinks.classList.toggle('open'); // Schaltet die 'open'-Klasse ein/aus
-    }
-
-});
-
-// Menü ausblenden, wenn außerhalb geklickt wird
-document.addEventListener('click', (e) => {
-    // Überprüfe, ob der Klick NICHT auf das Menü oder den Button war
-    if (!navLinks.contains(e.target) && !menuButton.contains(e.target)) {
-        navLinks.classList.remove('open'); // Schließt das Menü
-
-    }
-});
 
 // Funktion zum Setzen der CSS-Variablen basierend auf dem aktuellen Theme
 function applyTheme(theme) {
@@ -81,25 +61,13 @@ function applyTheme(theme) {
     }
 }
 
-// Toggle theme on button click
-themeToggle.addEventListener('click', () => {
-    const currentTheme = root.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark mode' ? 'light mode' : 'dark mode';
-    root.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    applyTheme(newTheme); // Aktualisiere die CSS-Variablen
-    navLinks.classList.remove('open'); // Schließt das Menü
-
-    //Aktualisiere die Farben der Charts
-    updateChartColors(lineChartPrice);
-    updateChartColors(barChartReturns);
-});
-
-
-// Initialize charts (dummy data for line chart and histogram)
+//Initialize charts (dummy data for line chart and histogram)
+// Später wird daraus: load data into the app...
 const initCharts = () => {
     const lineCtx = document.getElementById('lineChart').getContext('2d');
     const histogramCtx = document.getElementById('histogram').getContext('2d');
+    let scale_max;
+    let scale_min;
 
     let data1 = [1535000, 1560000, 1627040, 1677040, 1700598, 1717119, 1709968, 1735062, 
         1687013, 1695656, 1688617, 1699799, 1714772, 1688167, 1750106, 1766539, 
@@ -130,76 +98,9 @@ const initCharts = () => {
     scale_min = Math.min(Math.min(...data1)/data1[0], Math.min(...data2)/data2[0]);
     scale_max = Math.max(Math.max(...data1)/data1[0], Math.max(...data2)/data2[0]);
     
-    const horizontalLinePlugin = {
-        id: 'horizontalLine',
-        beforeDraw: (chart, args, options) => {
-            const { ctx, chartArea } = chart;
-    
-            if (!chart._active || !chart._active.length || !options.lines) return;
-    
-            // Iteriere über alle Linien, die gezeichnet werden sollen
-            options.lines.forEach((line) => {
-                const activePoint = chart._active.find(
-                    (item) => item.datasetIndex === line.targetDatasetIndex
-                )?.element;
-    
-                if (!activePoint) return;
-    
-                const y = activePoint.y;
-    
-                let startX = chartArea.left;
-                let endX = chartArea.right;
-    
-                if (line.lineDirection === 'right') {
-                    startX = activePoint.x; // Linie startet am Punkt und geht nach rechts
-                } else if (line.lineDirection === 'left') {
-                    endX = activePoint.x; // Linie startet links und endet am Punkt
-                } else if (line.lineDirection === 'middle') {
-                    startX = activePoint.x - 50; // Beispiel: 50px links vom Punkt
-                    endX = activePoint.x + 50; // Beispiel: 50px rechts vom Punkt
-                }
-    
-                // Zeichnen der Linie
-                ctx.save();
-                ctx.beginPath();
-                ctx.setLineDash(line.lineDash || []); // Strichmuster (falls angegeben)
-                ctx.moveTo(startX, y);
-                ctx.lineTo(endX, y);
-                ctx.lineWidth = line.lineWidth || 1;
-                ctx.strokeStyle = line.color || 'rgba(0, 0, 0, 0.5)';
-                ctx.stroke();
-                ctx.restore();
-            });
-        },
-    };
-    Chart.register(horizontalLinePlugin);
 
-    const verticalLinePlugin = {
-        id: 'verticalLine',
-        beforeDraw: (chart, args, options) => {
-            const { ctx, chartArea } = chart;
-    
-            if (!chart._active || !chart._active.length) return;
-    
-            // Aktives Element abrufen
-            const activePoint = chart._active[0].element;
-    
-            if (!activePoint) return;
-    
-            const x = activePoint.x; // X-Koordinate des aktiven Punktes
-    
-            // Zeichnen der vertikalen Linie
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(x, activePoint.y); // Startpunkt (oben)
-            ctx.lineTo(x, chartArea.bottom); // Endpunkt (unten)
-            ctx.lineWidth = options.lineWidth || 1; // Breite der Linie
-            ctx.strokeStyle = options.color || 'rgba(0, 0, 0, 0.5)'; // Farbe der Linie
-            ctx.stroke();
-            ctx.restore();
-        },
-    };
-    Chart.register(verticalLinePlugin);
+    Chart.register(CManager.horizontalLinePlugin());
+    Chart.register(CManager.verticalLinePlugin());
 
     lineChartPrice = new Chart(lineCtx, {
         type: 'line',
@@ -402,7 +303,7 @@ const initCharts = () => {
     updateChartColors(barChartReturns);
 };
 
-const updateChartColors = (chart) => {
+function updateChartColors(chart) {
     const primaryColor = getComputedStyle(root).getPropertyValue('--primary-title').trim();
     const primaryColorAcc = getComputedStyle(root).getPropertyValue("--primary-acc").trim();
     const ctx = chart.ctx;
@@ -431,7 +332,7 @@ const updateChartColors = (chart) => {
 
 function bigNumber(data) {
     const average = data.reduce((sum, value) => sum + value, 0) / data.length;
-    count = Math.floor(Math.abs(average)).toString().length;
+    let count = Math.floor(Math.abs(average)).toString().length;
 
     if (count < 4) {
         return "0";
@@ -444,52 +345,11 @@ function bigNumber(data) {
     }
 }
 
-// Scroll-Event Listener für die Navigationsleiste
-window.addEventListener('scroll', () => {
-	const theme = localStorage.getItem('theme');
-    
-    //erst am ende des scrollens ausführen:
-    clearTimeout(scrollTimeout); // Lösche vorherigen Timeout
-    scrollTimeout = setTimeout(() => {
-        //console.log("should end onload now ..");
-        localStorage.removeItem("onload");
-    }, 200); 
-    const nav_header = document.getElementById("nav-header");
-    
-    if (localStorage.getItem("onload") == null) {
-        //console.log("scroll event should work now");
-        if (window.scrollY > 10) {
-            nav_header.classList.remove("hidden");
-        } else {
-            nav_header.classList.add("hidden");
-        }
-        
-        if (theme === "dark mode" ) {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 10) {
-                //nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
-                nav.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-                nav.style.backgroundColor = 'rgba(30, 40, 50, 0.9)';
-                nav.style.backdropFilter = "blur(3px)";
-                
-            } else {
-                //nav.classList.remove('scrolled'); // Zurück zum Standardzustand
-                nav.style.boxShadow = "none";
-                nav.style.backgroundColor = 'transparent';
-                nav.style.backdropFilter = "none";
-            }		
-        }
-
-    }
-    navLinks.classList.remove('open'); // Schließt das Menü
-});
-
 function disableScroll() {
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('no-scroll'); // Für den gesamten Dokumentbereich
 }
 
-// Funktion, um Scrollen zu aktivieren
 function enableScroll() {
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('no-scroll'); // Für den gesamten Dokumentbereich
@@ -511,9 +371,82 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentX = 0;
     let startY = 0;
     let currentY = 0;
-
-
     localStorage.setItem("onload", true);
+
+    // Menü öffnen/schließen
+    menuButton.addEventListener('click', () => {
+        // Wenn das Menü geschlossen wird, setze die ursprünglichen Farben zurück
+        if (navLinks.classList.contains('open')) {
+            navLinks.classList.remove('open'); // Schließt das Menü
+
+        } else {
+            navLinks.classList.toggle('open'); // Schaltet die 'open'-Klasse ein/aus
+        }
+
+    });
+
+    // Menü ausblenden, wenn außerhalb geklickt wird
+    document.addEventListener('click', (e) => {
+        // Überprüfe, ob der Klick NICHT auf das Menü oder den Button war
+        if (!navLinks.contains(e.target) && !menuButton.contains(e.target)) {
+            navLinks.classList.remove('open'); // Schließt das Menü
+
+        }
+    });
+
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark mode' ? 'light mode' : 'dark mode';
+        root.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        applyTheme(newTheme); // Aktualisiere die CSS-Variablen
+        navLinks.classList.remove('open'); // Schließt das Menü
+
+        //Aktualisiere die Farben der Charts
+        updateChartColors(lineChartPrice);
+        updateChartColors(barChartReturns);
+    });
+
+    // Scroll-Event Listener für die Navigationsleiste
+    window.addEventListener('scroll', () => {
+        const theme = localStorage.getItem('theme');
+        
+        //erst am ende des scrollens ausführen:
+        clearTimeout(scrollTimeout); // Lösche vorherigen Timeout
+        scrollTimeout = setTimeout(() => {
+            //console.log("should end onload now ..");
+            localStorage.removeItem("onload");
+        }, 200); 
+        const nav_header = document.getElementById("nav-header");
+        
+        if (localStorage.getItem("onload") == null) {
+            //console.log("scroll event should work now");
+            if (window.scrollY > 10) {
+                nav_header.classList.remove("hidden");
+            } else {
+                nav_header.classList.add("hidden");
+            }
+            
+            if (theme === "dark mode" ) {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 10) {
+                    //nav.classList.add('scrolled'); // Hintergrund und Blur hinzufügen
+                    nav.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+                    nav.style.backgroundColor = 'rgba(30, 40, 50, 0.9)';
+                    nav.style.backdropFilter = "blur(3px)";
+                    
+                } else {
+                    //nav.classList.remove('scrolled'); // Zurück zum Standardzustand
+                    nav.style.boxShadow = "none";
+                    nav.style.backgroundColor = 'transparent';
+                    nav.style.backdropFilter = "none";
+                }		
+            }
+
+        }
+        navLinks.classList.remove('open'); // Schließt das Menü
+    });
 
     // Aside: Öffnen
     showAsideButton.addEventListener('click', function(event) {
