@@ -414,4 +414,45 @@ document.addEventListener("DOMContentLoaded", () => {
             behavior: "smooth",
         });
     }, 10);
+
+    const tbody = document.querySelector("table tbody");
+
+    const generateRandomValue = (min, max) => {
+        return (Math.random() * (max - min) + min).toFixed(2);
+    };
+
+    for (let i = 1; i <= 100; i++) {
+        const row = document.createElement("tr");
+
+        // Date column
+        const dateCell = document.createElement("td");
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - i);
+        dateCell.textContent = currentDate.toISOString().split("T")[0];
+        dateCell.classList.add("bold");
+        row.appendChild(dateCell);
+
+        // Price column
+        const priceCell = document.createElement("td");
+        priceCell.textContent = generateRandomValue(50, 500);
+        row.appendChild(priceCell);
+
+        // Movements column
+        const movementCell = document.createElement("td");
+        movementCell.textContent = i % 5 === 0 ? generateRandomValue(-50, 50) : "-";
+        row.appendChild(movementCell);
+
+        // Dividends column
+        const dividendCell = document.createElement("td");
+        dividendCell.textContent = i % 10 === 0 ? generateRandomValue(0.1, 5) : "-";
+        row.appendChild(dividendCell);
+
+        // Indexed column
+        const indexCell = document.createElement("td");
+        indexCell.textContent = (100 + i).toFixed(2);
+        row.appendChild(indexCell);
+
+        tbody.appendChild(row);
+    }
+    
 });
