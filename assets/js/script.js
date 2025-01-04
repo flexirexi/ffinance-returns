@@ -117,11 +117,13 @@ const initCharts = () => {
 
 
 function disableScroll() {
+    console.log("disable scroll");
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('no-scroll'); // Für den gesamten Dokumentbereich
 }
 
 function enableScroll() {
+    console.log("enable scroll");
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('no-scroll'); // Für den gesamten Dokumentbereich
 }
@@ -224,13 +226,13 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         navLinks.classList.remove('open');
         aside.classList.add('active');
-        document.body.style.overflow = "hidden";
+        disableScroll();
     });
 
     // Aside: Schließen
     closeAsideButton.addEventListener('click', () => {
         aside.classList.remove('active');
-        document.body.style.overflow = "";
+        enableScroll();
     });
 
     // Aside: Touchstart-Event
@@ -260,12 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentX > 100) {
             aside.style.transform = ""; // Rücksetzen von transform
             aside.classList.remove("active");
-            //document.body.style.overflow = "";
+            enableScroll();
         } else {
             // Zurück zur Ausgangsposition
             aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
             aside.style.transform = "translateX(0)";
             //document.body.style.overflow = "hidden";
+            disableScroll();
         }
     });
 
@@ -279,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
             actionButton.style.top = "50px";
             actionLink.className="fas fa-chevron-down"
         }
+        disableScroll();
     }
 
     // SlideView: Funktion zum Schließen des Slide-Views
@@ -318,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
             closeSlideView();
         } else {
             slideView.style.bottom = "0"; // Zurück zur Originalposition
+            disableScroll();
         }
     });
 
@@ -325,11 +330,13 @@ document.addEventListener("DOMContentLoaded", () => {
     actionButton.addEventListener('click', () => {
         //Checke, ob die slideview gerade ausgeklappt ist
         if (slideView.style.bottom === "0px") {
+            console.log("close slideview......");
             closeSlideView();
             enableScroll();
         } else {
-            disableScroll();
+            console.log("OPEN slideview.....");
             openSlideView();
+            disableScroll();
         }
     });
 
@@ -359,6 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Schließen, wenn genug nach unten gezogen wurde
         if (currentY > window.innerHeight * 0.3) {
             slideView.style.bottom = "-100%"; // Komplett ausblenden
+            console.log("close slideview on mouseup....");
             closeSlideView();
         } else {
             slideView.style.bottom = "0"; // Zurück zur Originalposition
@@ -388,7 +396,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener('click', (event) => {
         if (!aside.contains(event.target) && !showAsideButton.contains(event.target) && !slideView.contains(event.target)) {
             aside.classList.remove('active');
-            document.body.style.overflow = "";
+            
         }
     });
     
@@ -414,6 +422,8 @@ document.addEventListener("DOMContentLoaded", () => {
             behavior: "smooth",
         });
     }, 10);
+
+
 
     const tbody = document.querySelector("table tbody");
 
@@ -454,5 +464,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tbody.appendChild(row);
     }
-    
+
 });
