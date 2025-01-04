@@ -137,6 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const actionButton = document.querySelector('.action-button');
     const actionLink = document.getElementById("action-link");
     const handleContainer = document.getElementById('handle-container');
+    const tableHeader = document.querySelector('.table-header');
+    const tableBody = document.querySelector('.table-body');
+    let isAnimatingHeader = false;
+    let isAnimatingBody = false;
+    let isSyncingHeader = false;
+    let isSyncingBody = false;
     let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
@@ -463,5 +469,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tbody.appendChild(row);
     }
+
+    // Synchronisiere das Scrollen von Header und Body
+    tableHeader.addEventListener('scroll', () => {
+        if (isSyncingHeader) return;
+        isSyncingBody = true;
+        tableBody.scrollLeft = tableHeader.scrollLeft;
+        isSyncingBody = false;
+    });
+
+    tableBody.addEventListener('scroll', () => {
+        if (isSyncingBody) return;
+        isSyncingHeader = true;
+        tableHeader.scrollLeft = tableBody.scrollLeft;
+        isSyncingHeader = false;
+    });
 
 });

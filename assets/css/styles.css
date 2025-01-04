@@ -5,10 +5,10 @@
 	--primary-link-text: #48C9B0;
 	--primary-bg: #2E3B4E;
 	--primary-acc: #ffb325; /* not used yet */
-    --primary-glass1: #00000030;
-    --primary-glass2: #00000035;
-    --primary-glass3: #00000044;
-    --primary-glass4: #00000055;
+    --primary-glass1: #17213072;
+    --primary-glass2: #17213089;
+    --primary-glass3: #172130a0;
+    --primary-glass4: #172130a8;
 	
 	--nav-text: #FFFFFF;
 	
@@ -17,10 +17,10 @@
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #1e2836; 
 	--secondary-acc: #ff953e; /* not used yet */
-	--secondary-glass1: #ffffff55;
-    --secondary-glass2: #ffffff49;
-    --secondary-glass3: #ffffff40;
-    --secondary-glass4: #ffffff33;
+	--secondary-glass1: #e1e1e1a9;
+    --secondary-glass2: #e1e1e1a0;
+    --secondary-glass3: #e1e1e192;
+    --secondary-glass4: #e1e1e185;
 
     
 	--act-bg: #000000CC; /* not used yet */
@@ -413,7 +413,7 @@ footer {
     width: 50px; /* Größe des Buttons */
     height: 50px;
     background-color: var(--act-bg-hover);
-    color: var(--act-bg);
+    color: black;
     border-radius: 50%; /* Rundes Design */
     display: flex;
     justify-content: center;
@@ -425,8 +425,8 @@ footer {
 }
 
 .action-button:hover {
-    transform: scale(1.1); /* Leichtes Vergrößern bei Hover */
-    background: #229A8F; /* Dunklere Farbe bei Hover */
+    color: var(--act-bg-hover); /* Dunklere Farbe bei Hover */
+    background-color: var(--act-bg);
 }
 
 .action-button i {
@@ -480,10 +480,10 @@ footer {
     padding-top: 20px;
     cursor: grab;
     backdrop-filter: blur(4px); /* Frosted-Glass-Effekt */
-    background: linear-gradient(to bottom, #6f7b781c, #445a562a, #1025221b, #1b48411f, #90ada73c);
+    background: linear-gradient(to bottom, #34393840, #445a5648, #37524e58, #1b48413e, #4454514b);
     -webkit-backdrop-filter: blur(4px);
     box-shadow: 
-        inset 0 2px 6px rgba(122, 122, 122, 0.738), /* Innerer Lichtreflex */
+        inset 0 2px 6px rgba(149, 149, 149, 0.738), /* Innerer Lichtreflex */
         0 6px 4px rgba(0, 0, 0, 0.779); /* Unten: Schmaler Schatten */
 }
 
@@ -497,6 +497,133 @@ footer {
                 1px 2px 4px rgba(0, 0, 0, 0.3); /* Tieferer externer Schatten */
     
 }
+
+.table-container {
+    width: 65vw;
+    max-width: fit-content;
+    overflow: hidden; /* Verhindert unerwünschtes Scrollen außerhalb des Containers */
+    background-color: transparent;
+    position: relative;
+    
+}
+
+.table-header {
+    overflow-x: auto; /* Ermöglicht horizontales Scrollen */
+    background-color: rgba(0, 0, 0, 0.211); /* Semitransparenter Hintergrund */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: block; /* Trennung von Body */
+    white-space: nowrap; /* Zeilenumbruch verhindern */
+
+}
+
+.table-header table {
+    width: max-content; /* Tabelle passt sich der minimalen Breite an */
+    table-layout: fixed; /* Spaltenbreiten sind fixiert */
+    border-spacing: 0; /* Entfernt die Lücke zwischen Zellen */
+    border-collapse: collapse; /* Stellt sicher, dass Ränder und Zellen zusammengeführt werden */
+    margin: 0;
+}
+
+.table-body {
+    overflow-x: auto; /* Ermöglicht horizontales und vertikales Scrollen */
+    overflow-y: scroll;
+    height: 400px; /* Begrenzte Höhe für den Body */
+    display: block; /* Trennung von Header */
+    white-space: nowrap; /* Zeilenumbruch verhindern */
+}
+
+.table-body table {
+    width: max-content; /* Tabelle passt sich der minimalen Breite an */
+    table-layout: fixed; /* Spaltenbreiten sind fixiert */
+    border-spacing: 0; /* Entfernt die Lücke zwischen Zellen */
+    border-collapse: collapse; /* Stellt sicher, dass Ränder und Zellen zusammengeführt werden */
+    margin: 0;
+}
+
+
+
+/* Alternative: Dünne Scrollbars (wenn nicht komplett verstecken möglich) */
+.table-header::-webkit-scrollbar, 
+.table-body::-webkit-scrollbar {
+    width: 7px; /* Breite der Scrollbar */
+    height: 7px; /* Höhe der horizontalen Scrollbar */
+}
+
+.table-header::-webkit-scrollbar-thumb, 
+.table-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.19) !important; /* Farbe des Scrollbalkens */
+    border-radius: 5px; /* Abgerundete Kanten */
+}
+
+.table-header::-webkit-scrollbar-track, 
+.table-body::-webkit-scrollbar-track {
+    background-color: transparent !important; /* Hintergrund des Scrollbereichs */
+}
+
+.table-header::-webkit-scrollbar-corner,
+.table-body::-webkit-scrollbar-corner {
+    background-color: transparent !important;
+}
+
+th, td {
+    width: 140px; /* Fixe Spaltenbreite */
+    min-width: 140px; /* Mindestens 150px breite Spalten */
+    max-width: 140px; /* Maximal 150px breite Spalten */
+    padding: 10px;
+    text-align: left;
+    word-wrap: break-word; /* Zeilenumbruch für längere Inhalte */
+}
+
+thead th {
+    background: linear-gradient(to bottom, rgba(30, 40, 50, 0.042), rgba(30, 40, 50, 0.021)); /* Semitransparent */
+    font-weight: bold;
+}
+
+tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.032); /* Dezentes Zebra-Muster */
+}
+
+/* Synchronisation von Header und Body */
+.table-header::-webkit-scrollbar {
+    display: none; /* Versteckt den Header-Scrollbar */
+}
+
+.table-header {
+    scrollbar-width: none; /* Kein Scrollbalken im Header */
+}
+
+.table-header table, .table-body table {
+    margin: 0;
+}
+
+tr {
+    cursor: pointer; /* Zeigt an, dass die Zeile interaktiv ist */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+tr:hover {
+    background-color: #48c9afc5 !important; /* Hervorheben beim Hover */
+    color: black;
+}
+
+tr.selected {
+    background-color:#48C9B0 !important; /* Markieren der ausgewählten Zeile */
+    color: black;
+}
+
+/* Mobile Anpassung */
+@media (max-width: 768px) {
+    .table-container {
+        width: 100%;
+    }
+
+    .table-header, .table-body {
+        overflow-x: scroll;
+    }
+}
+
+
 
 @media (min-width: 768px) {
     body {
@@ -645,106 +772,4 @@ footer {
 
 
 
-
-.table-container {
-    width: 100%;
-    overflow: hidden; /* Verhindert unerwünschtes Scrollen außerhalb des Containers */
-    background-color: transparent;
-    position: relative;
-    
-}
-
-.table-header {
-    overflow-x: auto; /* Ermöglicht horizontales Scrollen */
-    background-color: rgba(0, 0, 0, 0.081); /* Semitransparenter Hintergrund */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    display: block; /* Trennung von Body */
-    white-space: nowrap; /* Zeilenumbruch verhindern */
-
-}
-
-.table-header table {
-    width: max-content; /* Tabelle passt sich der minimalen Breite an */
-    table-layout: fixed; /* Spaltenbreiten sind fixiert */
-}
-
-.table-body {
-    overflow: auto; /* Ermöglicht horizontales und vertikales Scrollen */
-    height: 400px; /* Begrenzte Höhe für den Body */
-    display: block; /* Trennung von Header */
-    white-space: nowrap; /* Zeilenumbruch verhindern */
-}
-
-.table-body table {
-    width: max-content; /* Tabelle passt sich der minimalen Breite an */
-    table-layout: fixed; /* Spaltenbreiten sind fixiert */
-}
-
-
-
-/* Alternative: Dünne Scrollbars (wenn nicht komplett verstecken möglich) */
-.table-header::-webkit-scrollbar, 
-.table-body::-webkit-scrollbar {
-    width: 7px; /* Breite der Scrollbar */
-    height: 7px; /* Höhe der horizontalen Scrollbar */
-}
-
-.table-header::-webkit-scrollbar-thumb, 
-.table-body::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.19) !important; /* Farbe des Scrollbalkens */
-    border-radius: 5px; /* Abgerundete Kanten */
-}
-
-.table-header::-webkit-scrollbar-track, 
-.table-body::-webkit-scrollbar-track {
-    background-color: transparent !important; /* Hintergrund des Scrollbereichs */
-}
-
-.table-header::-webkit-scrollbar-corner,
-.table-body::-webkit-scrollbar-corner {
-    background-color: transparent !important;
-}
-
-th, td {
-    width: 140px; /* Fixe Spaltenbreite */
-    min-width: 140px; /* Mindestens 150px breite Spalten */
-    max-width: 140px; /* Maximal 150px breite Spalten */
-    padding: 10px;
-    text-align: left;
-    word-wrap: break-word; /* Zeilenumbruch für längere Inhalte */
-}
-
-thead th {
-    background: linear-gradient(to bottom, rgba(30, 40, 50, 0.042), rgba(30, 40, 50, 0.021)); /* Semitransparent */
-    font-weight: bold;
-}
-
-tbody tr:nth-child(odd) {
-    background: rgba(255, 255, 255, 0.02); /* Dezentes Zebra-Muster */
-}
-
-/* Synchronisation von Header und Body */
-.table-header::-webkit-scrollbar {
-    display: none; /* Versteckt den Header-Scrollbar */
-}
-
-.table-header {
-    scrollbar-width: none; /* Kein Scrollbalken im Header */
-}
-
-.table-header table, .table-body table {
-    margin: 0;
-}
-
-/* Mobile Anpassung */
-@media (max-width: 768px) {
-    .table-container {
-        width: 100%;
-    }
-
-    .table-header, .table-body {
-        overflow-x: scroll;
-    }
-}
 
