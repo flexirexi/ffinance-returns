@@ -32,7 +32,7 @@ function applyTheme(theme) {
 		nav.classList.remove('scrolled'); // Zurück zum Standardzustand
 		toggle.innerText = "dark mode";
 		// Navbar remains primary-bg in bright mode
-        if (nav) nav.style.background = 'var(--primary-bg)';
+        if (nav) nav.style.background = '#2E3B4E';
         if (window.innerWidth < 768) {
             aside[0].style.background =  'linear-gradient(90deg, var(--dis-bg), var(--dis-bg), var(--dis-bg), var(--dis-bg))';
         } else {
@@ -470,19 +470,6 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.appendChild(row);
     }
 
-    // Synchronisiere das Scrollen von Header und Body
-    tableHeader.addEventListener('scroll', () => {
-        if (isSyncingHeader) return;
-        isSyncingBody = true;
-        tableBody.scrollLeft = tableHeader.scrollLeft;
-        isSyncingBody = false;
-    });
 
-    tableBody.addEventListener('scroll', () => {
-        if (isSyncingBody) return;
-        isSyncingHeader = true;
-        tableHeader.scrollLeft = tableBody.scrollLeft;
-        isSyncingHeader = false;
-    });
 
 });

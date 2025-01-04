@@ -15,12 +15,12 @@
 	--secondary-text: #2b2b2b;
 	--secondary-title: #315857; /* not used yet */
 	--secondary-link: #48C9B0; /* not used yet */
-    --secondary-bg: #1e2836; 
+    --secondary-bg: #adadad; 
 	--secondary-acc: #ff953e; /* not used yet */
-	--secondary-glass1: #e1e1e1a9;
-    --secondary-glass2: #e1e1e1a0;
-    --secondary-glass3: #e1e1e192;
-    --secondary-glass4: #e1e1e185;
+	--secondary-glass1: #f0f0f0e1;
+    --secondary-glass2: #ddddddbd;
+    --secondary-glass3: #c8c8c8b6;
+    --secondary-glass4: #a7a7a7a1;
 
     
 	--act-bg: #000000CC; /* not used yet */
@@ -91,7 +91,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-title);
     padding: 0;
     margin: 9px 10px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.455);
     
 }
 
@@ -199,14 +199,16 @@ nav .logo img {
     top: 60px; /* Unterhalb der Navigationsleiste */
     right: 10px; /* Rechtsbündig */
     width: calc(100% - 20px); /* Feste Breite innerhalb des Bildschirms */
-    max-width: 300px; /* Maximale Breite */
-    background: var(--primary-bg);
+    max-width: 250px; /* Maximale Breite */
+    background: #2E3B4Ee9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     overflow: hidden;
     max-height: 0; /* Standard: Menü geschlossen */
     opacity: 0; /* Unsichtbar */
     transition: max-height 0.5s ease, opacity 0.5s ease; /* Sanfte Animation */
+    backdrop-filter: blur(10px); /* Frosted-Glass-Effekt */
+    -webkit-backdrop-filter: blur(10px);
 }
 
 /* Zeige das Menü an, wenn die Klasse 'open' hinzugefügt wird */
@@ -219,7 +221,7 @@ nav .logo img {
 /* Links innerhalb des Dropdowns */
 .nav-links li {
     position: relative; /* Ermöglicht, dass das <a> die Fläche ausfüllt */
-    padding: 0; /* Entfernt Standard-Padding */
+    padding: 3px; /* Entfernt Standard-Padding */
     transition: all 0.5s ease;
 }
 
@@ -285,6 +287,8 @@ aside.dataset-summary {
 
 #close-aside {
     display: block;
+    padding: 3px 7px;
+    margin-bottom: 15px;
 }
 
 .aside-header {
@@ -389,9 +393,16 @@ section.content {
     border-radius: 8px;
     padding: 15px;
     transition: transform 0.3s ease;
-    background: var(--secondary-bg);
-	opacity: 0.7;
+	
     backdrop-filter: blur(10px);
+}
+
+[data-theme="dark mode"] .investment-item {
+    background-color: var(--primary-glass4);
+}
+
+[data-theme="light mode"] .investment-item {
+    background-color: var(--secondary-bg);
 }
 
 .investment-item:hover {
@@ -498,127 +509,104 @@ footer {
     
 }
 
-.table-container {
-    width: 65vw;
-    max-width: fit-content;
-    overflow: hidden; /* Verhindert unerwünschtes Scrollen außerhalb des Containers */
-    background-color: transparent;
-    position: relative;
-    
-}
 
-.table-header {
-    overflow-x: auto; /* Ermöglicht horizontales Scrollen */
-    background-color: rgba(0, 0, 0, 0.211); /* Semitransparenter Hintergrund */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    display: block; /* Trennung von Body */
-    white-space: nowrap; /* Zeilenumbruch verhindern */
+.editor-container {
+    width: 75vw;
+    max-width: 700px;
+    height: 60vh;
+    max-height: 550px;
+    overflow: auto;
 
 }
 
-.table-header table {
-    width: max-content; /* Tabelle passt sich der minimalen Breite an */
-    table-layout: fixed; /* Spaltenbreiten sind fixiert */
-    border-spacing: 0; /* Entfernt die Lücke zwischen Zellen */
-    border-collapse: collapse; /* Stellt sicher, dass Ränder und Zellen zusammengeführt werden */
-    margin: 0;
+.editor-container table {
+    border: none;
+    border-collapse: collapse;
 }
 
-.table-body {
-    overflow-x: auto; /* Ermöglicht horizontales und vertikales Scrollen */
-    overflow-y: scroll;
-    height: 400px; /* Begrenzte Höhe für den Body */
-    display: block; /* Trennung von Header */
-    white-space: nowrap; /* Zeilenumbruch verhindern */
+.editor-container tr {
+    cursor: pointer;
 }
-
-.table-body table {
-    width: max-content; /* Tabelle passt sich der minimalen Breite an */
-    table-layout: fixed; /* Spaltenbreiten sind fixiert */
-    border-spacing: 0; /* Entfernt die Lücke zwischen Zellen */
-    border-collapse: collapse; /* Stellt sicher, dass Ränder und Zellen zusammengeführt werden */
-    margin: 0;
-}
-
-
 
 /* Alternative: Dünne Scrollbars (wenn nicht komplett verstecken möglich) */
-.table-header::-webkit-scrollbar, 
-.table-body::-webkit-scrollbar {
+.editor-container::-webkit-scrollbar {
     width: 7px; /* Breite der Scrollbar */
     height: 7px; /* Höhe der horizontalen Scrollbar */
 }
 
-.table-header::-webkit-scrollbar-thumb, 
-.table-body::-webkit-scrollbar-thumb {
+.editor-container::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.19) !important; /* Farbe des Scrollbalkens */
     border-radius: 5px; /* Abgerundete Kanten */
 }
 
-.table-header::-webkit-scrollbar-track, 
-.table-body::-webkit-scrollbar-track {
+.editor-container::-webkit-scrollbar-track {
     background-color: transparent !important; /* Hintergrund des Scrollbereichs */
 }
 
-.table-header::-webkit-scrollbar-corner,
-.table-body::-webkit-scrollbar-corner {
+.editor-container::-webkit-scrollbar-corner {
     background-color: transparent !important;
 }
 
-th, td {
+.editor-header {
+    position: sticky; /* Fixiert die Header-Zellen */
+    top: 0; /* Fixiert sie oben */
+}
+
+.editor-header tr {
+    font-weight: bold;
+    background-color: var(--primary-bg);
+    box-shadow: 
+        inset 0 3px 9px rgba(111, 166, 201, 0.14), /* Lichtreflexe oben */
+        1px 3px 10px rgba(45, 45, 45, 0.555); /* Tieferer externer Schatten */
+}
+
+[data-theme="dark mode"] .editor-header tr {
+    background-color: #18202d; /* Dunkler Verlauf nach unten */
+}
+
+[data-theme="light mode"] .editor-header tr {
+    background-color: var(--secondary-bg);
+    color: var(--secondary-title);
+}
+
+.editor-header th, td {
     width: 140px; /* Fixe Spaltenbreite */
     min-width: 140px; /* Mindestens 150px breite Spalten */
     max-width: 140px; /* Maximal 150px breite Spalten */
-    padding: 10px;
+    padding: 13px;
     text-align: left;
     word-wrap: break-word; /* Zeilenumbruch für längere Inhalte */
 }
 
-thead th {
-    background: linear-gradient(to bottom, rgba(30, 40, 50, 0.042), rgba(30, 40, 50, 0.021)); /* Semitransparent */
-    font-weight: bold;
-}
-
-tbody tr:nth-child(odd) {
-    background: rgba(255, 255, 255, 0.032); /* Dezentes Zebra-Muster */
-}
-
-/* Synchronisation von Header und Body */
-.table-header::-webkit-scrollbar {
-    display: none; /* Versteckt den Header-Scrollbar */
-}
-
-.table-header {
-    scrollbar-width: none; /* Kein Scrollbalken im Header */
-}
-
-.table-header table, .table-body table {
-    margin: 0;
-}
-
-tr {
+.editor-body tr {
     cursor: pointer; /* Zeigt an, dass die Zeile interaktiv ist */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-tr:hover {
+.editor-body tr:hover {
     background-color: #48c9afc5 !important; /* Hervorheben beim Hover */
     color: black;
 }
 
-tr.selected {
+.editor-body tr.selected {
     background-color:#48C9B0 !important; /* Markieren der ausgewählten Zeile */
     color: black;
 }
 
+.editor-body tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.025); /* Dezentes Zebra-Muster */
+}
+
+
+
+
 /* Mobile Anpassung */
 @media (max-width: 768px) {
-    .table-container {
+    .editor-container {
         width: 100%;
     }
 
-    .table-header, .table-body {
+    .editor-header, .editor-body {
         overflow-x: scroll;
     }
 }
