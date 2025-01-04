@@ -501,9 +501,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const slideView = document.getElementById("slideView");
     const actionButton = document.querySelector('.action-button');
     const actionLink = document.getElementById("action-link");
+    const handleContainer = document.getElementById('handle-container');
+    let isSwiping = false;
+    let isDragging = false;
     let startX = 0;
     let currentX = 0;
-    let isSwiping = false;
     let startY = 0;
     let currentY = 0;
 
@@ -564,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.innerWidth < 768) {
             actionButton.style.display = "none";
         } else {
-            actionButton.style.top = "23px";
+            actionButton.style.top = "35px";
             actionLink.className="fas fa-chevron-down"
         }
     }
@@ -621,6 +623,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+
+    //SlideView Drag mit der Maus:
+    handleContainer.addEventListener('mousedown', (e) => {
+        startY = e.clientY; // Initiale Y-Position
+        isDragging = true;
+        document.body.style.userSelect = "none"; // Deaktiviert Textauswahl
+        slideView.style.transition = "none"; // Transition während des Ziehens deaktivieren
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        currentY = e.clientY - startY; // Differenz berechnen
+
+        if (currentY > 0) { // Erlaubt nur Bewegung nach unten
+            slideView.style.bottom = `-${currentY}px`;
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        document.body.style.userSelect = ""; // Textauswahl wieder aktivieren
+        slideView.style.transition = "bottom 0.3s ease-in-out"; // Transition wieder aktivieren
+
+        // Schließen, wenn genug nach unten gezogen wurde
+        if (currentY > window.innerHeight * 0.3) {
+            slideView.style.bottom = "-100%"; // Komplett ausblenden
+            closeSlideView();
+        } else {
+            slideView.style.bottom = "0"; // Zurück zur Originalposition
+        }
+    });
 
     // Überwache Fenstergröße und entferne "active", wenn Desktop-Modus aktiv wird
     window.addEventListener('resize', () => {
