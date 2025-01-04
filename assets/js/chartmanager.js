@@ -1,10 +1,9 @@
 export function createLineChart(lineCtx, xValues, data1, label1, data2, label2, data3, label3) {
     let scale_min = Math.min(Math.min(...data1)/data1[0], Math.min(...data2)/data2[0]);
     let scale_max = Math.max(Math.max(...data1)/data1[0], Math.max(...data2)/data2[0]);
-    let data1_cur = "";
     
-    data1, label1 = bigNumbers(data1, label1);
-    data2, label2 = bigNumbers(data2, label2);
+    [data1, label1] = bigNumbers(data1, label1);
+    [data2, label2] = bigNumbers(data2, label2);
     
 
     return new Chart(lineCtx, {
@@ -288,18 +287,18 @@ export function bigNumbers(data, label) {
     let count = Math.floor(Math.abs(average)).toString().length;
 
     if (count < 4) {
-        return data, label;
+        return [data, label];
     } else if (count < 7) {
         data = data.map(value => value /1000);
         label += " [in thousands]";
-        return data, label;
+        return [data, label];
     } else if (count < 10) {
         data = data.map(value => value /1000000);
         label += " [in Mio.]";
-        return data, label;
+        return [data, label];
     } else {
         data = data.map(value => value /1000000000);
         label += " [in Bn.]";
-        return data, label;
+        return [data, label];
     }
 }

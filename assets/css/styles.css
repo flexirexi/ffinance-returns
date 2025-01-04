@@ -8,8 +8,8 @@
 	
 	--nav-text: #FFFFFF;
 	
-	--secondary-text: #333333;
-	--secondary-title: #2A4C4B; /* not used yet */
+	--secondary-text: #2b2b2b;
+	--secondary-title: #315857; /* not used yet */
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #1e2836; 
 	--secondary-acc: #ff953e; /* not used yet */
@@ -449,21 +449,24 @@ footer {
     padding: 20px;
     margin-top: -1px;
     box-sizing: border-box;
-    background: linear-gradient(to bottom, var(--primary-bg), #1e2836); /* Dunkler Verlauf nach unten */
+    /* background: linear-gradient(to bottom, var(--primary-bg), #1e2836); /* Dunkler Verlauf nach unten */
+    background: linear-gradient(to bottom, #00000030 , #00000030 20%,  #00000035, #00000044 , #00000055 ); /* Dunkler Verlauf nach unten */
+    
+    backdrop-filter: blur(10px); /* Frosted-Glass-Effekt */
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #handle-container {
     width: 100%;
-    height: 25px;
-    padding-top: 18px;
+    height: 28px;
+    padding-top: 20px;
     cursor: grab;
-    background: linear-gradient(to bottom, #18181830 , #00000038 20%,  #00000048, #00000038 80%, #18181830 ); /* Dunkler Verlauf nach unten */
-    backdrop-filter: blur(6px); /* Frosted-Glass-Effekt */
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(5px); /* Frosted-Glass-Effekt */
+    background: linear-gradient(to bottom, #6f7b7810, #5f7c7810, #5f7c7810, #4b7a7314, #63b0a23a);
+    -webkit-backdrop-filter: blur(5px);
     box-shadow: 
-        inset 0 2px 6px rgba(49, 49, 49, 0.705), /* Innerer Lichtreflex */
-        0 -2px 4px rgba(0, 0, 0, 0.567), /* Oben: Schmaler Schatten */
-        0 2px 6px rgba(0, 0, 0, 0.242); /* Unten: Schmaler Schatten */
+        inset 0 2px 6px rgba(122, 122, 122, 0.738), /* Innerer Lichtreflex */
+        0 6px 4px rgba(0, 0, 0, 0.595); /* Unten: Schmaler Schatten */
 }
 
 #handle {
