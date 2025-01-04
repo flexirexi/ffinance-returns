@@ -539,7 +539,9 @@ document.addEventListener("DOMContentLoaded", () => {
     aside.addEventListener("touchmove", (e) => {
         if (!isSwiping) return;
 
-        currentX = e.touches[0].clientX - startX;
+        if (window.innerWidth < 768) {
+            currentX = e.touches[0].clientX - startX;
+        }
         if (currentX < 0) currentX = 0; // Verhindert Bewegung nach links
         aside.style.transform = `translateX(${currentX}px)`;
     });
@@ -552,12 +554,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentX > 100) {
             aside.style.transform = ""; // Rücksetzen von transform
             aside.classList.remove("active");
-            document.body.style.overflow = "";
+            //document.body.style.overflow = "";
         } else {
             // Zurück zur Ausgangsposition
             aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
             aside.style.transform = "translateX(0)";
-            document.body.style.overflow = "hidden";
+            //document.body.style.overflow = "hidden";
         }
     });
 
@@ -624,7 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
             openSlideView();
         }
     });
-
 
     //SlideView Drag mit der Maus:
     handleContainer.addEventListener('mousedown', (e) => {
