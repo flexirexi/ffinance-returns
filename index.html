@@ -116,13 +116,22 @@
             <p>Here is some content inside the slide <view class="br"><br><h1>Bitch please</h1></view></p>
 
             <div class="table-container">
+                <!-- Separate Table Header -->
                 <div class="table-header">
-                    <div class="header-cell">Date</div>
-                    <div class="header-cell">Price</div>
-                    <div class="header-cell">Movements</div>
-                    <div class="header-cell">Dividends</div>
-                    <div class="header-cell">Index</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Price</th>
+                                <th>Movements</th>
+                                <th>Dividends</th>
+                                <th>Index</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
+            
+                <!-- Scrollable Table Body -->
                 <div class="table-body">
                     <table>
                         <tbody>
@@ -133,7 +142,14 @@
                                 <td>-</td>
                                 <td>100.00</td>
                             </tr>
-                            <!-- Mehr Zeilen -->
+                            <tr>
+                                <td>2023-01-02</td>
+                                <td>1520</td>
+                                <td>+20</td>
+                                <td>-</td>
+                                <td>101.00</td>
+                            </tr>
+                            <!-- Weitere Zeilen -->
                         </tbody>
                     </table>
                 </div>

@@ -268,8 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Zurück zur Ausgangsposition
                 aside.style.transition = "transform 0.3s ease-in-out"; // Transition wieder aktivieren
                 aside.style.transform = "translateX(0)";
-                //document.body.style.overflow = "hidden";
-                console.log("disable scroll on aside touchend....");
                 disableScroll();
             }
         }
@@ -369,7 +367,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Schließen, wenn genug nach unten gezogen wurde
         if (currentY > window.innerHeight * 0.3) {
             slideView.style.bottom = "-100%"; // Komplett ausblenden
-            console.log("close slideview on mouseup....");
             closeSlideView();
         } else {
             slideView.style.bottom = "0"; // Zurück zur Originalposition
@@ -399,7 +396,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener('click', (event) => {
         if (!aside.contains(event.target) && !showAsideButton.contains(event.target) && !slideView.contains(event.target)) {
             aside.classList.remove('active');
-            
         }
     });
     
