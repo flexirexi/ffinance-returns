@@ -73,36 +73,45 @@ export class RawDataSet {
         return [headerLine, ...rowsLines].join("\n");
     }
 
-    // Dummy-Dataset generieren
+    /**
+     * Generiert ein Dummy-Dataset für Testzwecke.
+     * @returns {RawDataSet} Instanz mit Dummy-Daten
+     */
     static generateDummyDataset() {
-        const raw = [
-            ["2023-01-31", 1535000, 100, null],
-            ["2023-02-28", 1560000, 101.63, null],
-            ["2023-03-31", 1627040, 104.23, 27040],
-            ["2023-04-30", 1677040, 107.44, null],
-            ["2023-05-31", 1700598, 108.95, null],
-            ["2023-06-30", 1717119, 110.95, -14674],
-            ["2023-07-31", 1709968, 110.48, null],
-            ["2023-08-31", 1735062, 112.1, null],
-            ["2023-09-30", 1687013, 112.55, -55000],
-            ["2023-10-31", 1695656, 113.13, null],
-            ["2023-11-30", 1688617, 112.66, null],
-            ["2023-12-31", 1699799, 113.41, null],
-            ["2024-01-31", 1714772, 114.41, null],
-            ["2024-02-29", 1688167, 112.63, null],
-            ["2024-03-31", 1750106, 110.61, null],
-            ["2024-04-30", 1766539, 111.65, 92260],
-            ["2024-05-31", 1759744, 111.22, null],
-            ["2024-06-30", 1776384, 112.27, null],
-            ["2024-07-31", 1855738, 110.98, null],
-            ["2024-08-31", 1860775, 111.28, 99820],
-            ["2024-09-30", 1931543, 110.19, null],
-            ["2024-10-31", 1901629, 108.49, 88900],
-            ["2024-11-30", 1929410, 110.07, null],
-            ["2024-12-31", 1983306, 113.15, null],
-        ];
+        let xValues = ['2023-01-31', '2023-02-28', '2023-03-31', '2023-04-30', '2023-05-31', '2023-06-30',  
+            '2023-07-31', '2023-08-31', '2023-09-30', '2023-10-31', '2023-11-30', '2023-12-31',  
+            '2024-01-31', '2024-02-29', '2024-03-31', '2024-04-30', '2024-05-31', '2024-06-30',  
+            '2024-07-31', '2024-08-31', '2024-09-30', '2024-10-31', '2024-11-30', '2024-12-31'];
 
-        return new RawDataSet(raw); // Nur das raw-Attribut wird initialisiert
+        let label1 = "Monetary Value (Net Assets)";
+        let data1 = [1535000, 1560000, 1627040, 1677040, 1700598, 1717119, 1709968, 1735062, 
+            1687013, 1695656, 1688617, 1699799, 1714772, 1688167, 1750106, 1766539, 
+            1759744, 1776384, 1855738, 1860775, 1931543, 1901629, 1929410, 1983306];
+
+        let label2 = "Indexed Value (Base 100)";
+        let data2 = [100, 101.63, 104.23, 107.44, 108.95, 110.95, 110.48, 112.1, 112.55, 
+            113.13, 112.66, 113.41, 114.41, 112.63, 110.61, 111.65, 111.22, 
+            112.27, 110.98, 111.28, 110.19, 108.49, 110.07, 113.15];
+
+        let label3 = "Movements";
+        let data3 = [null, null, 27040, null, null, -14674, null, null, -55000, null, null, null, null, null, 92260, 
+            null, null, null, 99820, null, 88900, null, null, null];
+
+        // Erstelle den CSV-Header
+        const header = `dateColumn,${label1},${label2},${label3}`;
+
+        // Erstelle die Zeilen basierend auf den Daten
+        const rows = xValues.map((date, index) => {
+            const value1 = data1[index] || "";
+            const value2 = data2[index] || "";
+            const value3 = data3[index] || "";
+            return `${date},${value1},${value2},${value3}`;
+        });
+
+        // Kombiniere Header und Zeilen in einen CSV-String
+        const raw = [header, ...rows].join("\n");
+
+        return new RawDataSet(raw); // raw wird als String initialisiert
     }
 
 }

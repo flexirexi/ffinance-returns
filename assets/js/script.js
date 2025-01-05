@@ -488,8 +488,8 @@ document.addEventListener("DOMContentLoaded", () => {
             reader.onload = (e) => {
                 const content = e.target.result;
                 try {
-                    const raw = content.split("\n").map(line => line.split(","));
-                    rawDataSet = new DM.RawDataSet(raw);
+                    //const raw = content.split("\n").map(line => line.split(","));
+                    rawDataSet = new DM.RawDataSet(content);
                     console.log("Hochgeladene Rohdaten:", rawDataSet.raw);
     
                     // Setze die Header aus der ersten Zeile und verarbeite die Daten
