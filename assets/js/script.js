@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const uploadBox = document.getElementById("uploadBox");
     const fileInput = document.getElementById("fileInput");
     const useDummy = document.getElementById("useDummy");
+    const editorCont = document.querySelector(".editor-container");
     let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
@@ -149,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentY = 0;
     localStorage.setItem("onload", true);
 
+    editorCont.classList.add("hidden");
     // Menü öffnen/schließen
     menuButton.addEventListener('click', () => {
         // Wenn das Menü geschlossen wird, setze die ursprünglichen Farben zurück
