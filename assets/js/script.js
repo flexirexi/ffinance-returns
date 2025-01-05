@@ -1,5 +1,5 @@
 import * as CManager from "./chartmanager.js";
-import * as calc from "./calc.js";
+import * as DM from "./datamanager.js";
 
 // JavaScript for Theme Toggle and Interactivity
 const themeToggle = document.getElementById('theme-toggle');
@@ -137,12 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const actionButton = document.querySelector('.action-button');
     const actionLink = document.getElementById("action-link");
     const handleContainer = document.getElementById('handle-container');
-    const tableHeader = document.querySelector('.table-header');
-    const tableBody = document.querySelector('.table-body');
-    let isAnimatingHeader = false;
-    let isAnimatingBody = false;
-    let isSyncingHeader = false;
-    let isSyncingBody = false;
+    const uploadBox = document.getElementById("uploadBox");
+    const fileInput = document.getElementById("fileInput");
+    const useDummy = document.getElementById("useDummy");
     let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
@@ -470,6 +467,42 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.appendChild(row);
     }
 
+    // Öffne den Datei-Upload-Dialog
+    uploadBox.addEventListener("click", () => {
+        fileInput.click();
+    });
 
+    // Verarbeite die hochgeladene Datei
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const content = e.target.result;
+                try {
+                    // Nutze parseFileContent von DataManager
+                    const dataset = DM.parseFileContent(content, file.type);
+                    console.log("Hochgeladenes Dataset:", dataset);
+
+                    // Hier kannst du das Dataset weiter in deine Klasse laden
+                    // Beispiel: financeManager.loadDataset(dataset);
+                } catch (error) {
+                    console.error("Fehler beim Verarbeiten der Datei:", error.message);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+    });
+
+    // Dummy-Daten laden
+    useDummy.addEventListener("click", () => {
+        const dummyData = DM.generateDummyDataset();
+        console.log("Dummy-Daten geladen:", dummyData);
+
+        // Hier kannst du das Dummy-Dataset in deine Klasse laden
+        // Beispiel: financeManager.loadDataset(dummyData);
+    });
 
 });

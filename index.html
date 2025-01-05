@@ -112,8 +112,17 @@
             <div id="handle"></div>
         </div>
         <div class="slide-view-content">
-            <h2>Slide View Title</h2>
-            <p>Here is some content inside the slide <view class="br"><br><h1>Bitch please</h1></view></p>
+            <h2>Data Center</h2>
+
+            <div class="upload-container">
+                <div class="upload-box" id="uploadBox">
+                    <i class="fas fa-upload upload-icon"></i>
+                    <p class="upload-text">Drag and drop your file here or <strong>tap here</strong> to upload</p>
+                    <p class="upload-subtext">To use dummy data instead, <span class="dummy-click" id="useDummy">click here</span></p>
+                </div>
+            </div>
+            <!-- Verstecktes Datei-Upload-Input -->
+            <input type="file" id="fileInput" accept=".csv, .json" style="display: none;">
 
             <div class="editor-container">
                 <table>
