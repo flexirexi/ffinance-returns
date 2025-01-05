@@ -455,10 +455,10 @@ footer {
 
 .slide-view {
     position: fixed;
-    bottom: -100%; /* Startet außerhalb des Bildschirms */
+    bottom: -120%; /* Startet außerhalb des Bildschirms */
     left: 0;
     width: 100%;
-    height: 100vh; /* Höhe des Slide-Views */
+    height: 100%; /* Höhe des Slide-Views */
     background: transparent; /* Hintergrundfarbe */
     transition: bottom 0.3s ease-in-out; /* Smooth Animation */
     z-index: 4;
@@ -466,9 +466,9 @@ footer {
 }
 
 .slide-view-content {
-    height: 100vh;
+    height: 100%;
     overflow-y: auto; /* Ermöglicht Scrollen, falls Inhalt länger als Viewport */
-    padding: 20px;
+    padding: 5px 20px 20px 20px;
     margin-top: -1px;
     box-sizing: border-box;
     backdrop-filter: blur(10px); /* Frosted-Glass-Effekt */
@@ -509,14 +509,12 @@ footer {
     
 }
 
-
 .editor-container {
     width: 75vw;
     max-width: 700px;
     height: max-content;
     max-height: 550px;
     overflow: auto;
-
 }
 
 .editor-container table {
@@ -613,39 +611,45 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 30px;
     background-color: transparent;
 }
 
 .upload-box {
-    border: 2px dashed var(--primary-link-text);
+    border: 3px dashed var(--primary-title);
     border-radius: 10px;
-    padding: 40px;
+    padding: 35px;
+    margin:30px;
     text-align: center;
     width: 50%;
     max-width: 600px;
-    background-color: #333;
+    background-color: var(--primary-bg);
     transition: background-color 0.3s;
 }
 
-.upload-box:hover {
-    background-color: #444;
+[data-theme="light mode"] .upload-box:hover {
+    background-color: #9f9f9f;
+    cursor:pointer;
+}
+
+[data-theme="dark mode"] .upload-box:hover {
+    background-color: #202b3b;
     cursor:pointer;
 }
 
 .upload-icon {
     font-size: 50px;
-    color: var(--primary-link-text);
+    color: #04b995;
     margin-bottom: 20px;
 }
 
 .upload-text {
-    font-size: 18px;
+    font-size: 15px;
     margin-bottom: 10px;
+    color: var(--primary-text);
 }
 
 .dummy-click {
-    color: var(--primary-link-text);
+    color: var(--primary-title);
     text-decoration: underline;
     cursor: pointer;
 }
@@ -655,13 +659,49 @@ footer {
 }
 
 .upload-subtext {
-    font-size: 14px;
-    color: #aaa;
+    font-size: 13px;
+    color: var(--primary-text);
 }
 
 /* Editor-Container initial ausgeblendet */
 .editor-container.hidden {
     display: none;
+}
+
+.upload-process {
+    margin-top: 16px;
+}
+
+.upload-process summary {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--primary-title);
+    background-color: var(--primary-bg);
+    padding: 15px;
+    box-shadow:  0px 4px 4px rgba(0, 0, 0, 0.301);
+}
+
+.upload-process details {
+    /* background-color: var(--primary-glass1); */
+    border: 1px solid var(--primary-bg);
+    box-shadow: inset 1px 5px 9px rgba(0, 0, 0, 0.34);
+}
+
+.columns-container {
+    border-radius: 8px;
+}
+
+.columns-instruction {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.columns-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 

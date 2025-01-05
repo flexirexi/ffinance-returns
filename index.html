@@ -112,14 +112,33 @@
             <div id="handle"></div>
         </div>
         <div class="slide-view-content">
-            <h2>Data Center</h2>
+            <h2 style="text-align: center;">Data Center</h2>
 
-            <div class="upload-container">
-                <div class="upload-box" id="uploadBox">
-                    <i class="fas fa-upload upload-icon"></i>
-                    <p class="upload-text">Drag and drop your file here or <strong>tap here</strong> to upload</p>
-                    <p class="upload-subtext">To use dummy data instead, <span class="dummy-click" id="useDummy">click here</span></p>
-                </div>
+            <div class="upload-process">
+                <!-- Schritt 1: Upload -->
+                <details open>
+                    <summary>1. Upload</summary>
+                    <div class="upload-container">
+                        <div class="upload-box" id="uploadBox">
+                            <i class="fas fa-upload upload-icon"></i>
+                            <p class="upload-text">Drag and drop your file here or <strong>tap here</strong> to upload</p>
+                            <p class="upload-subtext">To use dummy data instead, <span class="dummy-click" id="useDummy">click here</span></p>
+                        </div>
+                    </div>
+                </details>
+            
+                <!-- Schritt 2: Identify Columns -->
+                <details id="identifyColumns" >
+                    <summary>2. Identify Columns</summary>
+                    <div class="columns-container">
+                        <p class="columns-instruction">
+                            Please identify the appropriate columns for your dataset. Drag and drop the fields to match the required data points.
+                        </p>
+                        <div id="columnsEditor" class="columns-editor">
+                            <!-- Dynamisch generierte Inhalte basierend auf der Datei -->
+                        </div>
+                    </div>
+                </details>
             </div>
             <!-- Verstecktes Datei-Upload-Input -->
             <input type="file" id="fileInput" accept=".csv, .json" style="display: none;">

@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.innerWidth < 768) {
             actionButton.style.display = "none";
         } else {
-            actionButton.style.top = "50px";
+            actionButton.style.top = "54px";
             actionLink.className="fas fa-chevron-down"
         }
         disableScroll();
