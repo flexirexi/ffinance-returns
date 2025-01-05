@@ -615,19 +615,30 @@ footer {
 }
 
 .upload-box {
-    border: 3px dashed var(--primary-title);
     border-radius: 10px;
-    padding: 35px;
+    padding: 30px;
     margin:30px;
     text-align: center;
     width: 50%;
     max-width: 600px;
-    background-color: var(--primary-bg);
     transition: background-color 0.3s;
 }
 
+[data-theme="light mode"] .upload-box {
+    background-color: var(--act-bg-hover);
+    border: 3px dashed black;
+    cursor:pointer;
+}
+
 [data-theme="light mode"] .upload-box:hover {
-    background-color: #9f9f9f;
+    background-color: var(--secondary-text);
+    border: 3px dashed var(--act-bg-hover);
+    cursor:pointer;
+}
+
+[data-theme="dark mode"] .upload-box {
+    background-color: var(--primary-bg);
+    border: 3px dashed var(--link-text);
     cursor:pointer;
 }
 
@@ -636,10 +647,24 @@ footer {
     cursor:pointer;
 }
 
+
 .upload-icon {
     font-size: 50px;
-    color: #04b995;
     margin-bottom: 20px;
+}
+
+[data-theme="dark mode"] .upload-icon {
+    color: var(--link-text);
+}
+
+[data-theme="light mode"] .upload-icon {
+    color: black;
+}
+
+[data-theme="light mode"] .upload-box:hover  .upload-icon,
+[data-theme="light mode"] .upload-box:hover  .upload-text,
+[data-theme="light mode"] .upload-box:hover  .upload-subtext{
+    color: var(--link-text);
 }
 
 .upload-text {
@@ -652,11 +677,15 @@ footer {
     color: var(--primary-title);
     text-decoration: underline;
     cursor: pointer;
+    z-index: 7;
 }
 
-.dummy-click:hover {
-    color: var(--link-text-hover);
+[data-theme="dark mode"] .dummy-click:hover {
+    color: white;
 }
+ [data-theme="light mode"] .dummy-click:hover {
+    color: white;
+ }
 
 .upload-subtext {
     font-size: 13px;
@@ -676,16 +705,33 @@ footer {
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    color: var(--primary-title);
-    background-color: var(--primary-bg);
     padding: 15px;
     box-shadow:  0px 4px 4px rgba(0, 0, 0, 0.301);
 }
 
+[data-theme="dark mode"] .upload-process summary {
+    color: var(--primary-title);
+    background-color: #344359;
+}
+
+[data-theme="dark mode"] .upload-process summary:hover {
+    background-color: var(--primary-bg);
+}
+
+[data-theme="light mode"] .upload-process summary {
+    color: var(--link-text);
+    background-color: #344359;
+}
+
+[data-theme="light mode"] .upload-process summary:hover {
+    background-color: #293546;
+}
+
+
 .upload-process details {
     /* background-color: var(--primary-glass1); */
     border: 1px solid var(--primary-bg);
-    box-shadow: inset 1px 5px 9px rgba(0, 0, 0, 0.34);
+    
 }
 
 .columns-container {

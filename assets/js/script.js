@@ -141,6 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("fileInput");
     const useDummy = document.getElementById("useDummy");
     const editorCont = document.querySelector(".editor-container");
+    const identifyColumnsSection = document.getElementById("identifyColumns");
+    const columnsEditor = document.getElementById("columnsEditor");
     let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
@@ -149,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let startY = 0;
     let currentY = 0;
     localStorage.setItem("onload", true);
+    let rawDataSet = null;
 
     editorCont.classList.add("hidden");
     // Menü öffnen/schließen
@@ -469,6 +472,8 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.appendChild(row);
     }
 
+
+
     // Öffne den Datei-Upload-Dialog
     uploadBox.addEventListener("click", () => {
         fileInput.click();
@@ -483,12 +488,19 @@ document.addEventListener("DOMContentLoaded", () => {
             reader.onload = (e) => {
                 const content = e.target.result;
                 try {
-                    // Nutze parseFileContent von DataManager
-                    const dataset = DM.parseFileContent(content, file.type);
-                    console.log("Hochgeladenes Dataset:", dataset);
-
-                    // Hier kannst du das Dataset weiter in deine Klasse laden
-                    // Beispiel: financeManager.loadDataset(dataset);
+                    const raw = content.split("\n").map(line => line.split(","));
+                    rawDataSet = new DM.RawDataSet(raw);
+                    console.log("Hochgeladene Rohdaten:", rawDataSet.raw);
+    
+                    // Setze die Header aus der ersten Zeile und verarbeite die Daten
+                    //rawDataSet.setReadCsvOptions({
+                    //    headers: raw.shift(), // Die erste Zeile sind die Header
+                    //});
+                    //rawDataSet.processRawData();
+                    //console.log("Verarbeitetes Dataset:", rawDataSet.dataSet);
+                    //console.log("Hochgeladene Daten als CSV:", rawDataSet.toCSV());
+                    
+                    proceedToIdentifyColumns(rawDataSet);
                 } catch (error) {
                     console.error("Fehler beim Verarbeiten der Datei:", error.message);
                 }
@@ -499,12 +511,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Dummy-Daten laden
-    useDummy.addEventListener("click", () => {
-        const dummyData = DM.generateDummyDataset();
-        console.log("Dummy-Daten geladen:", dummyData);
+    useDummy.addEventListener("click", (event) => {
+        event.stopPropagation(); // Verhindert, dass das Klick-Ereignis auf die Upload-Box propagiert
+        rawDataSet = DM.RawDataSet.generateDummyDataset();
+        console.log("Dummy-Daten geladen:", rawDataSet.raw);
 
-        // Hier kannst du das Dummy-Dataset in deine Klasse laden
-        // Beispiel: financeManager.loadDataset(dummyData);
+        // Setze readCsvOptions und verarbeite das Dataset SPÄTER:
+        //rawDataSet.setReadCsvOptions({
+        //    headers: ["dateColumn", "Monetary Value (Net Assets)", "Indexed Value (Base 100)", "Movements"],
+        //});
+        //rawDataSet.processRawData();
+        //console.log("Verarbeitetes Dataset:", rawDataSet.dataSet);
+        //console.log("Dummy-Daten als CSV:", rawDataSet.toCSV());
+        
+        proceedToIdentifyColumns(rawDataSet);
     });
+
+    // Zeige die zweite Phase (Identify Columns) an
+    function proceedToIdentifyColumns() {
+        identifyColumnsSection.style.display = "block";
+        console.log("RawDataSet zur Identifizierung bereit:", rawDataSet);
+    }
 
 });
