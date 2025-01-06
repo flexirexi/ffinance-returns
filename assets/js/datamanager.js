@@ -91,6 +91,20 @@ export class RawDataSet {
         return result;
     }
 
+    /**
+     * Methode, um die ersten 5 Werte jeder Spalte im .raw Attribut zu extrahieren.
+     * @returns {String} Ein String mit Headern ersten 5 Linien.
+     */
+    getHeaderRaw() {
+        if (!this.raw) {
+            throw new Error("No raw data available.");
+        }
+
+        const rows = this.raw.split("\n");
+        const firstRows = rows.slice(0,5).join("\n");
+        return firstRows;
+    }
+
     // Methode, um das Dataset in einen CSV-String zu konvertieren
     toCSV() {
         if (!this.dataSet) {
