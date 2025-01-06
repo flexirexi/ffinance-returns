@@ -692,6 +692,7 @@ footer {
     transition: background-color 0.3s;
 }
 
+
 [data-theme="light mode"] .upload-box:hover {
     background-color: var(--act-bg-hover);
     border: 3px dashed black;
@@ -715,6 +716,15 @@ footer {
     cursor:pointer;
 }
 
+[data-theme="dark mode"] .upload-box.drag-over {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+}
+
+[data-theme="light mode"] .upload-box.drag-over {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+}
 
 .upload-icon {
     font-size: 50px;

@@ -128,6 +128,8 @@ function enableScroll() {
     document.documentElement.classList.remove('no-scroll'); // Für den gesamten Dokumentbereich
 }
 
+
+
 function getParsingOptions() {
     // Dynamisch die ausgewählten Werte der Radiobuttons lesen
     const withHeaders = document.querySelector('input[name="withHeaders"]:checked').value === "yes";
@@ -571,6 +573,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Event-Listener für Drag-and-Drop
+    uploadBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadBox.classList.add("drag-over");
+    });
+
+    uploadBox.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadBox.classList.remove("drag-over");
+    });
+
+    uploadBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        uploadBox.classList.remove("drag-over");
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileUpload(files[0]); // Nur die erste Datei verarbeiten
+        }
+    });
+
+
+
+
     // Überwache Fenstergröße und entferne "active", wenn Desktop-Modus aktiv wird
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) { // Passe die Breite an deine Media Query an
@@ -699,6 +728,35 @@ document.addEventListener("DOMContentLoaded", () => {
             reader.readAsText(file);
         }
     });
+
+    // Funktion zur Verarbeitung der hochgeladenen Datei
+    function handleFileUpload(file) {
+        const reader = new FileReader();
+
+        // Datei einlesen
+        reader.onload = (event) => {
+            const fileContent = event.target.result;
+            const fileType = file.type;
+
+            try {
+                // Datei parsen (JSON oder CSV)
+                const parsedData = DM.parseFileContent(fileContent, fileType);
+                console.log("Parsed Data:", parsedData);
+
+                // RawDataSet initialisieren
+                rawDataSet = new DM.RawDataSet(parsedData);
+
+                // Tabelle anzeigen
+                proceedToIdentifyColumns();
+            } catch (error) {
+                console.error("Fehler beim Verarbeiten der Datei:", error);
+                alert("Die Datei konnte nicht verarbeitet werden. Bitte überprüfen Sie das Format.");
+            }
+        };
+
+        // Datei lesen (als Text)
+        reader.readAsText(file);
+    }
 
     // Dummy-Daten laden
     useDummy.addEventListener("click", (event) => {
