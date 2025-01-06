@@ -177,6 +177,7 @@ function formatValue(value, decimals, thousands) {
 
 function createColumnsTable(rawDataSet, tableElement) {
     // Lösche den aktuellen Inhalt der Tabelle
+    const columnsEditor = document.getElementById("columnsEditor");
     tableElement.innerHTML = "";
     tableElement.classList.add("columns-table");
 
@@ -264,6 +265,34 @@ function createColumnsTable(rawDataSet, tableElement) {
     });
 
     tableElement.appendChild(tbody);
+    tableElement.style.backgroundColor = "#00000022";
+    tableElement.style.padding = "5px 10px 5px 0";
+    if (window.innerWidth > 768) {
+        tableElement.style.width = "100%";
+    } else {
+        tableElement.style.width = "800px";
+    }
+    tableElement.style.borderCollapse = "collapsed";
+    tableElement.style.border = "none";
+    //table.style.margin = "10px auto";
+    columnsEditor.appendChild(tableElement);
+
+    // Abschnitt sichtbar machen
+    columnsEditor.style.display = "block";
+    
+    columnsEditor.addEventListener("scroll", () => {
+        const scrollLeft = columnsEditor.scrollLeft;
+        const scrollWidth = columnsEditor.scrollWidth;
+        const clientWidth = columnsEditor.clientWidth;
+        const gradLeft = document.getElementById("gradient-left");
+        const gradRight = document.getElementById("gradient-right");
+
+        // Prüfen, ob links gescrollt wurde
+        gradLeft.style.opacity = scrollLeft > 40 ? "1" : "0";
+
+        // Prüfen, ob nicht ganz rechts gescrollt wurde
+        gradRight.style.opacity = (scrollWidth - clientWidth - scrollLeft) < 40 ? "0" : "1";
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
