@@ -890,7 +890,6 @@ footer {
 }
 
 .options-row strong {
-    color: var(--primary-title);
     text-align: left;
     font-weight: bold;
 }

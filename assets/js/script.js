@@ -556,7 +556,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         headerPreview.innerHTML = rawDataSet.getHeaderRaw();
 
-        // Tabelle erstellen
+        // Tabelle mappen
+        table.innerHTML = "";
         table.classList.add("columns-table");
 
 
