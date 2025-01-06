@@ -23,7 +23,7 @@
     --secondary-glass4: #a7a7a7a1;
 
     
-	--act-bg: #000000CC; /* not used yet */
+	--act-bg: #000000; /* not used yet */
 	--act-text: #FFFFFF; /* not used yet */
 	--act-border: #48C9B0; /* not used yet */
 	
@@ -176,6 +176,7 @@ label {
 label:hover {
     background-color: var(--primary-bg);
     border-color: var(--primary-bg);
+    cursor: pointer;
 }
 
 /* Ausgewähltes Label */
@@ -789,6 +790,7 @@ footer {
     cursor: pointer;
     padding: 15px;
     box-shadow:  0px 4px 4px rgba(0, 0, 0, 0.301);
+    z-index: 9;
 }
 
 [data-theme="dark mode"] .upload-process summary {
@@ -890,29 +892,50 @@ footer {
     position: relative; /* Für die Positionierung der Overlays */
     width: 100%;
     overflow-x: auto; /* Aktiviert horizontales Scrollen */
-    border: 1px solid #ccc; /* Optional: Rahmen */
+    z-index: 8;
+}
+
+/* Alternative: Dünne Scrollbars (wenn nicht komplett verstecken möglich) */
+.columns-editor::-webkit-scrollbar {
+    width: 7px; /* Breite der Scrollbar */
+    height: 7px; /* Höhe der horizontalen Scrollbar */
+}
+
+.columns-editor::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25) !important; /* Farbe des Scrollbalkens */
+    border-radius: 5px; /* Abgerundete Kanten */
+}
+
+.columns-editor::-webkit-scrollbar-track {
+    background-color: transparent !important; /* Hintergrund des Scrollbereichs */
+}
+
+.columns-editor::-webkit-scrollbar-corner {
+    background-color: transparent !important;
 }
 
 /* Gradienten */
 .gradient-left, .gradient-right {
     position: absolute;
     top: 0;
-    height: 100%;
-    width: 50px;
+    height: 99%;
+    width: 25vw;
     pointer-events: none; /* Verhindert Interaktionen */
-    transition: opacity 0.3s ease; /* Weiche Übergänge */
-    z-index: 10;
+    transition: opacity 0.5s ease; /* Weiche Übergänge */
+    
 }
 
 .gradient-left {
     left: 0;
-    background: linear-gradient(to right, rgba(60, 60, 60, 0.378), rgba(255, 255, 255, 0),  rgba(255, 255, 255, 0));
+    background: linear-gradient(to right, rgba(14, 14, 14, 0.50), rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
     opacity: 0;
 }
 
 .gradient-right {
     right: 0;
-    background: linear-gradient(to left, rgba(84, 84, 84, 0.578), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+    background: linear-gradient(to left, rgba(14, 14, 14, 0.50), rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
     opacity: 1;
 }
 
