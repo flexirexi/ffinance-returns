@@ -116,9 +116,9 @@
 
             <div class="upload-process">
                 <!-- Schritt 1: Upload -->
-                <details open>
+                <details id="upload-details" open>
                     <summary>1. Upload CSV-FILE</summary>
-                    <div class="upload-container">
+                    <div class="upload-container details-content">
                         <div class="upload-box" id="uploadBox">
                             <i class="fas fa-upload upload-icon"></i>
                             <p class="upload-text">Drag and drop your file here or <strong>tap here</strong> to upload</p>
@@ -128,12 +128,13 @@
                 </details>
             
                 <!-- Schritt 2: Identify Columns -->
-                <details id="identifyColumns" >
+                <details id="identifyColumns"  class="details-disabled">
                     <summary>2. Identify Columns</summary>
-                    <div class="columns-container">
-                        <p class="columns-instruction">
-                            Please identify the appropriate columns for your dataset. Drag and drop the fields to match the required data points.
-                        </p>
+                    <div class="columns-container details-content">
+                        <div id="columnsParser">
+                            <p class="columns-instruction">Please identify the appropriate columns for your dataset. Drag and drop the fields to match the required data points.</p>
+
+                        </div>
                         <div id="columnsEditor" class="columns-editor">
                             <!-- Dynamisch generierte Inhalte basierend auf der Datei -->
                         </div>

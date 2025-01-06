@@ -16,7 +16,7 @@
 	--secondary-title: #315857; /* not used yet */
 	--secondary-link: #48C9B0; /* not used yet */
     --secondary-bg: #adadad; 
-	--secondary-acc: #ff953e; /* not used yet */
+	--secondary-acc: #ee852f; /* not used yet */
 	--secondary-glass1: #f0f0f0e1;
     --secondary-glass2: #ddddddbd;
     --secondary-glass3: #c8c8c8b6;
@@ -118,8 +118,25 @@ nav {
 nav.scrolled {
     backdrop-filter: blur(3px); /* Blur-Effekt bei Scrollen */
 	background-color: rgba(30, 40, 50, 0.9);
-	
 }
+
+details {
+    padding: 0;
+    transition: all 400ms ease;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+details[open] {
+    height: 60vh;
+}
+
+.details-content {
+    height: 48vh;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 
 nav .logo {
     display: flex;
@@ -468,7 +485,7 @@ footer {
 .slide-view-content {
     height: 100%;
     overflow-y: auto; /* Ermöglicht Scrollen, falls Inhalt länger als Viewport */
-    padding: 5px 20px 20px 20px;
+    padding: 5px 20px 40px 20px;
     margin-top: -1px;
     box-sizing: border-box;
     backdrop-filter: blur(10px); /* Frosted-Glass-Effekt */
@@ -624,13 +641,13 @@ footer {
     transition: background-color 0.3s;
 }
 
-[data-theme="light mode"] .upload-box {
+[data-theme="light mode"] .upload-box:hover {
     background-color: var(--act-bg-hover);
     border: 3px dashed black;
     cursor:pointer;
 }
 
-[data-theme="light mode"] .upload-box:hover {
+[data-theme="light mode"] .upload-box {
     background-color: var(--secondary-text);
     border: 3px dashed var(--act-bg-hover);
     cursor:pointer;
@@ -657,15 +674,22 @@ footer {
     color: var(--link-text);
 }
 
-[data-theme="light mode"] .upload-icon {
+[data-theme="light mode"] .upload-icon:hover {
     color: black;
+}
+
+[data-theme="light mode"] .upload-box  .upload-icon,
+[data-theme="light mode"] .upload-box  .upload-text,
+[data-theme="light mode"] .upload-box  .upload-subtext{
+    color: var(--link-text);
 }
 
 [data-theme="light mode"] .upload-box:hover  .upload-icon,
 [data-theme="light mode"] .upload-box:hover  .upload-text,
 [data-theme="light mode"] .upload-box:hover  .upload-subtext{
-    color: var(--link-text);
+    color: var(--primary-text);
 }
+
 
 .upload-text {
     font-size: 15px;
@@ -736,12 +760,13 @@ footer {
 
 .columns-container {
     border-radius: 8px;
+    padding: 15px;
 }
 
 .columns-instruction {
     margin-bottom: 15px;
     font-size: 14px;
-    color: #fff;
+    color: var(--primary-text);
 }
 
 .columns-editor {
@@ -750,7 +775,11 @@ footer {
     gap: 10px;
 }
 
-
+.details-disabled summary {
+    pointer-events: none; /* Verhindert Interaktion */
+    color: gray; /* Optional: Stilisierung */
+    cursor: not-allowed; /* Optional: Zeigt an, dass es deaktiviert ist */
+}
 
 @media (min-width: 768px) {
     body {

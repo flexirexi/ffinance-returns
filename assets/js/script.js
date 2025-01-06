@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const useDummy = document.getElementById("useDummy");
     const editorCont = document.querySelector(".editor-container");
     const identifyColumnsSection = document.getElementById("identifyColumns");
+    const uploadSection = document.getElementById("upload-details");
     const columnsEditor = document.getElementById("columnsEditor");
     let initialBottom = 0;
     let isSwiping = false;
@@ -526,11 +527,103 @@ document.addEventListener("DOMContentLoaded", () => {
         
         proceedToIdentifyColumns(rawDataSet);
     });
-
+    
     // Zeige die zweite Phase (Identify Columns) an
     function proceedToIdentifyColumns() {
-        identifyColumnsSection.style.display = "block";
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+
+        uploadSection.removeAttribute("open");
+        identifyColumnsSection.classList.remove("details-disabled");
+        identifyColumnsSection.setAttribute("open", "");
         console.log("RawDataSet zur Identifizierung bereit:", rawDataSet);
+
+        columnsEditor.innerHTML = "";
+
+        // Tabelle erstellen
+        table.classList.add("columns-table");
+
+
+
+        const headerRow = document.createElement("tr");
+
+        const th1 = document.createElement("th");
+        th1.id = "th1";
+        th1.textContent = "Column";
+        th1.style.textAlign = "right";
+        th1.style.padding = "13px";
+        th1.style.color = "var(--primary-title)";
+
+        const th2 = document.createElement("th");
+        th2.id = "th2";
+        th2.textContent = "Mapped To";
+        th2.style.textAlign = "left";
+        th2.style.padding = "15px";
+        th2.style.color = "var(--primary-title)";
+
+        // Füge die Header-Zellen zur Zeile hinzu
+        headerRow.appendChild(th1);
+        headerRow.appendChild(th2);
+
+        // Füge die Zeile zum Tabellenkopf hinzu
+        thead.appendChild(headerRow);
+        
+
+        // Füge den Tabellenkopf zur Tabelle hinzu
+        table.appendChild(thead);
+
+        // Tabelleninhalt basierend auf den Headern im CSV-String hinzufügen
+        const tbody = document.createElement("tbody");
+        if (rawDataSet.raw) {
+            // Parse raw CSV to get headers
+            const headers = rawDataSet.raw.split("\n")[0].split(",");
+            
+            headers.forEach(header => {
+                const row = document.createElement("tr");
+
+                // Spaltenname
+                const columnCell = document.createElement("td");
+                columnCell.textContent = header.trim();
+                row.appendChild(columnCell);
+                columnCell.style.textAlign = "right";
+
+                // Mapping Dropdown
+                const mappingCell = document.createElement("td");
+                const select = document.createElement("select");
+                select.innerHTML = `
+                    <option value="">Select...</option>
+                    <option value="dateColumn">Date</option>
+                    <option value="valueColumn1">Net Assets</option>
+                    <option value="valueColumn2">Indexed Value</option>
+                    <option value="movements">Movements</option>
+                    <option value="skip">Skip Column</option>
+                `;
+                select.style.padding = "5px";
+                select.style.width = "150px";
+                mappingCell.appendChild(select);
+                row.appendChild(mappingCell);
+
+                tbody.appendChild(row);
+            });
+        } else {
+            const emptyRow = document.createElement("tr");
+            const emptyCell = document.createElement("td");
+            emptyCell.colSpan = 2;
+            emptyCell.textContent = "No columns found.";
+            emptyRow.appendChild(emptyCell);
+            tbody.appendChild(emptyRow);
+        }
+
+        table.appendChild(tbody);
+        table.style.backgroundColor = "#00000022";
+        table.style.padding = "5px 20px 5px 0";
+        table.style.marginTop = "10px";
+        columnsEditor.appendChild(table);
+
+        // Abschnitt sichtbar machen
+        columnsEditor.style.display = "block";
+        
+
     }
 
 });
