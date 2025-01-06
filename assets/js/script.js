@@ -542,9 +542,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const iconIdentifySummary = document.getElementById("identify-icon-summary");
         const headerPreview = document.getElementById("header-preview");
 
-        iconUploadSummary.classList.remove("fa-spinner");
+        iconUploadSummary.classList.remove("fa-cog");
         iconUploadSummary.classList.remove("fa-spin");
+        iconUploadSummary.style.animation = "unset";
         iconUploadSummary.classList.add("fa-check");
+        
 
         iconIdentifySummary.style.display = "unset";
 
@@ -571,14 +573,14 @@ document.addEventListener("DOMContentLoaded", () => {
         th1.style.padding = "7px";
         th1.style.color = "var(--primary-title)";
         if (window.innerWidth < 768) {
-            th1.style.width = "20px";
+            th1.style.width = "30px";
         } else {
             th1.style.maxWidth = "130px";
         }
 
         const th2 = document.createElement("th");
         th2.id = "th2";
-        th2.textContent = "Mapped to";
+        th2.textContent = "Identify as";
         th2.style.textAlign = "left";
         th2.style.padding = "7px";
         th2.style.color = "var(--primary-title)";
@@ -628,7 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 row.appendChild(columnCell);
                 columnCell.style.textAlign = "right";
                 if (window.innerWidth < 768) {
-                    columnCell.style.width = "20px";
+                    columnCell.style.width = "30px";
                 } else {
                     columnCell.style.width = "130px";
                 }
@@ -699,7 +701,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Prüfen, ob links gescrollt wurde
             if (scrollLeft > 40) {
-                console.log("GRÖßER 40");
                 gradLeft.style.opacity = "1";
             } else {
                 gradLeft.style.opacity = "0";

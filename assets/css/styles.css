@@ -141,6 +141,7 @@ summary {
     left:0;
     display: flex;
     margin-bottom: 10px;
+    text-wrap-mode: nowrap;
 }
 
 .details-content {
@@ -908,6 +909,24 @@ footer {
     margin-top: 4px;
 }
 
+#parse-csv-button {
+    width: 250px;
+    border-radius: 1px;
+    background-color: var(--act-bg-hover);
+    color: var(--act-bg);
+    transition: all 0.3s ease;
+    padding: 9px 10px;
+    box-shadow: 0px 2px 5px #00000055;
+    cursor: pointer;
+    text-align: center;
+    margin: 5px auto 15px;
+}
+
+#parse-csv-button:hover {
+    background-color: var(--act-bg);
+    color: var(--act-bg-hover);
+}
+
 /* Scrollbarer Container */
 .scrollable-opacity {
     position: relative; /* Für die Positionierung der Overlays */
@@ -923,7 +942,7 @@ footer {
 }
 
 .columns-editor::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.25) !important; /* Farbe des Scrollbalkens */
+    background-color: rgba(0, 0, 0, 0.421) !important; /* Farbe des Scrollbalkens */
     border-radius: 5px; /* Abgerundete Kanten */
 }
 
@@ -940,7 +959,7 @@ footer {
     position: absolute;
     top: 0;
     height: 99%;
-    width: 25vw;
+    width: 17vw;
     pointer-events: none; /* Verhindert Interaktionen */
     transition: opacity 0.5s ease; /* Weiche Übergänge */
     
@@ -948,14 +967,14 @@ footer {
 
 .gradient-left {
     left: 0;
-    background: linear-gradient(to right, rgba(14, 14, 14, 0.50), rgba(0, 0, 0, 0.2),
+    background: linear-gradient(to right, rgba(14, 14, 14, 0.404), rgba(0, 0, 0, 0.2),
     rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
     opacity: 0;
 }
 
 .gradient-right {
     right: 0;
-    background: linear-gradient(to left, rgba(14, 14, 14, 0.50), rgba(0, 0, 0, 0.2),
+    background: linear-gradient(to left, rgba(14, 14, 14, 0.404), rgba(0, 0, 0, 0.2),
         rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
     opacity: 1;
 }

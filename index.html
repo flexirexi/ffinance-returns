@@ -119,7 +119,8 @@
                 <details id="upload-details" open>
                     <summary>
                         1. Upload CSV-FILE
-                        <i id="upload-icon-summary" class="fas fa-spinner fa-spin summary-icon"></i>
+                        <i id="upload-icon-summary" class="fas fa-cog fa-spin summary-icon"
+                            style="animation: fa-spin 6s linear infinite; "></i>
                     </summary>
                     <div class="upload-container details-content">
                         <div class="upload-box" id="uploadBox">
@@ -133,8 +134,9 @@
                 <!-- Schritt 2: Identify Columns -->
                 <details id="identifyColumns" class="details-disabled">
                     <summary>
-                        2. Parse CSV & Identify Columns
-                        <i id="identify-icon-summary" class="fas fa-spinner fa-spin summary-icon"></i>
+                        2. Parse & Identify Columns
+                        <i id="identify-icon-summary"class="fas fa-cog fa-spin summary-icon"
+                            style="animation: fa-spin 6s linear infinite; "></i>
                     </summary>
                     <div class="columns-container details-content">
                         <div id="columnsParser">
@@ -217,6 +219,13 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="parse-csv-button">
+                            <i class="fas fa-angle-double-down" style="margin: 0 15px;"></i> 
+                               PARSE FILE AGAIN   
+                            <i class="fas fa-angle-double-down" style="margin: 0 15px;"></i> 
+                        </div>
+
                         <div class="scrollable-opacity">
                             <div id="gradient-left" class="gradient-left"></div>
                             <div id="gradient-right" class="gradient-right"></div>
