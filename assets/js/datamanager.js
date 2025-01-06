@@ -101,7 +101,7 @@ export class RawDataSet {
         }
 
         const rows = this.raw.split("\n");
-        const firstRows = rows.slice(0,5).join("\n");
+        const firstRows = rows.slice(0,6).join("\n");
         return firstRows;
     }
 

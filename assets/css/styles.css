@@ -166,7 +166,7 @@ input[type="radio"]:checked + label {
 label {
     height: 100%;
     background-color: transparent;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
     border-radius: 3px;
     padding: 6px 11px;
     box-sizing: border-box;
@@ -817,6 +817,28 @@ footer {
     border: 1px solid rgba(98, 98, 98, 0.415);
     
 }
+
+#header-preview  {
+    width: 100%;
+    border: 2px solid var(--secondary-title);
+    min-height: 100px;
+    padding: 5px;
+    margin: 10px auto;
+    overflow: auto;
+    scrollbar-width: none;
+    white-space: pre;
+    box-sizing: border-box;
+}
+
+[data-theme="dark mode"] #header-preview {
+    color: #a4a4a4;
+}
+
+[data-theme="light mode"] #header-preview {
+    color: var(--secondary-text);
+}
+
+
 
 .columns-container {
     border-radius: 8px;

@@ -540,6 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const thead = document.createElement("thead");
         const iconUploadSummary = document.getElementById("upload-icon-summary");
         const iconIdentifySummary = document.getElementById("identify-icon-summary");
+        const headerPreview = document.getElementById("header-preview");
 
         iconUploadSummary.classList.remove("fa-spinner");
         iconUploadSummary.classList.remove("fa-spin");
@@ -553,7 +554,7 @@ document.addEventListener("DOMContentLoaded", () => {
         identifyColumnsSection.setAttribute("open", "");
         console.log("RawDataSet zur Identifizierung bereit:", rawDataSet);
 
-      
+        headerPreview.innerHTML = rawDataSet.getHeaderRaw();
 
         // Tabelle erstellen
         table.classList.add("columns-table");
