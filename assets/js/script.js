@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const identifyColumnsSection = document.getElementById("identifyColumns");
     const uploadSection = document.getElementById("upload-details");
     const columnsEditor = document.getElementById("columnsEditor");
+    const scrollableOpacity = document.querySelector(".scrollable-opacity");
     let initialBottom = 0;
     let isSwiping = false;
     let isDragging = false;
@@ -153,6 +154,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentY = 0;
     localStorage.setItem("onload", true);
     let rawDataSet = null;
+
+    if (!scrollableOpacity) {
+        console.error("Das Element mit der Klasse 'scrollable-opacity' wurde nicht gefunden.");
+        return;
+    }
 
     editorCont.classList.add("hidden");
     // Menü öffnen/schließen
@@ -530,7 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Zeige die zweite Phase (Identify Columns) an
     function proceedToIdentifyColumns() {
-        const table = document.createElement("table");
+        const table = document.getElementById("columnsEditorTable");
         const thead = document.createElement("thead");
         const iconUploadSummary = document.getElementById("upload-icon-summary");
         const iconIdentifySummary = document.getElementById("identify-icon-summary");
@@ -547,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
         identifyColumnsSection.setAttribute("open", "");
         console.log("RawDataSet zur Identifizierung bereit:", rawDataSet);
 
-        columnsEditor.innerHTML = "";
+      
 
         // Tabelle erstellen
         table.classList.add("columns-table");
@@ -560,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
         th1.id = "th1";
         th1.textContent = "Column";
         th1.style.textAlign = "right";
-        th1.style.padding = "13px";
+        th1.style.padding = "7px";
         th1.style.color = "var(--primary-title)";
         if (window.innerWidth < 768) {
             th1.style.width = "20px";
@@ -572,21 +578,21 @@ document.addEventListener("DOMContentLoaded", () => {
         th2.id = "th2";
         th2.textContent = "Mapped to";
         th2.style.textAlign = "left";
-        th2.style.padding = "10px";
+        th2.style.padding = "7px";
         th2.style.color = "var(--primary-title)";
 
         const th3 = document.createElement("th");
         th3.id = "th3";
         th3.textContent = "Values preview"
         th3.style.textAlign = "left";
-        th3.style.padding = "10px";
+        th3.style.padding = "7px";
         th3.style.color = "var(--primary-title";
         
         const th4 = document.createElement("th");
         th4.id = "th4";
         th4.textContent = "Comment after check";
         th4.style.textAlign = "left";
-        th4.style.padding = "10px";
+        th4.style.padding = "7px";
         th4.style.color = "var(--primary-title)";
         th4.style.width = "350px";
 
@@ -636,7 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <option value="movements">Movements</option>
                     <option value="skip">Skip Column</option>
                 `;
-                select.style.padding = "1px";
+                select.style.padding = "4px";
                 select.style.width = "138px";
                 mappingCell.appendChild(select);
                 row.appendChild(mappingCell);
@@ -682,7 +688,29 @@ document.addEventListener("DOMContentLoaded", () => {
         // Abschnitt sichtbar machen
         columnsEditor.style.display = "block";
         
+        columnsEditor.addEventListener("scroll", () => {
+            const scrollLeft = columnsEditor.scrollLeft;
+            const scrollWidth = columnsEditor.scrollWidth;
+            const clientWidth = columnsEditor.clientWidth;
+            const gradLeft = document.getElementById("gradient-left");
+            const gradRight = document.getElementById("gradient-right");
 
+            // Prüfen, ob links gescrollt wurde
+            if (scrollLeft > 40) {
+                console.log("GRÖßER 40");
+                gradLeft.style.opacity = "1";
+            } else {
+                gradLeft.style.opacity = "0";
+            }
+    
+            // Prüfen, ob nicht ganz rechts gescrollt wurde
+            if (scrollWidth - clientWidth - scrollLeft < 40) {
+                gradRight.style.opacity = "0";
+            } else {
+                gradRight.style.opacity = "1";
+            }
+        });
     }
+
 
 });

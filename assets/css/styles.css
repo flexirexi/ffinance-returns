@@ -147,6 +147,43 @@ summary {
     width: auto;
 }
 
+input[type="radio"] {
+    background-color: black;
+}
+
+/* Ausgewähltes Label */
+input[type="radio"]:checked + label {
+    background-color: #0000003d;
+    color: var(--primary-acc);
+    border-color: var(--primary-acc);
+}
+
+[data-theme="light mode"] input[type="radio"]:checked + label {
+    background-color: #ffffff9a;
+
+}
+
+label {
+    height: 100%;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    border-radius: 3px;
+    padding: 6px 11px;
+    box-sizing: border-box;
+}
+
+/* Hover-Zustand */
+label:hover {
+    background-color: var(--primary-bg);
+    border-color: var(--primary-bg);
+}
+
+/* Ausgewähltes Label */
+input[type="radio"]:checked label {
+    background-color: var(--primary-acc);
+    color: white;
+    border-color: var(--primary-acc);
+}
 
 
 
@@ -798,6 +835,8 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .details-disabled summary {
@@ -806,7 +845,7 @@ footer {
 }
 
 #identifyColumns td {
-    padding: 12px;
+    padding: 7px;
 }
 
 .options-container {
@@ -814,12 +853,15 @@ footer {
     gap: 10px; /* Abstand zwischen den Abschnitten */
     margin-bottom: 20px;
     margin-top: 15px;
+    background-color: #00000022;
+    padding: 15px;
 }
 
 .options-row {
     display: grid;
-    gap: 10px;
+    gap: 2px;
     align-items: center;
+    padding: 2px;
     grid-template-columns: 1fr; /* Alles untereinander bei kleinen Bildschirmen */
 }
 
@@ -829,8 +871,58 @@ footer {
     font-weight: bold;
 }
 
-.options-row label {
-    margin-right: 5px; /* Abstand zwischen den Radiobutton-Gruppen */
+
+.options-row input[type="text"] {
+    width: 40px;
+}
+
+.options-row input[type="radio"] {
+    appearance: none;
+}
+
+.options-row div {
+    margin-bottom: 3px;
+    margin-top: 4px;
+}
+
+/* Scrollbarer Container */
+.scrollable-opacity {
+    position: relative; /* Für die Positionierung der Overlays */
+    width: 100%;
+    overflow-x: auto; /* Aktiviert horizontales Scrollen */
+    border: 1px solid #ccc; /* Optional: Rahmen */
+}
+
+/* Gradienten */
+.gradient-left, .gradient-right {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    pointer-events: none; /* Verhindert Interaktionen */
+    transition: opacity 0.3s ease; /* Weiche Übergänge */
+    z-index: 10;
+}
+
+.gradient-left {
+    left: 0;
+    background: linear-gradient(to right, rgba(60, 60, 60, 0.378), rgba(255, 255, 255, 0),  rgba(255, 255, 255, 0));
+    opacity: 0;
+}
+
+.gradient-right {
+    right: 0;
+    background: linear-gradient(to left, rgba(84, 84, 84, 0.578), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+    opacity: 1;
+}
+
+/* Sichtbare Gradienten */
+.opacity-to-left {
+    opacity: 1;
+}
+
+.opacity-to-right {
+    opacity: 1;
 }
 
 
@@ -978,11 +1070,15 @@ footer {
     }
 
     .options-row {
-        grid-template-columns: 120px 120px 120px 140px auto; /* Überschrift und Inhalte nebeneinander */
-        width: fit-content;
-        border: 1px solid #000000;
-        padding: 5px;
+        display: grid;
+        grid-template-columns: 120px 110px 130px 140px 120px auto; /* Überschrift und Inhalte nebeneinander */
+        width: 100%;
+        padding: 2px;
+        gap: 2px;
+        align-items: center;
     }
+
+
 }
 
 
