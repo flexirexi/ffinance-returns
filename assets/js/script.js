@@ -154,6 +154,22 @@ function getParsingOptions() {
     };
 }
 
+// Funktion, um den Spinner während des Parsing anzuzeigen
+function toggleParseButtonSpinner(showSpinner) {
+    const parseButton = document.getElementById("parse-csv-button");
+    
+    if (showSpinner) {
+        parseButton.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 10px;"></i> Parsing...`;
+        parseButton.disabled = true; // Deaktiviere den Button, um Mehrfachklicks zu vermeiden
+    } else {
+        parseButton.innerHTML = `<i class="fas fa-angle-double-down" style="margin: 0 15px;"></i> 
+                                  PARSE FILE AGAIN   
+                                  <i class="fas fa-angle-double-down" style="margin: 0 15px;"></i>`;
+        parseButton.disabled = false; // Reaktiviere den Button
+    }
+}
+
+
 /**
  * Formatiert einen Wert basierend auf Dezimal- und Tausendertrennzeichen.
  * Für die Vorschau wird der Wert standardisiert (Dezimalzeichen ".", keine Tausendertrennzeichen).
@@ -731,13 +747,28 @@ document.addEventListener("DOMContentLoaded", () => {
         // Tabelle mappen
         createColumnsTable(rawDataSet, table);
         
-        parseButton.addEventListener("click", () => {
-            const options = getParsingOptions();
-            rawDataSet.setReadCsvOptions(options);
-            console.log("Parsing Options erneut gesetzt:", options);
-        
-            // Tabelle neu generieren
-            createColumnsTable(rawDataSet, document.getElementById("columnsEditorTable"));
+        // Event-Listener für den Parse-Button
+        parseButton.addEventListener("click", async () => {
+            // Spinner anzeigen
+            toggleParseButtonSpinner(true);
+
+            try {
+                // Parsing-Optionen erneut setzen
+                const options = getParsingOptions();
+                rawDataSet.setReadCsvOptions(options);
+
+                // Simuliere das Parsing (du kannst hier deinen echten Parsing-Code einfügen)
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simuliertes Warten (z.B. 2 Sekunden)
+
+                // Tabelle neu generieren
+                createColumnsTable(rawDataSet, document.getElementById("columnsEditorTable"));
+                console.log("Parsing abgeschlossen. Optionen:", options);
+            } catch (error) {
+                console.error("Fehler beim Parsing:", error);
+            } finally {
+                // Spinner ausblenden
+                toggleParseButtonSpinner(false);
+            }
         });
     }
 
