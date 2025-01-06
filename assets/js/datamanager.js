@@ -60,6 +60,37 @@ export class RawDataSet {
         );
     }
 
+    /**
+     * Methode, um die ersten 5 Werte jeder Spalte im .raw Attribut zu extrahieren.
+     * @returns {Object} Ein Dictionary mit Headern als Keys und den ersten 5 Werten als Array.
+     */
+    getHeader() {
+        if (!this.raw) {
+            throw new Error("No raw data available.");
+        }
+
+        // CSV in Zeilen aufteilen
+        const rows = this.raw.split("\n").filter(row => row.trim() !== "");
+        
+        // Header extrahieren
+        const headers = rows[0].split(",").map(header => header.trim());
+        
+        // Datenzeilen extrahieren
+        const dataRows = rows.slice(1);
+
+        // Ergebnis-Dictionary erstellen
+        const result = {};
+
+        headers.forEach((header, index) => {
+            const values = dataRows
+                .map(row => row.split(",")[index]?.trim()) // Werte der jeweiligen Spalte
+                .slice(0, 5); // Nur die ersten 5 Werte
+            result[header] = values;
+        });
+
+        return result;
+    }
+
     // Methode, um das Dataset in einen CSV-String zu konvertieren
     toCSV() {
         if (!this.dataSet) {

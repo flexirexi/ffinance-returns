@@ -131,18 +131,57 @@
                 </details>
             
                 <!-- Schritt 2: Identify Columns -->
-                <details id="identifyColumns"  class="details-disabled">
+                <details id="identifyColumns" class="details-disabled">
                     <summary>
                         2. Identify Columns
                         <i id="identify-icon-summary" class="fas fa-spinner fa-spin summary-icon"></i>
                     </summary>
                     <div class="columns-container details-content">
                         <div id="columnsParser">
-                            Please identify the appropriate columns for your dataset. Drag and drop the fields to match the required data points.
-
-                            <div id="columnsEditor" class="columns-editor">
-                                <!-- Dynamisch generierte Inhalte basierend auf der Datei -->
+                            <strong style="color: var(--link-text);">Valid File. <br><br></strong>In order to identify columns, please parse the CSV before:
+                            <div id="identify-parse"></div>
+                        </div>
+                        <div id="optionsContainer" class="options-container">
+                            <!-- With Headers -->
+                            <div class="options-row">
+                                <strong>With Headers:</strong>
+                                <label><input type="radio" name="withHeaders" value="yes" checked> Yes</label>
+                                <label><input type="radio" name="withHeaders" value="no"> No</label>
                             </div>
+                            <!-- Separator -->
+                            <div class="options-row">
+                                <strong>Separator:</strong>
+                                <label><input type="radio" name="separator" value="comma" checked>comma: ,</label>
+                                <label><input type="radio" name="separator" value="semicolon">semi-colon: ;</label>
+                                <label>
+                                    <input type="radio" name="separator" value="other"> Other:
+                                    <input type="text" name="separator-other" style="width: 40px; margin-left: 5px;">
+                                </label>
+                            </div>
+                            <!-- Decimals -->
+                            <div class="options-row">
+                                <strong>Decimals:</strong>
+                                <label><input type="radio" name="decimals" value="dot" checked>point: .</label>
+                                <label><input type="radio" name="decimals" value="comma">comma: ,</label>
+                                <label>
+                                    <input type="radio" name="decimals" value="other"> Other:
+                                    <input type="text" name="decimals-other" style="width: 40px; margin-left: 5px;">
+                                </label>
+                            </div>
+                            <!-- Thousands -->
+                            <div class="options-row">
+                                <strong>Thousands:</strong>
+                                <label><input type="radio" name="thousands" value="dot" checked>point: .</label>
+                                <label><input type="radio" name="thousands" value="comma">comma: ,</label>
+                                <label><input type="radio" name="thousands" value="space">space: " "</label>
+                                <label>
+                                    <input type="radio" name="thousands" value="other"> Other:
+                                    <input type="text" name="thousands-other" style="width: 40px; margin-left: 5px;">
+                                </label>
+                            </div>
+                        </div>
+                        <div id="columnsEditor" class="columns-editor">
+                            <!-- Dynamisch generierte Inhalte basierend auf der Datei -->
                         </div>
                     </div>
                 </details>

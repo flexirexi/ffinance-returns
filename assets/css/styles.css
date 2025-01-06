@@ -144,7 +144,10 @@ summary {
 }
 
 .details-content {
+    width: auto;
 }
+
+
 
 
 nav .logo {
@@ -593,7 +596,7 @@ footer {
     color: var(--secondary-title);
 }
 
-.editor-header th, td {
+.editor-header th, .editor-container td {
     width: 140px; /* Fixe Spaltenbreite */
     min-width: 140px; /* Mindestens 150px breite Spalten */
     max-width: 140px; /* Maximal 150px breite Spalten */
@@ -777,7 +780,6 @@ footer {
 }
 
 .columns-container {
-    width: fit-content;
     border-radius: 8px;
     padding: 15px;
 }
@@ -800,9 +802,37 @@ footer {
 
 .details-disabled summary {
     pointer-events: none; /* Verhindert Interaktion */
-    
     cursor: not-allowed; /* Optional: Zeigt an, dass es deaktiviert ist */
 }
+
+#identifyColumns td {
+    padding: 12px;
+}
+
+.options-container {
+    display: grid;
+    gap: 10px; /* Abstand zwischen den Abschnitten */
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+.options-row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    grid-template-columns: 1fr; /* Alles untereinander bei kleinen Bildschirmen */
+}
+
+.options-row strong {
+    color: var(--primary-title);
+    text-align: left;
+    font-weight: bold;
+}
+
+.options-row label {
+    margin-right: 5px; /* Abstand zwischen den Radiobutton-Gruppen */
+}
+
 
 @media (min-width: 768px) {
     body {
@@ -945,6 +975,13 @@ footer {
         font-size: 18px;
         text-shadow: 0px 1px 1px #00000039;
         
+    }
+
+    .options-row {
+        grid-template-columns: 120px 120px 120px 140px auto; /* Überschrift und Inhalte nebeneinander */
+        width: fit-content;
+        border: 1px solid #000000;
+        padding: 5px;
     }
 }
 

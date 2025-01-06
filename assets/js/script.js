@@ -542,7 +542,6 @@ document.addEventListener("DOMContentLoaded", () => {
         iconIdentifySummary.style.display = "unset";
 
 
-
         uploadSection.removeAttribute("open");
         identifyColumnsSection.classList.remove("details-disabled");
         identifyColumnsSection.setAttribute("open", "");
@@ -563,17 +562,40 @@ document.addEventListener("DOMContentLoaded", () => {
         th1.style.textAlign = "right";
         th1.style.padding = "13px";
         th1.style.color = "var(--primary-title)";
+        if (window.innerWidth < 768) {
+            th1.style.width = "20px";
+        } else {
+            th1.style.maxWidth = "130px";
+        }
 
         const th2 = document.createElement("th");
         th2.id = "th2";
-        th2.textContent = "Mapped To";
+        th2.textContent = "Mapped to";
         th2.style.textAlign = "left";
-        th2.style.padding = "15px";
+        th2.style.padding = "10px";
         th2.style.color = "var(--primary-title)";
+
+        const th3 = document.createElement("th");
+        th3.id = "th3";
+        th3.textContent = "Values preview"
+        th3.style.textAlign = "left";
+        th3.style.padding = "10px";
+        th3.style.color = "var(--primary-title";
+        
+        const th4 = document.createElement("th");
+        th4.id = "th4";
+        th4.textContent = "Comment after check";
+        th4.style.textAlign = "left";
+        th4.style.padding = "10px";
+        th4.style.color = "var(--primary-title)";
+        th4.style.width = "350px";
+
 
         // Füge die Header-Zellen zur Zeile hinzu
         headerRow.appendChild(th1);
         headerRow.appendChild(th2);
+        headerRow.appendChild(th3);
+        headerRow.appendChild(th4);
 
         // Füge die Zeile zum Tabellenkopf hinzu
         thead.appendChild(headerRow);
@@ -584,6 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Tabelleninhalt basierend auf den Headern im CSV-String hinzufügen
         const tbody = document.createElement("tbody");
+        const datasetHeading = rawDataSet.getHeader();
         if (rawDataSet.raw) {
             // Parse raw CSV to get headers
             const headers = rawDataSet.raw.split("\n")[0].split(",");
@@ -596,6 +619,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 columnCell.textContent = header.trim();
                 row.appendChild(columnCell);
                 columnCell.style.textAlign = "right";
+                if (window.innerWidth < 768) {
+                    columnCell.style.width = "20px";
+                } else {
+                    columnCell.style.width = "130px";
+                }
 
                 // Mapping Dropdown
                 const mappingCell = document.createElement("td");
@@ -608,10 +636,24 @@ document.addEventListener("DOMContentLoaded", () => {
                     <option value="movements">Movements</option>
                     <option value="skip">Skip Column</option>
                 `;
-                select.style.padding = "5px";
-                select.style.width = "150px";
+                select.style.padding = "1px";
+                select.style.width = "138px";
                 mappingCell.appendChild(select);
                 row.appendChild(mappingCell);
+                mappingCell.style.width = "120px";
+
+                //Spaltenwerte Preview
+                const valueCell = document.createElement("td");
+                valueCell.textContent = datasetHeading[header.trim()].join("; ") + " ...";
+                row.appendChild(valueCell);
+                valueCell.style.fontSize = "13px";
+                valueCell.style.width = "250px";
+
+                const commentCell = document.createElement("td");
+                commentCell.textContent = "";
+                row.appendChild(commentCell);
+                commentCell.style.fontSize = "14px";
+                commentCell.style.Width = "350px";
 
                 tbody.appendChild(row);
             });
@@ -626,8 +668,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         table.appendChild(tbody);
         table.style.backgroundColor = "#00000022";
-        table.style.padding = "5px 20px 5px 0";
-        table.style.marginTop = "10px";
+        table.style.padding = "5px 10px 5px 0";
+        if (window.innerWidth > 768) {
+            table.style.width = "100%";
+        } else {
+            table.style.width = "800px";
+        }
+        table.style.borderCollapse = "collapsed";
+        table.style.border = "none";
+        //table.style.margin = "10px auto";
         columnsEditor.appendChild(table);
 
         // Abschnitt sichtbar machen
