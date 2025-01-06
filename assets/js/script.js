@@ -128,6 +128,144 @@ function enableScroll() {
     document.documentElement.classList.remove('no-scroll'); // Für den gesamten Dokumentbereich
 }
 
+function getParsingOptions() {
+    // Dynamisch die ausgewählten Werte der Radiobuttons lesen
+    const withHeaders = document.querySelector('input[name="withHeaders"]:checked').value === "yes";
+    const separator = document.querySelector('input[name="separator"]:checked').value;
+    const decimals = document.querySelector('input[name="decimals"]:checked').value;
+    const thousands = document.querySelector('input[name="thousands"]:checked').value;
+
+    // Falls "Other" gewählt wurde, den Textinput verwenden
+    const separatorOther = document.querySelector('input[name="separator-other"]').value.trim();
+    const decimalsOther = document.querySelector('input[name="decimals-other"]').value.trim();
+    const thousandsOther = document.querySelector('input[name="thousands-other"]').value.trim();
+
+    // Logik, um "Other"-Werte zu berücksichtigen
+    const finalSeparator = separator === "other" ? separatorOther : separator === "semicolon" ? ";" : separator === "comma" ? "," : separator;
+    const finalDecimals = decimals === "other" ? decimalsOther : decimals === "dot" ? "." : ",";
+    const finalThousands = thousands === "other" ? thousandsOther : thousands === "dot" ? "." : thousands === "comma" ? "," : thousands === "space" ? " " : "";
+
+    // Optionen-Dictionary zurückgeben
+    return {
+        headers: withHeaders,     // true oder false
+        sep: finalSeparator,     // Separator, z.B. ",", ";", etc.
+        dec: finalDecimals,      // Dezimalzeichen, z.B. ".", ","
+        thou: finalThousands,    // Tausendertrennzeichen, z.B. ".", ",", " " oder ""
+    };
+}
+
+/**
+ * Formatiert einen Wert basierend auf Dezimal- und Tausendertrennzeichen.
+ * Für die Vorschau wird der Wert standardisiert (Dezimalzeichen ".", keine Tausendertrennzeichen).
+ */
+function formatValue(value, decimals, thousands) {
+    if (!value) return "";
+
+    // Entferne Tausendertrennzeichen
+    if (thousands) {
+        const regex = new RegExp(`\\${thousands}`, "g");
+        value = value.replace(regex, "");
+    }
+
+    // Ersetze Dezimaltrennzeichen durch "."
+    if (decimals !== ".") {
+        value = value.replace(decimals, ".");
+    }
+
+    return value;
+}
+
+function createColumnsTable(rawDataSet, tableElement) {
+    // Lösche den aktuellen Inhalt der Tabelle
+    tableElement.innerHTML = "";
+    tableElement.classList.add("columns-table");
+
+    // Optionen aus der RawDataSet-Instanz laden
+    const options = rawDataSet.readCsvOptions;
+    const separator = options.sep || ",";
+    const withHeaders = options.headers || false;
+    const decimals = options.dec || ".";
+    const thousands = options.thou || "";
+
+    // Rohdaten aus RawDataSet laden
+    const rawRows = rawDataSet.raw.split("\n").filter(row => row.trim() !== "");
+    const headers = withHeaders ? rawRows[0].split(separator).map(h => h.trim()) : rawRows[0].split(separator).map((_, i) => `Column ${i + 1}`);
+
+    // Tabellenkopf erstellen
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    const columns = [
+        { id: "th1", text: "Column", style: { textAlign: "right", padding: "7px", color: "var(--primary-title)" } },
+        { id: "th2", text: "Identify as", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)" } },
+        { id: "th3", text: "Values preview", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)" } },
+        { id: "th4", text: "Comment after check", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)", width: "350px" } }
+    ];
+
+    columns.forEach(column => {
+        const th = document.createElement("th");
+        th.id = column.id;
+        th.textContent = column.text;
+        Object.assign(th.style, column.style);
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    tableElement.appendChild(thead);
+
+    // Tabelleninhalt erstellen
+    const tbody = document.createElement("tbody");
+    const dataRows = withHeaders ? rawRows.slice(1) : rawRows;
+
+    headers.forEach((header, colIndex) => {
+        const row = document.createElement("tr");
+
+        // Spaltenname
+        const columnCell = document.createElement("td");
+        columnCell.textContent = header;
+        columnCell.style.textAlign = "right";
+        row.appendChild(columnCell);
+
+        // Mapping-Dropdown
+        const mappingCell = document.createElement("td");
+        const select = document.createElement("select");
+        select.innerHTML = `
+            <option value="">Select...</option>
+            <option value="dateColumn">Date</option>
+            <option value="valueColumn1">Net Assets</option>
+            <option value="valueColumn2">Indexed Value</option>
+            <option value="movements">Movements</option>
+            <option value="skip">Skip Column</option>
+        `;
+        select.style.padding = "4px";
+        select.style.width = "138px";
+        mappingCell.appendChild(select);
+        row.appendChild(mappingCell);
+
+        // Spaltenwerte Vorschau
+        const valueCell = document.createElement("td");
+        const valuesPreview = dataRows.map(row => {
+            const value = row.split(separator)[colIndex]?.trim() || "";
+            return formatValue(value, decimals, thousands);
+        }).slice(0, 5); // Nur die ersten 5 Werte
+        valueCell.textContent = valuesPreview.join("; ") + " ...";
+        valueCell.style.fontSize = "13px";
+        valueCell.style.width = "250px";
+        row.appendChild(valueCell);
+
+        // Kommentarspalte
+        const commentCell = document.createElement("td");
+        commentCell.textContent = "";
+        commentCell.style.fontSize = "14px";
+        commentCell.style.width = "350px";
+        row.appendChild(commentCell);
+
+        tbody.appendChild(row);
+    });
+
+    tableElement.appendChild(tbody);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme");
     const aside = document.querySelector('.dataset-summary');
@@ -537,19 +675,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Zeige die zweite Phase (Identify Columns) an
     function proceedToIdentifyColumns() {
         const table = document.getElementById("columnsEditorTable");
-        const thead = document.createElement("thead");
         const iconUploadSummary = document.getElementById("upload-icon-summary");
         const iconIdentifySummary = document.getElementById("identify-icon-summary");
         const headerPreview = document.getElementById("header-preview");
-
+        const parseButton = document.getElementById("parse-csv-button");
+        
         iconUploadSummary.classList.remove("fa-cog");
         iconUploadSummary.classList.remove("fa-spin");
         iconUploadSummary.style.animation = "unset";
         iconUploadSummary.classList.add("fa-check");
-        
 
         iconIdentifySummary.style.display = "unset";
-
 
         uploadSection.removeAttribute("open");
         identifyColumnsSection.classList.remove("details-disabled");
@@ -558,162 +694,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         headerPreview.innerHTML = rawDataSet.getHeaderRaw();
 
+        // Parsing-Optionen laden
+        const options = getParsingOptions();
+        rawDataSet.setReadCsvOptions(options);
+        console.log("Parsing Options gesetzt:", options);
+
         // Tabelle mappen
-        table.innerHTML = "";
-        table.classList.add("columns-table");
-
-
-
-        const headerRow = document.createElement("tr");
-
-        const th1 = document.createElement("th");
-        th1.id = "th1";
-        th1.textContent = "Column";
-        th1.style.textAlign = "right";
-        th1.style.padding = "7px";
-        th1.style.color = "var(--primary-title)";
-        if (window.innerWidth < 768) {
-            th1.style.width = "30px";
-        } else {
-            th1.style.maxWidth = "130px";
-        }
-
-        const th2 = document.createElement("th");
-        th2.id = "th2";
-        th2.textContent = "Identify as";
-        th2.style.textAlign = "left";
-        th2.style.padding = "7px";
-        th2.style.color = "var(--primary-title)";
-
-        const th3 = document.createElement("th");
-        th3.id = "th3";
-        th3.textContent = "Values preview"
-        th3.style.textAlign = "left";
-        th3.style.padding = "7px";
-        th3.style.color = "var(--primary-title";
+        createColumnsTable(rawDataSet, table);
         
-        const th4 = document.createElement("th");
-        th4.id = "th4";
-        th4.textContent = "Comment after check";
-        th4.style.textAlign = "left";
-        th4.style.padding = "7px";
-        th4.style.color = "var(--primary-title)";
-        th4.style.width = "350px";
-
-
-        // Füge die Header-Zellen zur Zeile hinzu
-        headerRow.appendChild(th1);
-        headerRow.appendChild(th2);
-        headerRow.appendChild(th3);
-        headerRow.appendChild(th4);
-
-        // Füge die Zeile zum Tabellenkopf hinzu
-        thead.appendChild(headerRow);
+        parseButton.addEventListener("click", () => {
+            const options = getParsingOptions();
+            rawDataSet.setReadCsvOptions(options);
+            console.log("Parsing Options erneut gesetzt:", options);
         
-
-        // Füge den Tabellenkopf zur Tabelle hinzu
-        table.appendChild(thead);
-
-        // Tabelleninhalt basierend auf den Headern im CSV-String hinzufügen
-        const tbody = document.createElement("tbody");
-        const datasetHeading = rawDataSet.getHeader();
-        if (rawDataSet.raw) {
-            // Parse raw CSV to get headers
-            const headers = rawDataSet.raw.split("\n")[0].split(",");
-            
-            headers.forEach(header => {
-                const row = document.createElement("tr");
-
-                // Spaltenname
-                const columnCell = document.createElement("td");
-                columnCell.textContent = header.trim();
-                row.appendChild(columnCell);
-                columnCell.style.textAlign = "right";
-                if (window.innerWidth < 768) {
-                    columnCell.style.width = "30px";
-                } else {
-                    columnCell.style.width = "130px";
-                }
-
-                // Mapping Dropdown
-                const mappingCell = document.createElement("td");
-                const select = document.createElement("select");
-                select.innerHTML = `
-                    <option value="">Select...</option>
-                    <option value="dateColumn">Date</option>
-                    <option value="valueColumn1">Net Assets</option>
-                    <option value="valueColumn2">Indexed Value</option>
-                    <option value="movements">Movements</option>
-                    <option value="skip">Skip Column</option>
-                `;
-                select.style.padding = "4px";
-                select.style.width = "138px";
-                mappingCell.appendChild(select);
-                row.appendChild(mappingCell);
-                mappingCell.style.width = "120px";
-
-                //Spaltenwerte Preview
-                const valueCell = document.createElement("td");
-                valueCell.textContent = datasetHeading[header.trim()].join("; ") + " ...";
-                row.appendChild(valueCell);
-                valueCell.style.fontSize = "13px";
-                valueCell.style.width = "250px";
-
-                const commentCell = document.createElement("td");
-                commentCell.textContent = "";
-                row.appendChild(commentCell);
-                commentCell.style.fontSize = "14px";
-                commentCell.style.Width = "350px";
-
-                tbody.appendChild(row);
-            });
-        } else {
-            const emptyRow = document.createElement("tr");
-            const emptyCell = document.createElement("td");
-            emptyCell.colSpan = 2;
-            emptyCell.textContent = "No columns found.";
-            emptyRow.appendChild(emptyCell);
-            tbody.appendChild(emptyRow);
-        }
-
-        table.appendChild(tbody);
-        table.style.backgroundColor = "#00000022";
-        table.style.padding = "5px 10px 5px 0";
-        if (window.innerWidth > 768) {
-            table.style.width = "100%";
-        } else {
-            table.style.width = "800px";
-        }
-        table.style.borderCollapse = "collapsed";
-        table.style.border = "none";
-        //table.style.margin = "10px auto";
-        columnsEditor.appendChild(table);
-
-        // Abschnitt sichtbar machen
-        columnsEditor.style.display = "block";
-        
-        columnsEditor.addEventListener("scroll", () => {
-            const scrollLeft = columnsEditor.scrollLeft;
-            const scrollWidth = columnsEditor.scrollWidth;
-            const clientWidth = columnsEditor.clientWidth;
-            const gradLeft = document.getElementById("gradient-left");
-            const gradRight = document.getElementById("gradient-right");
-
-            // Prüfen, ob links gescrollt wurde
-            if (scrollLeft > 40) {
-                gradLeft.style.opacity = "1";
-            } else {
-                gradLeft.style.opacity = "0";
-            }
-    
-            // Prüfen, ob nicht ganz rechts gescrollt wurde
-            if (scrollWidth - clientWidth - scrollLeft < 40) {
-                gradRight.style.opacity = "0";
-            } else {
-                gradRight.style.opacity = "1";
-            }
+            // Tabelle neu generieren
+            createColumnsTable(rawDataSet, document.getElementById("columnsEditorTable"));
         });
     }
+
 
 
 });
