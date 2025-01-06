@@ -139,6 +139,7 @@ summary {
     position: sticky;
     top:0;
     left:0;
+    display: flex;
     margin-bottom: 10px;
 }
 
@@ -731,6 +732,15 @@ footer {
 
 .upload-process {
     margin-top: 16px;
+}
+
+.summary-icon {
+    margin-left: auto;
+    font-size: 25px;
+}
+
+#identify-icon-summary {
+    display: none;
 }
 
 .upload-process summary {

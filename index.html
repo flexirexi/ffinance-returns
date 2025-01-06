@@ -117,7 +117,10 @@
             <div class="upload-process">
                 <!-- Schritt 1: Upload -->
                 <details id="upload-details" open>
-                    <summary>1. Upload CSV-FILE</summary>
+                    <summary>
+                        1. Upload CSV-FILE
+                        <i id="upload-icon-summary" class="fas fa-spinner fa-spin summary-icon"></i>
+                    </summary>
                     <div class="upload-container details-content">
                         <div class="upload-box" id="uploadBox">
                             <i class="fas fa-upload upload-icon"></i>
@@ -129,7 +132,10 @@
             
                 <!-- Schritt 2: Identify Columns -->
                 <details id="identifyColumns"  class="details-disabled">
-                    <summary>2. Identify Columns</summary>
+                    <summary>
+                        2. Identify Columns
+                        <i id="identify-icon-summary" class="fas fa-spinner fa-spin summary-icon"></i>
+                    </summary>
                     <div class="columns-container details-content">
                         <div id="columnsParser">
                             Please identify the appropriate columns for your dataset. Drag and drop the fields to match the required data points.

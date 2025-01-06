@@ -532,6 +532,16 @@ document.addEventListener("DOMContentLoaded", () => {
     function proceedToIdentifyColumns() {
         const table = document.createElement("table");
         const thead = document.createElement("thead");
+        const iconUploadSummary = document.getElementById("upload-icon-summary");
+        const iconIdentifySummary = document.getElementById("identify-icon-summary");
+
+        iconUploadSummary.classList.remove("fa-spinner");
+        iconUploadSummary.classList.remove("fa-spin");
+        iconUploadSummary.classList.add("fa-check");
+
+        iconIdentifySummary.style.display = "unset";
+
+
 
         uploadSection.removeAttribute("open");
         identifyColumnsSection.classList.remove("details-disabled");
