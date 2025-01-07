@@ -60,6 +60,53 @@ export class RawDataSet {
         );
     }
 
+    // ...
+
+    /**
+     * Prüft, ob ein Wert ein gültiges Datum im angegebenen Format ist.
+     * @param {string} value - Der zu überprüfende Wert.
+     * @param {string} format - Das erwartete Datumsformat (DMY, MDY, YMD).
+     * @returns {boolean} True, wenn das Datum gültig ist.
+     */
+    static isValidDate(value, format) {
+        if (!value) return false;
+
+        // Regex-Muster für die Formate
+        const patterns = {
+            DMY: /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[0-2])[./-](\d{4}|\d{2})$/,
+            MDY: /^(0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])[./-](\d{4}|\d{2})$/,
+            YMD: /^(\d{4}|\d{2})[./-](0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])$/
+        };
+
+        const regex = patterns[format];
+        if (!regex) return false;
+
+        const match = value.match(regex);
+        if (!match) return false;
+
+        let day, month, year;
+
+        if (format === "DMY") {
+            [day, month, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+        } else if (format === "MDY") {
+            [month, day, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+        } else if (format === "YMD") {
+            [year, month, day] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+        }
+
+        // Jahr anpassen, wenn es nur 2-stellig ist
+        if (year < 100) year += 2000;
+
+        // Überprüfen, ob das Datum existiert
+        const date = new Date(year, month - 1, day);
+        return (
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day
+        );
+    }
+
+
     /**
      * Methode, um die ersten 5 Werte jeder Spalte im .raw Attribut zu extrahieren.
      * @returns {Object} Ein Dictionary mit Headern als Keys und den ersten 5 Werten als Array.

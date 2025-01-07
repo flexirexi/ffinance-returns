@@ -250,11 +250,16 @@ function createColumnsTable(rawDataSet, tableElement) {
         const select = document.createElement("select");
         select.innerHTML = `
             <option value="">Select...</option>
-            <option value="dateColumn">Date</option>
-            <option value="valueColumn1">Net Assets</option>
-            <option value="valueColumn2">Indexed Value</option>
-            <option value="movements">Movements</option>
-            <option value="skip">Skip Column</option>
+            <option value="dateColumnDMY">DATE DMY</option>
+            <option value="dateColumnMDY">DATE MDY</option>
+            <option value="dateColumnYMD">DATE YMD</option>
+            <option value="priceColumn">Price (only once)</option>
+            <option value="navColumn">Monetary Value/NAV (only once)</option>
+            <option value="indexColumn">Indexed Value (only once)</option>
+            <option value="movementsColumn">Movements (+/- values)</option>
+            <option value="subscriptionsColumn">Subscriptions/pay-in (+ values)</option>
+            <option value="redemptionsColumn">Redemptions/pay-out (+ values)</option>
+            <option value="distributionColumn">Distribution/pay-out (+ values)</option>
         `;
         select.style.padding = "4px";
         select.style.width = "138px";
@@ -311,6 +316,121 @@ function createColumnsTable(rawDataSet, tableElement) {
         // Prüfen, ob nicht ganz rechts gescrollt wurde
         gradRight.style.opacity = (scrollWidth - clientWidth - scrollLeft) < 40 ? "0" : "1";
     });
+
+    /**
+     * Event-Listener für Dropdown-Änderungen
+     */
+    tableElement.addEventListener("change", (e) => { 
+        //document.getElementById("columnsEditorTable")
+        if (e.target.tagName === "SELECT") {
+            validateColumnsMeta();
+        }
+    });
+}
+
+/**
+ * Validiert die Zuordnungen in der columnsEditorTable basierend auf den Dropdown-Werten.
+ */
+function validateColumnsMeta() {
+    const table = document.getElementById("columnsEditorTable");
+    const rows = table.querySelectorAll("tbody tr");
+    const usedColumns = {};
+    const requiredColumns = ["priceColumn", "navColumn", "indexColumn"];
+    const dateColumns = ["dateColumnDMY", "dateColumnMDY", "dateColumnYMD"];
+    let hasRequiredColumn = false;
+    let dateColumnType = null;
+
+    // Initialisiere die genutzten Spalten
+    [...requiredColumns, ...dateColumns].forEach(column => usedColumns[column] = []);
+
+    // Durchlaufe jede Zeile der Tabelle
+    rows.forEach((row, rowIndex) => {
+        const dropdown = row.querySelector("select");
+        const commentCell = row.querySelector("td:last-child");
+        const selectedValue = dropdown.value;
+
+        // Kommentar zurücksetzen
+        commentCell.textContent = "";
+
+        if (selectedValue) {
+            if (usedColumns[selectedValue]) {
+                usedColumns[selectedValue].push(rowIndex);
+            } else {
+                usedColumns[selectedValue] = [rowIndex];
+            }
+
+            if (requiredColumns.includes(selectedValue)) {
+                hasRequiredColumn = true;
+            }
+
+            if (dateColumns.includes(selectedValue)) {
+                dateColumnType = selectedValue;
+            }
+        }
+    });
+
+    // Bedingung 1: Werte, die maximal einmal vorkommen dürfen
+    Object.keys(usedColumns).forEach(column => {
+        const indices = usedColumns[column];
+
+        if (indices.length > 1 && [...dateColumns, "priceColumn", "navColumn", "indexColumn"].includes(column)) {
+            indices.forEach(index => {
+                const row = rows[index];
+                const commentCell = row.querySelector("td:last-child");
+                commentCell.textContent = "Error: Duplicate assignment not allowed.";
+            });
+        }
+    });
+
+    // Bedingung 2: Inkompatible Kombinationen
+    const incompatibleColumns = ["priceColumn", "navColumn", "indexColumn"];
+    const incompatibleSelected = incompatibleColumns.filter(column => usedColumns[column].length > 0);
+    if (incompatibleSelected.length > 1) {
+        incompatibleSelected.forEach(column => {
+            usedColumns[column].forEach(index => {
+                const row = rows[index];
+                const commentCell = row.querySelector("td:last-child");
+                commentCell.textContent = "Error: Incompatible assignment.";
+            });
+        });
+    }
+
+    //// Bedingung 3: Mindestens ein erforderlicher Wert
+    //if (!hasRequiredColumn) {
+    //    rows.forEach(row => {
+    //        const commentCell = row.querySelector("td:last-child");
+    //        commentCell.textContent = "Error: At least one required column must be assigned.";
+    //    });
+    //}
+
+    // Bedingung 4: Validierung für Date-Spalte
+    if (dateColumnType) {
+        const columnIndex = Array.from(rows[0].cells).indexOf(rows[0].querySelector("select").parentNode);
+        const format = dateColumnType.replace("dateColumn", "");
+        const dataRows = Array.from(rows).slice(1); // Exklusive Header-Zeile
+
+        let hasNullValues = false;
+        let hasInvalidDates = false;
+
+        dataRows.forEach(dataRow => {
+            const cellValue = dataRow.cells[columnIndex]?.textContent.trim();
+            if (!cellValue) {
+                hasNullValues = true;
+            } else if (!RawDataSet.isValidDate(cellValue, format)) {
+                hasInvalidDates = true;
+            }
+        });
+
+        rows.forEach(row => {
+            const commentCell = row.querySelector("td:last-child");
+            if (hasNullValues) {
+                commentCell.textContent += "Info: Contains null dates. Rows with null values will be skipped.";
+            }
+            if (hasInvalidDates) {
+                commentCell.textContent += " Error: Some values cannot be parsed as dates.";
+            }
+        });
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
