@@ -1019,8 +1019,11 @@ footer {
         background: none; /* Kein Hintergrund */
         box-shadow: none; /* Kein Schatten */
         overflow: visible; /* Kein Abschneiden */
-        transition: none; /* Keine Animation */
+        transition: unset;
+        backdrop-filter: unset; /* Frosted-Glass-Effekt */
+        -webkit-backdrop-filter: unset;
     }
+
     
     /* Entferne die mobile Klasse `.open` im Desktop-Modus */
     .nav-links.open {
