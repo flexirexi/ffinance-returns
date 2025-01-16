@@ -142,6 +142,10 @@ summary {
     text-wrap-mode: nowrap;
 }
 
+.hide-me {
+    display: none;
+}
+
 .details-content {
     width: auto;
 }

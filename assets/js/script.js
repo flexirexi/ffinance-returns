@@ -195,6 +195,15 @@ function formatValue(value, decimals, thousands) {
 }
 
 
+/**
+ * Lädt den csv-String aus .raw final als List in das .dataSet Attribut zur effizienten Weiterverarbeitung
+ * Initiiert alle Schritte zum Einladen des csv-Files als dataSet in das System
+ * @param {DM.RawDataSet} rawDataSet - RawDataSet-Klasse mit csv und dazugehörigen parsing Parametern 
+ */
+function loadDataSetIntoSystem(rawDataSet) {
+    
+}
+
 
 function createColumnsTable(rawDataSet, tableElement) {
     const buttonFinalLoad = document.getElementById("finalize-csv-button");
@@ -317,7 +326,9 @@ function createColumnsTable(rawDataSet, tableElement) {
 
     function handleFinalizeClick() {
         if (!buttonFinalLoad.classList.contains("disabled")) {
-            console.log("funzt, und ich nutze die Klasse: ", rawDataSet);
+            const editorCont = document.querySelector(".editor-container");
+            console.log("funzt mit Separator:   ", rawDataSet.readCsvOptions.sep);
+            loadDataSetIntoSystem(rawDataSet);
         }
     }
 }
@@ -923,6 +934,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Event-Listener für den Parse-Button
         parseButton.addEventListener("click", async () => {
+            const buttonFinalLoad = document.getElementById("finalize-csv-button"); 
+            buttonFinalLoad.classList.add("disabled");
             // Spinner anzeigen
             toggleParseButtonSpinner(true);
 
