@@ -1147,7 +1147,7 @@ footer {
 
     .options-row {
         display: grid;
-        grid-template-columns: 120px 110px 130px 140px 120px auto; /* Überschrift und Inhalte nebeneinander */
+        grid-template-columns: 120px 110px 130px 140px 140px auto; /* Überschrift und Inhalte nebeneinander */
         width: 100%;
         padding: 2px;
         gap: 2px;

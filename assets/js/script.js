@@ -133,7 +133,8 @@ function enableScroll() {
 function getParsingOptions() {
     // Dynamisch die ausgewählten Werte der Radiobuttons lesen
     const withHeaders = document.querySelector('input[name="withHeaders"]:checked').value === "yes";
-    const separator = document.querySelector('input[name="separator"]:checked').value;
+    let separator = document.querySelector('input[name="separator"]:checked').value;
+    separator = separator === "tab" ? "\t" : separator; 
     const decimals = document.querySelector('input[name="decimals"]:checked').value;
     const thousands = document.querySelector('input[name="thousands"]:checked').value;
 
@@ -288,7 +289,7 @@ function createColumnsTable(rawDataSet, tableElement) {
         tbody.appendChild(row);
 
         select.addEventListener(("change"), () => {
-            console.log("DROPDOWN CHANGED");
+            console.log("VALIDATION PROCESS START -----");
             validateColumnsMeta(rawDataSet);
         });
     });
@@ -335,7 +336,7 @@ function validateColumnsMeta(rawDataSet) {
     const dateColumns = ["dateColumnDMY", "dateColumnMDY", "dateColumnYMD"];
     let requiredCount = 0;
     let dateCount = 0;
-    let allValid = false;
+    let allValid = true;
     
 
     // Initialisiere die genutzten Spalten
@@ -346,7 +347,6 @@ function validateColumnsMeta(rawDataSet) {
         const dropdown = row.querySelector("select");
         const commentCell = row.querySelector("td:last-child");
         const selectedColumn = dropdown.options[dropdown.selectedIndex].value;
-        console.log("Selected:  " + selectedColumn);
 
         // Kommentar zurücksetzen
         commentCell.textContent = "";
@@ -364,58 +364,61 @@ function validateColumnsMeta(rawDataSet) {
 
             // Validierung des eigenen Werts
             if (dateColumns.includes(selectedColumn)) {
-                console.log("---------- CHECKING DATE ------------");
                 const format = selectedColumn.replace("dateColumn", "");
                 const cellValue = row.querySelector("td:nth-child(2)")?.textContent.trim();
                 if (cellValue && !rawDataSet.rawValidateDateColumn(rowIndex, format)) {
-                    console.log("Error: Invalid date format. ");
+                    commentCell.textContent += "ERROR: Some Dates can't be parsed";
                     allValid = false;
                 }
             }
         }
     });
 
-    // Globale Validierungen
-    rows.forEach((row, rowIndex) => {
-        const dropdown = row.querySelector("select");
-        const commentCell = row.querySelector("td:last-child");
-        const selectedColumn = dropdown.options[dropdown.selectedIndex]?.textContent.trim();
+       // Globale Validierungen
+       Object.keys(usedColumns).forEach(column => {
+        const indices = usedColumns[column];
 
-        if (selectedColumn) {
-            // A) Required-Spalten dürfen nicht doppelt vorkommen
-            if (requiredColumns.includes(selectedColumn) && usedColumns[selectedColumn].length > 1) {
-                commentCell.textContent += "Error: Duplicate required column. ";
-                allValid = false;
+        if (indices.length > 1) {
+            // Bedingung 1: Duplicate error für Spalten, die maximal einmal vorkommen dürfen
+            if ([...dateColumns, ...requiredColumns].includes(column)) {
+                indices.forEach(index => {
+                    const row = rows[index];
+                    const commentCell = row.querySelector("td:last-child");
+                    commentCell.textContent += "Error: Duplicate assignment not allowed. ";
+                    allValid = false;
+                });
             }
-
-            // B) Es darf nur eine Required-Spalte existieren
-            if (requiredCount > 1) {
-                commentCell.textContent += "Error: Only one required column allowed. ";
-                allValid = false;
-            }
-
-            // C) Bei 0 Required-Spalten passiert nichts
-            // Keine Aktion erforderlich
-
-            // D) Date-Spalten dürfen nicht doppelt vorkommen
-            if (dateColumns.includes(selectedColumn) && usedColumns[selectedColumn].length > 1) {
-                commentCell.textContent += "Error: Duplicate date column. ";
-                allValid = false;
-            }
-
-            // E) Es darf nur eine Date-Spalte existieren
-            if (dateCount > 1) {
-                commentCell.textContent += "Error: Only one date column allowed. ";
-                allValid = false;
-            }
-
-            // F) Bei 0 Date-Spalten passiert nichts
-            // Keine Aktion erforderlich
         }
     });
 
+    // Zusätzliche Bedingung für Required- und Date-Spalten
+    if (requiredCount > 1) {
+        requiredColumns.forEach(column => {
+            const indices = usedColumns[column] || [];
+            indices.forEach(index => {
+                const row = rows[index];
+                const commentCell = row.querySelector("td:last-child");
+                commentCell.textContent += "Error: Only one required column allowed: Price, Monetary or Indexed. ";
+                allValid = false;
+            });
+        });
+    }
+
+    if (dateCount > 1) {
+        dateColumns.forEach(column => {
+            const indices = usedColumns[column] || [];
+            indices.forEach(index => {
+                const row = rows[index];
+                const commentCell = row.querySelector("td:last-child");
+                commentCell.textContent += "Error: Only one date column allowed. ";
+                allValid = false;
+            });
+        });
+    }
+
     // Gesamtergebnis zurückgeben
-    console.log("Validation complete. All valid:", allValid);
+    console.log("PROCESS ENDED: VALIDATED?   ", allValid);
+
   
 }
 
@@ -899,8 +902,7 @@ document.addEventListener("DOMContentLoaded", () => {
         uploadSection.removeAttribute("open");
         identifyColumnsSection.classList.remove("details-disabled");
         identifyColumnsSection.setAttribute("open", "");
-        console.log("RawDataSet zur Identifizierung bereit:", rawDataSet);
-
+        
         headerPreview.innerHTML = rawDataSet.getHeaderRaw();
 
         // Parsing-Optionen laden

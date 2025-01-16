@@ -89,18 +89,18 @@ export class RawDataSet {
      * @returns {boolean} True, wenn alle Werte der gewünschten Spalte in Datum umgewandelt werden können.
      */
      rawValidateDateColumn(colIndex, format) {
+        let removeHeader = true;
         // Regex-Muster für die Formate
-        let dateCol = RawDataSet.rawGetColumnValues(this.raw, colIndex, true, this.readCsvOptions);
+        let dateCol = RawDataSet.rawGetColumnValues(this.raw, colIndex, removeHeader , this.readCsvOptions);
 
         for (let index = 0; index < dateCol.length; index++) {
             let value = dateCol[index];
             if (!RawDataSet.isValidDate(value, format)) {
-                console.log("DATE ERROR:    " + value + " at index:  " + index);
+                console.log(`DATE ERROR:    ${value} at index:  ${index + Number(removeHeader)}`);
                 return false; // Beendet die gesamte Funktion
             }
         }
-        
-        console.log("DATE COLUMN CORRECT! ------------")
+
         return true;
     }
 
