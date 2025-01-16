@@ -46,8 +46,6 @@
     --glass: #00000000;
     --glass2: #00000000;
     --glass-color: #1e5f593e;
-
-
 }
 
 body {
@@ -998,6 +996,28 @@ footer {
     opacity: 1;
 }
 
+#finalize-csv-button {
+    width: 150px;
+    padding: 9px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid var(--link-text);
+}
+
+.disabled {
+    border: 2px solid var(--dis-border) !important;
+    background-color: var(--dis-bg);
+    color: var(--dis-text)
+}
+
+.disabled:hover {
+    background-color: var(--dis-bg);
+    color: var(--dis-text);
+    border: 2px solid var(--dis-border) !important;
+    cursor: unset;
+}
 
 @media (min-width: 768px) {
     body {

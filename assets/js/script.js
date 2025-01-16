@@ -194,10 +194,20 @@ function formatValue(value, decimals, thousands) {
     return value;
 }
 
+
+
 function createColumnsTable(rawDataSet, tableElement) {
-    // Lösche den aktuellen Inhalt der Tabelle
+    const buttonFinalLoad = document.getElementById("finalize-csv-button");
+
+    // Verhindere doppelte Listener-Registrierungen
+    if (!buttonFinalLoad.dataset.listenerAdded) {
+        buttonFinalLoad.addEventListener("click", handleFinalizeClick);
+        buttonFinalLoad.dataset.listenerAdded = "true"; // Markiere, dass der Listener bereits hinzugefügt wurde
+    }
+
+    // Tabelle bereinigen und neu erstellen
     const columnsEditor = document.getElementById("columnsEditor");
-    tableElement.innerHTML = "";
+    tableElement.innerHTML = ""; // Tabelle leeren
     tableElement.classList.add("columns-table");
 
     // Optionen aus der RawDataSet-Instanz laden
@@ -209,7 +219,9 @@ function createColumnsTable(rawDataSet, tableElement) {
 
     // Rohdaten aus RawDataSet laden
     const rawRows = rawDataSet.raw.split("\n").filter(row => row.trim() !== "");
-    const headers = withHeaders ? rawRows[0].split(separator).map(h => h.trim()) : rawRows[0].split(separator).map((_, i) => `Column ${i + 1}`);
+    const headers = withHeaders
+        ? rawRows[0].split(separator).map(h => h.trim())
+        : rawRows[0].split(separator).map((_, i) => `Column ${i + 1}`);
 
     // Tabellenkopf erstellen
     const thead = document.createElement("thead");
@@ -219,7 +231,7 @@ function createColumnsTable(rawDataSet, tableElement) {
         { id: "th1", text: "Column", style: { textAlign: "right", padding: "7px", color: "var(--primary-title)" } },
         { id: "th2", text: "Identify as", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)" } },
         { id: "th3", text: "Values preview", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)" } },
-        { id: "th4", text: "Comment after check", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)", width: "350px" } }
+        { id: "th4", text: "Comment after check", style: { textAlign: "left", padding: "7px", color: "var(--primary-title)", width: "350px" } },
     ];
 
     columns.forEach(column => {
@@ -249,7 +261,7 @@ function createColumnsTable(rawDataSet, tableElement) {
         // Mapping-Dropdown
         const mappingCell = document.createElement("td");
         const select = document.createElement("select");
-        select.id = `select${colIndex}`
+        select.id = `select${colIndex}`;
         select.innerHTML = `
             <option value="">Select...</option>
             <option value="dateColumnDMY">DATE DMY</option>
@@ -270,10 +282,12 @@ function createColumnsTable(rawDataSet, tableElement) {
 
         // Spaltenwerte Vorschau
         const valueCell = document.createElement("td");
-        const valuesPreview = dataRows.map(row => {
-            const value = row.split(separator)[colIndex]?.trim() || "";
-            return formatValue(value, decimals, thousands);
-        }).slice(0, 5); // Nur die ersten 5 Werte
+        const valuesPreview = dataRows
+            .map(row => {
+                const value = row.split(separator)[colIndex]?.trim() || "";
+                return formatValue(value, decimals, thousands);
+            })
+            .slice(0, 5); // Nur die ersten 5 Werte
         valueCell.textContent = valuesPreview.join("; ") + " ...";
         valueCell.style.fontSize = "13px";
         valueCell.style.width = "250px";
@@ -288,42 +302,26 @@ function createColumnsTable(rawDataSet, tableElement) {
 
         tbody.appendChild(row);
 
-        select.addEventListener(("change"), () => {
+        select.addEventListener("change", () => {
             console.log("VALIDATION PROCESS START -----");
             validateColumnsMeta(rawDataSet);
         });
     });
 
     tableElement.appendChild(tbody);
-    tableElement.style.backgroundColor = "#00000022";
-    tableElement.style.padding = "5px 10px 5px 0";
-    if (window.innerWidth > 768) {
-        tableElement.style.width = "100%";
-    } else {
-        tableElement.style.width = "800px";
-    }
-    tableElement.style.borderCollapse = "collapsed";
-    tableElement.style.border = "none";
-    //table.style.margin = "10px auto";
-    columnsEditor.appendChild(tableElement);
 
     // Abschnitt sichtbar machen
+    //const columnsEditor = document.getElementById("columnsEditor");
+    columnsEditor.appendChild(tableElement);
     columnsEditor.style.display = "block";
-    
-    columnsEditor.addEventListener("scroll", () => {
-        const scrollLeft = columnsEditor.scrollLeft;
-        const scrollWidth = columnsEditor.scrollWidth;
-        const clientWidth = columnsEditor.clientWidth;
-        const gradLeft = document.getElementById("gradient-left");
-        const gradRight = document.getElementById("gradient-right");
 
-        // Prüfen, ob links gescrollt wurde
-        gradLeft.style.opacity = scrollLeft > 40 ? "1" : "0";
-
-        // Prüfen, ob nicht ganz rechts gescrollt wurde
-        gradRight.style.opacity = (scrollWidth - clientWidth - scrollLeft) < 40 ? "0" : "1";
-    });
+    function handleFinalizeClick() {
+        if (!buttonFinalLoad.classList.contains("disabled")) {
+            console.log("funzt, und ich nutze die Klasse: ", rawDataSet);
+        }
+    }
 }
+
 
 /**
  * Validiert die Zuordnungen in der columnsEditorTable basierend auf den Dropdown-Werten.
@@ -334,9 +332,11 @@ function validateColumnsMeta(rawDataSet) {
     const usedColumns = {};
     const requiredColumns = ["priceColumn", "navColumn", "indexColumn"];
     const dateColumns = ["dateColumnDMY", "dateColumnMDY", "dateColumnYMD"];
+    const buttonFinalLoad = document.getElementById("finalize-csv-button");
     let requiredCount = 0;
     let dateCount = 0;
     let allValid = true;
+    buttonFinalLoad.classList.add("disabled");
     
 
     // Initialisiere die genutzten Spalten
@@ -404,6 +404,11 @@ function validateColumnsMeta(rawDataSet) {
         });
     }
 
+    //Prüfen, ob requiredCount 0 ist
+    if (requiredCount === 0) {
+        allValid = false;
+    }
+
     if (dateCount > 1) {
         dateColumns.forEach(column => {
             const indices = usedColumns[column] || [];
@@ -418,6 +423,9 @@ function validateColumnsMeta(rawDataSet) {
 
     // Gesamtergebnis zurückgeben
     console.log("PROCESS ENDED: VALIDATED?   ", allValid);
+    if (allValid) {
+        buttonFinalLoad.classList.remove("disabled");
+    }
 
   
 }
