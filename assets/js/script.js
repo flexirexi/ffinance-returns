@@ -248,6 +248,7 @@ function createColumnsTable(rawDataSet, tableElement) {
         // Mapping-Dropdown
         const mappingCell = document.createElement("td");
         const select = document.createElement("select");
+        select.id = `select${colIndex}`
         select.innerHTML = `
             <option value="">Select...</option>
             <option value="dateColumnDMY">DATE DMY</option>
@@ -285,6 +286,11 @@ function createColumnsTable(rawDataSet, tableElement) {
         row.appendChild(commentCell);
 
         tbody.appendChild(row);
+
+        select.addEventListener(("change"), () => {
+            console.log("DROPDOWN CHANGED");
+            validateColumnsMeta(rawDataSet);
+        });
     });
 
     tableElement.appendChild(tbody);
@@ -316,29 +322,21 @@ function createColumnsTable(rawDataSet, tableElement) {
         // Prüfen, ob nicht ganz rechts gescrollt wurde
         gradRight.style.opacity = (scrollWidth - clientWidth - scrollLeft) < 40 ? "0" : "1";
     });
-
-    /**
-     * Event-Listener für Dropdown-Änderungen
-     */
-    tableElement.addEventListener("change", (e) => { 
-        //document.getElementById("columnsEditorTable")
-        if (e.target.tagName === "SELECT") {
-            validateColumnsMeta();
-        }
-    });
 }
 
 /**
  * Validiert die Zuordnungen in der columnsEditorTable basierend auf den Dropdown-Werten.
  */
-function validateColumnsMeta() {
+function validateColumnsMeta(rawDataSet) {
     const table = document.getElementById("columnsEditorTable");
     const rows = table.querySelectorAll("tbody tr");
     const usedColumns = {};
     const requiredColumns = ["priceColumn", "navColumn", "indexColumn"];
     const dateColumns = ["dateColumnDMY", "dateColumnMDY", "dateColumnYMD"];
-    let hasRequiredColumn = false;
-    let dateColumnType = null;
+    let requiredCount = 0;
+    let dateCount = 0;
+    let allValid = false;
+    
 
     // Initialisiere die genutzten Spalten
     [...requiredColumns, ...dateColumns].forEach(column => usedColumns[column] = []);
@@ -347,90 +345,78 @@ function validateColumnsMeta() {
     rows.forEach((row, rowIndex) => {
         const dropdown = row.querySelector("select");
         const commentCell = row.querySelector("td:last-child");
-        const selectedValue = dropdown.value;
+        const selectedColumn = dropdown.options[dropdown.selectedIndex].value;
+        console.log("Selected:  " + selectedColumn);
 
         // Kommentar zurücksetzen
         commentCell.textContent = "";
 
-        if (selectedValue) {
-            if (usedColumns[selectedValue]) {
-                usedColumns[selectedValue].push(rowIndex);
+        if (selectedColumn) {
+            if (usedColumns[selectedColumn]) {
+                usedColumns[selectedColumn].push(rowIndex);
             } else {
-                usedColumns[selectedValue] = [rowIndex];
+                usedColumns[selectedColumn] = [rowIndex];
             }
 
-            if (requiredColumns.includes(selectedValue)) {
-                hasRequiredColumn = true;
-            }
+            // Prüfen, ob es sich um eine Required- oder Date-Column handelt
+            if (requiredColumns.includes(selectedColumn)) requiredCount++;
+            if (dateColumns.includes(selectedColumn)) dateCount++;
 
-            if (dateColumns.includes(selectedValue)) {
-                dateColumnType = selectedValue;
+            // Validierung des eigenen Werts
+            if (dateColumns.includes(selectedColumn)) {
+                console.log("---------- CHECKING DATE ------------");
+                const format = selectedColumn.replace("dateColumn", "");
+                const cellValue = row.querySelector("td:nth-child(2)")?.textContent.trim();
+                if (cellValue && !rawDataSet.rawValidateDateColumn(rowIndex, format)) {
+                    console.log("Error: Invalid date format. ");
+                    allValid = false;
+                }
             }
         }
     });
 
-    // Bedingung 1: Werte, die maximal einmal vorkommen dürfen
-    Object.keys(usedColumns).forEach(column => {
-        const indices = usedColumns[column];
+    // Globale Validierungen
+    rows.forEach((row, rowIndex) => {
+        const dropdown = row.querySelector("select");
+        const commentCell = row.querySelector("td:last-child");
+        const selectedColumn = dropdown.options[dropdown.selectedIndex]?.textContent.trim();
 
-        if (indices.length > 1 && [...dateColumns, "priceColumn", "navColumn", "indexColumn"].includes(column)) {
-            indices.forEach(index => {
-                const row = rows[index];
-                const commentCell = row.querySelector("td:last-child");
-                commentCell.textContent = "Error: Duplicate assignment not allowed.";
-            });
+        if (selectedColumn) {
+            // A) Required-Spalten dürfen nicht doppelt vorkommen
+            if (requiredColumns.includes(selectedColumn) && usedColumns[selectedColumn].length > 1) {
+                commentCell.textContent += "Error: Duplicate required column. ";
+                allValid = false;
+            }
+
+            // B) Es darf nur eine Required-Spalte existieren
+            if (requiredCount > 1) {
+                commentCell.textContent += "Error: Only one required column allowed. ";
+                allValid = false;
+            }
+
+            // C) Bei 0 Required-Spalten passiert nichts
+            // Keine Aktion erforderlich
+
+            // D) Date-Spalten dürfen nicht doppelt vorkommen
+            if (dateColumns.includes(selectedColumn) && usedColumns[selectedColumn].length > 1) {
+                commentCell.textContent += "Error: Duplicate date column. ";
+                allValid = false;
+            }
+
+            // E) Es darf nur eine Date-Spalte existieren
+            if (dateCount > 1) {
+                commentCell.textContent += "Error: Only one date column allowed. ";
+                allValid = false;
+            }
+
+            // F) Bei 0 Date-Spalten passiert nichts
+            // Keine Aktion erforderlich
         }
     });
 
-    // Bedingung 2: Inkompatible Kombinationen
-    const incompatibleColumns = ["priceColumn", "navColumn", "indexColumn"];
-    const incompatibleSelected = incompatibleColumns.filter(column => usedColumns[column].length > 0);
-    if (incompatibleSelected.length > 1) {
-        incompatibleSelected.forEach(column => {
-            usedColumns[column].forEach(index => {
-                const row = rows[index];
-                const commentCell = row.querySelector("td:last-child");
-                commentCell.textContent = "Error: Incompatible assignment.";
-            });
-        });
-    }
-
-    //// Bedingung 3: Mindestens ein erforderlicher Wert
-    //if (!hasRequiredColumn) {
-    //    rows.forEach(row => {
-    //        const commentCell = row.querySelector("td:last-child");
-    //        commentCell.textContent = "Error: At least one required column must be assigned.";
-    //    });
-    //}
-
-    // Bedingung 4: Validierung für Date-Spalte
-    if (dateColumnType) {
-        const columnIndex = Array.from(rows[0].cells).indexOf(rows[0].querySelector("select").parentNode);
-        const format = dateColumnType.replace("dateColumn", "");
-        const dataRows = Array.from(rows).slice(1); // Exklusive Header-Zeile
-
-        let hasNullValues = false;
-        let hasInvalidDates = false;
-
-        dataRows.forEach(dataRow => {
-            const cellValue = dataRow.cells[columnIndex]?.textContent.trim();
-            if (!cellValue) {
-                hasNullValues = true;
-            } else if (!RawDataSet.isValidDate(cellValue, format)) {
-                hasInvalidDates = true;
-            }
-        });
-
-        rows.forEach(row => {
-            const commentCell = row.querySelector("td:last-child");
-            if (hasNullValues) {
-                commentCell.textContent += "Info: Contains null dates. Rows with null values will be skipped.";
-            }
-            if (hasInvalidDates) {
-                commentCell.textContent += " Error: Some values cannot be parsed as dates.";
-            }
-        });
-    }
+    // Gesamtergebnis zurückgeben
+    console.log("Validation complete. All valid:", allValid);
+  
 }
 
 document.addEventListener("DOMContentLoaded", () => {

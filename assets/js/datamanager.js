@@ -1,11 +1,3 @@
-// Generiert ein Dummy-Dataset
-//export function generateDummyDataset() {
-//    return [
-//        { date: "2023-01-01", price: 1500, movements: "-", dividends: "-", index: 100.0 },
-//        { date: "2023-01-02", price: 1520, movements: "+20", dividends: "-", index: 101.0 },
-//    ];
-//}
-
 // Parst den Dateiinhalt basierend auf dem Typ (JSON oder CSV)
 export function parseFileContent(content, fileType) {
     if (fileType.includes("json")) {
@@ -40,7 +32,10 @@ export class RawDataSet {
         this.dataSet = null; // Verarbeitetes Dataset basierend auf raw und readCsvOptions (initial null)
     }
 
-    // Methode, um die readCsvOptions zu setzen
+    /**
+     * Methode, um die readCsvOptions zu setzen
+     * @param {object} options - sep (str), dec (str), headers (bool), thou (str) ...
+     */
     setReadCsvOptions(options) {
         this.readCsvOptions = options;
     }
@@ -59,6 +54,56 @@ export class RawDataSet {
             }, {})
         );
     }
+
+    /**
+     * Gibt eine Liste aus, mit allen Werten aus dem .raw Attribute bei gegebener Spalte
+     * @param {str} raw - .raw Attribut von der RawDataSet-Klasse oder ein csv-String
+     * @param {int} colIndex - Spaltenindex, beginnend bei 0 
+     * @param {boolean} removeHeader - entfernt Header aus zurückgegebener Liste
+     * @param {object} options - options for {sep: "separator", headers: true, ...}
+     */
+    static rawGetColumnValues(raw, colIndex, removeHeader, options) {
+        if (!raw) {
+            throw new Error("Raw data is empty.");
+        }
+
+        // Zeilen aufteilen
+        const rows = raw.split("\n").map(row => row.trim()).filter(row => row !== "");
+
+        // Werte aus der Spalte mit `colIndex` extrahieren
+        const columnValues = rows.map(row => {
+            const cells = row.split(options.sep);
+            return cells[colIndex] || null; // `null` für fehlende Werte
+        });
+
+        if (removeHeader) columnValues.shift();
+
+        return columnValues;
+    }
+
+     /**
+     * Prüft für eine bestimmte Spalte im .raw Attribut (also csv Datei) ob alle Werte als Datum nach einem bestimmten
+     * Format geparsed werden können.
+     * @param {int} colIndex - Index der Spalte im RawDataSet.raw Attribut (csv-File)
+     * @param {string} format - Das erwartete Datumsformat (DMY, MDY, YMD).
+     * @returns {boolean} True, wenn alle Werte der gewünschten Spalte in Datum umgewandelt werden können.
+     */
+     rawValidateDateColumn(colIndex, format) {
+        // Regex-Muster für die Formate
+        let dateCol = RawDataSet.rawGetColumnValues(this.raw, colIndex, true, this.readCsvOptions);
+
+        for (let index = 0; index < dateCol.length; index++) {
+            let value = dateCol[index];
+            if (!RawDataSet.isValidDate(value, format)) {
+                console.log("DATE ERROR:    " + value + " at index:  " + index);
+                return false; // Beendet die gesamte Funktion
+            }
+        }
+        
+        console.log("DATE COLUMN CORRECT! ------------")
+        return true;
+    }
+
 
     // ...
 
