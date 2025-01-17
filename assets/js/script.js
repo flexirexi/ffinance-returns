@@ -195,6 +195,63 @@ function formatValue(value, decimals, thousands) {
 }
 
 /**
+ * Extrahiert die Zuordnung der Spalten aus dem Editor (Dropdowns) und erstellt eine Liste für das Dataset.
+ * Diese Liste enthält `colType`, `colDetail` und `mappedToRawCol`.
+ * @returns {Array} - Liste der Spalteninformationen
+ */
+function createListFromIdentifiedCols() {
+    const table = document.getElementById("columnsEditorTable");
+    const rows = table.querySelectorAll("tbody tr"); // Alle Zeilen der Tabelle
+    const result = [];
+
+    rows.forEach((row, rawColIndex) => {
+        const dropdown = row.querySelector("select");
+        const selectedValue = dropdown.value;
+
+        if (!selectedValue) return; // Überspringe Spalten ohne Auswahl
+
+        let colType;
+        let colDetail;
+
+        // Mapping für colType und colDetail basierend auf der Auswahl
+        if (selectedValue.startsWith("dateColumn")) {
+            colType = "index";
+            colDetail = "date";
+        } else if (selectedValue === "priceColumn") {
+            colType = "value";
+            colDetail = "price";
+        } else if (selectedValue === "navColumn") {
+            colType = "value";
+            colDetail = "nav";
+        } else if (selectedValue === "indexColumn") {
+            colType = "value";
+            colDetail = "index";
+        } else if (selectedValue === "movementsColumn") {
+            colType = "movement";
+            colDetail = "movements";
+        } else if (selectedValue === "subscriptionsColumn") {
+            colType = "movement";
+            colDetail = "subscriptions";
+        } else if (selectedValue === "redemptionsColumn") {
+            colType = "movement";
+            colDetail = "redemptions";
+        } else if (selectedValue === "distributionColumn") {
+            colType = "movement";
+            colDetail = "distribution";
+        }
+
+        // Füge die Informationen zur Ergebnisliste hinzu
+        result.push({
+            colType,
+            colDetail,
+            mappedToRawCol: rawColIndex, // Speichert die Spaltennummer aus dem Rohdatensatz
+        });
+    });
+
+    return result;
+}
+
+/**
  * Wechselt die Ansichtmodus (Sichtbarkeit) der Elemente entweder zum Analysis-Modus oder zum Upload-Modus.
  * Upload Elemente verden versteckt, beim Analysieren der Daten. Analyse-Elemente werden versteckt beim Hochladen. 
  * @param {str} mode - wähle zwischen "analysis" und "upload"
@@ -219,8 +276,9 @@ function viewMode(mode) {
  */
 function loadDataSetIntoSystem(rawDataSet) {
     // Zuerst die identifizierten Spalten zum rawDataSet hinzufügen
-    //let identifiedCols = createListFromIdentifiedCols();
-    //rawDataSet.setDataSetCols(identifiedCols);
+    let identifiedCols = createListFromIdentifiedCols();
+    rawDataSet.setDataSetCols(identifiedCols);
+    console.log("datasetCols:  ", identifiedCols);
 
     // Dann das echte dataset erstellen
     //rawDataSet.createDataSet()

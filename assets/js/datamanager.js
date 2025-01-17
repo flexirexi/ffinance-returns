@@ -29,8 +29,9 @@ export class RawDataSet {
     constructor(raw) {
         this.raw = raw; // Rohdaten (z. B. CSV-String oder Array von Arrays)
         this.readCsvOptions = null; // Optionen für das Lesen und Verarbeiten des .raw Attributes/csv-Files (initial null)
+        this.rawCols = null; // Identifizierte Spalten für das raw file (welche Spalten sind aus .raw gewählt)
         this.dataSet = null; // Verarbeitetes Dataset basierend auf raw und readCsvOptions (initial null)
-        this.dataSetCols = null; // Identifizierte Spalten für das dataset
+        this.dataSetCols = null; // Liste von Identifizierten Spalten für das dataset (colType: value, index-spalte, mvmt)
     }
 
     /**
@@ -39,6 +40,17 @@ export class RawDataSet {
      */
     setReadCsvOptions(options) {
         this.readCsvOptions = options;
+    }
+
+    /**
+     * Setzt DataSetCols: Liste von Identifizierten Spalten für das dataset (
+     * colType: value/index-spalte/mvmt, 
+     * colDetail: date/nav/price/index/mvmt/subsription/redemption/distrib, 
+     * mappedToRawCol:)
+     * @param {Array} identifiedCols - sep (str), dec (str), headers (bool), thou (str) ...
+     */
+    setDataSetCols(identifiedCols) {
+        this.dataSetCols = identifiedCols;
     }
 
     // Methode, um das dataSet basierend auf raw und readCsvOptions zu erstellen
