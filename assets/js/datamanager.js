@@ -53,6 +53,15 @@ export class RawDataSet {
         this.dataSetCols = identifiedCols;
     }
 
+    setDataSet() {
+        try {
+            this.dataSet = this.rawToDataSet();
+            console.log("DataSet successfully created and assigned", this.dataSet);
+        } catch (error) {
+            console.error("Error setting the DataSet:", error.message);
+        }
+    }
+
     // Methode, um das dataSet basierend auf raw und readCsvOptions zu erstellen
     processRawData() {
         if (!this.readCsvOptions) {
@@ -221,6 +230,31 @@ export class RawDataSet {
             return values.join(",");
         });
         return [headerLine, ...rowsLines].join("\n");
+    }
+
+    rawToDataSet() {
+        if (!this.raw || !this.dataSetCols) {
+            throw new Error("Raw data or dataSetCols not set. Please initialize both before creating the dataSet.");
+        }
+    
+        const rawRows = this.raw.split("\n").map(row => row.split(this.readCsvOptions.sep || ",")); // Parsen der Rohdaten
+        const hasHeaders = this.readCsvOptions?.headers || false;
+    
+        // Überspringe Headerzeile, falls vorhanden
+        const rowsToProcess = hasHeaders ? rawRows.slice(1) : rawRows;
+    
+        // Dataset erstellen
+        const dataSet = rowsToProcess.map(row => {
+            const newRow = {};
+    
+            this.dataSetCols.forEach(({ colType, colDetail, mappedToRawCol }) => {
+                newRow[colDetail] = row[mappedToRawCol]?.trim() || null; // Spaltenwert aus raw
+            });
+    
+            return newRow;
+        });
+    
+        return dataSet;
     }
 
     /**

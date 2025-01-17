@@ -278,10 +278,10 @@ function loadDataSetIntoSystem(rawDataSet) {
     // Zuerst die identifizierten Spalten zum rawDataSet hinzufügen
     let identifiedCols = createListFromIdentifiedCols();
     rawDataSet.setDataSetCols(identifiedCols);
-    console.log("datasetCols:  ", identifiedCols);
-
+    
     // Dann das echte dataset erstellen
-    //rawDataSet.createDataSet()
+    rawDataSet.setDataSet();
+    
 
     // Wenn erfolgreich erstellt, ändere die Ansicht der App zu "analysis"
     viewMode("analysis");
