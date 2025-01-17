@@ -218,7 +218,19 @@ function viewMode(mode) {
  * @param {DM.RawDataSet} rawDataSet - RawDataSet-Klasse mit csv und dazugehörigen parsing Parametern 
  */
 function loadDataSetIntoSystem(rawDataSet) {
+    // Zuerst die identifizierten Spalten zum rawDataSet hinzufügen
+    //let identifiedCols = createListFromIdentifiedCols();
+    //rawDataSet.setDataSetCols(identifiedCols);
+
+    // Dann das echte dataset erstellen
+    //rawDataSet.createDataSet()
+
+    // Wenn erfolgreich erstellt, ändere die Ansicht der App zu "analysis"
     viewMode("analysis");
+
+    // erstelle Editor-Table (mit Prüffunktionen und Operations)
+
+
 }
 
 
@@ -328,9 +340,17 @@ function createColumnsTable(rawDataSet, tableElement) {
 
         tbody.appendChild(row);
 
+        // 
         select.addEventListener("change", () => {
             console.log("VALIDATION PROCESS START -----");
-            validateColumnsMeta(rawDataSet);
+            let returnAllValid = validateColumnsMeta(rawDataSet);
+            if (returnAllValid) {
+                buttonFinalLoad.classList.remove("disabled");
+                console.log("PROCESS ENDED: VALIDATED?   ", returnAllValid);
+            } else {
+                console.log("PROCESS ENDED: INCOMPLETE ---");
+            }
+           
         });
     });
 
@@ -345,6 +365,7 @@ function createColumnsTable(rawDataSet, tableElement) {
         if (!buttonFinalLoad.classList.contains("disabled")) {
             console.log("funzt mit Separator:   ", rawDataSet.readCsvOptions.sep);
             loadDataSetIntoSystem(rawDataSet);
+
         }
     }
 }
@@ -448,12 +469,7 @@ function validateColumnsMeta(rawDataSet) {
         });
     }
 
-    // Gesamtergebnis zurückgeben
-    console.log("PROCESS ENDED: VALIDATED?   ", allValid);
-    if (allValid) {
-        buttonFinalLoad.classList.remove("disabled");
-    }
-
+    return allValid;
   
 }
 
@@ -794,7 +810,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 10);
 
 
-
+    // erstelle Editor-Table
     const tbody = document.getElementById("editor-body");
 
     const generateRandomValue = (min, max) => {

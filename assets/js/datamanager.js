@@ -28,8 +28,9 @@ export function parseCSV(csv) {
 export class RawDataSet {
     constructor(raw) {
         this.raw = raw; // Rohdaten (z. B. CSV-String oder Array von Arrays)
-        this.readCsvOptions = null; // Optionen für das Lesen und Verarbeiten von CSV-Daten (initial null)
+        this.readCsvOptions = null; // Optionen für das Lesen und Verarbeiten des .raw Attributes/csv-Files (initial null)
         this.dataSet = null; // Verarbeitetes Dataset basierend auf raw und readCsvOptions (initial null)
+        this.dataSetCols = null; // Identifizierte Spalten für das dataset
     }
 
     /**
