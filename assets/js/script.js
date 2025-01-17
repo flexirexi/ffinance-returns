@@ -194,6 +194,23 @@ function formatValue(value, decimals, thousands) {
     return value;
 }
 
+/**
+ * Wechselt die Ansichtmodus (Sichtbarkeit) der Elemente entweder zum Analysis-Modus oder zum Upload-Modus.
+ * Upload Elemente verden versteckt, beim Analysieren der Daten. Analyse-Elemente werden versteckt beim Hochladen. 
+ * @param {str} mode - wähle zwischen "analysis" und "upload"
+ */
+function viewMode(mode) {
+    const sv_upload_process = document.getElementsByClassName("upload-process")[0];
+    const sv_editor_container = document.getElementsByClassName("editor-container")[0];
+    console.log("funzt");
+    if (mode==="analysis") {
+        sv_editor_container.classList.remove("hidden");
+        sv_upload_process.classList.add("hide-me");
+    } else if (mode ==="upload") {
+        sv_editor_container.classList.add("hidden");
+        sv_upload_process.classList.remove("hide-me");
+    }
+}
 
 /**
  * Lädt den csv-String aus .raw final als List in das .dataSet Attribut zur effizienten Weiterverarbeitung
@@ -201,7 +218,7 @@ function formatValue(value, decimals, thousands) {
  * @param {DM.RawDataSet} rawDataSet - RawDataSet-Klasse mit csv und dazugehörigen parsing Parametern 
  */
 function loadDataSetIntoSystem(rawDataSet) {
-    
+    viewMode("analysis");
 }
 
 
@@ -326,7 +343,6 @@ function createColumnsTable(rawDataSet, tableElement) {
 
     function handleFinalizeClick() {
         if (!buttonFinalLoad.classList.contains("disabled")) {
-            const editorCont = document.querySelector(".editor-container");
             console.log("funzt mit Separator:   ", rawDataSet.readCsvOptions.sep);
             loadDataSetIntoSystem(rawDataSet);
         }
@@ -779,7 +795,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    const tbody = document.querySelector("table tbody");
+    const tbody = document.getElementById("editor-body");
 
     const generateRandomValue = (min, max) => {
         return (Math.random() * (max - min) + min).toFixed(2);
