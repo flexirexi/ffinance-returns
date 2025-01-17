@@ -129,49 +129,64 @@ export class RawDataSet {
 
     // ...
 
-    /**
-     * Prüft, ob ein Wert ein gültiges Datum im angegebenen Format ist.
-     * @param {string} value - Der zu überprüfende Wert.
-     * @param {string} format - Das erwartete Datumsformat (DMY, MDY, YMD).
-     * @returns {boolean} True, wenn das Datum gültig ist.
-     */
-    static isValidDate(value, format) {
-        if (!value) return false;
+/**
+ * Prüft, ob ein Wert ein gültiges Datum im angegebenen Format ist.
+ * @param {string} value - Der zu überprüfende Wert.
+ * @param {string} format - Das erwartete Datumsformat (DMY, MDY, YMD).
+ * @param {string} returnType - Wähle "d" Tag, "m" Monat, "y" Jahr, "date" ganzes Datum als String (im Format YYYY-MM-DD). 
+ * @returns { boolean || int || str } *boolean*, wenn Datum un/gültig. *int* wenn returnType = "d" || "m" || "y" und gültig. 
+ * *str* wenn returnType "date" und gültig.
+ */
+static isValidDate(value, format, returnType = null) {
+    if (!value) return false;
 
-        // Regex-Muster für die Formate
-        const patterns = {
-            DMY: /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[0-2])[./-](\d{4}|\d{2})$/,
-            MDY: /^(0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])[./-](\d{4}|\d{2})$/,
-            YMD: /^(\d{4}|\d{2})[./-](0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])$/
-        };
+    // Regex-Muster für die Formate
+    const patterns = {
+        DMY: /^(0?[1-9]|[12][0-9]|3[01])[./-](0?[1-9]|1[0-2])[./-](\d{4}|\d{2})$/,
+        MDY: /^(0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])[./-](\d{4}|\d{2})$/,
+        YMD: /^(\d{4}|\d{2})[./-](0?[1-9]|1[0-2])[./-](0?[1-9]|[12][0-9]|3[01])$/
+    };
 
-        const regex = patterns[format];
-        if (!regex) return false;
-
-        const match = value.match(regex);
-        if (!match) return false;
-
-        let day, month, year;
-
-        if (format === "DMY") {
-            [day, month, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
-        } else if (format === "MDY") {
-            [month, day, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
-        } else if (format === "YMD") {
-            [year, month, day] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
-        }
-
-        // Jahr anpassen, wenn es nur 2-stellig ist
-        if (year < 100) year += 2000;
-
-        // Überprüfen, ob das Datum existiert
-        const date = new Date(year, month - 1, day);
-        return (
-            date.getFullYear() === year &&
-            date.getMonth() === month - 1 &&
-            date.getDate() === day
-        );
+    const regex = patterns[format];
+    if (!regex) {
+        throw new Error(`Unsupported date format: ${format}`);
     }
+
+    const match = value.match(regex);
+    if (!match) return false;
+
+    let day, month, year;
+    if (format === "DMY") {
+        [day, month, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+    } else if (format === "MDY") {
+        [month, day, year] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+    } else if (format === "YMD") {
+        [year, month, day] = [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+    }
+
+    // Jahr anpassen, wenn es nur 2-stellig ist
+    if (year < 100) year += 2000;
+
+    // Überprüfen, ob das Datum existiert
+    const date = new Date(year, month - 1, day);
+    const isDateValid = (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+    );
+
+    if (!isDateValid) return false;
+
+    // Rückgabewerte basierend auf returnType
+    if (returnType === "d") return day;
+    if (returnType === "m") return month;
+    if (returnType === "y") return year;
+    if (returnType === "date") {
+        return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    return true; // Default: Datum ist gültig
+}
 
 
     /**
@@ -234,24 +249,81 @@ export class RawDataSet {
 
     rawToDataSet() {
         if (!this.raw || !this.dataSetCols) {
-            throw new Error("Raw data or dataSetCols not set. Please initialize both before creating the dataSet.");
+            throw new Error("raw or dataSetCols is not properly initialized");
         }
     
-        const rawRows = this.raw.split("\n").map(row => row.split(this.readCsvOptions.sep || ",")); // Parsen der Rohdaten
-        const hasHeaders = this.readCsvOptions?.headers || false;
+        // Rohdaten in Zeilen aufteilen
+        const rawRows = this.raw.split("\n").filter(row => row.trim() !== "");
     
-        // Überspringe Headerzeile, falls vorhanden
-        const rowsToProcess = hasHeaders ? rawRows.slice(1) : rawRows;
+        // Header und Daten extrahieren
+        const withHeaders = this.readCsvOptions.headers;
+        const separator = this.readCsvOptions.sep || ",";
+        const decimals = this.readCsvOptions.dec || ".";
+        const thousands = this.readCsvOptions.thou || "";
     
-        // Dataset erstellen
-        const dataSet = rowsToProcess.map(row => {
-            const newRow = {};
+        // Entferne Header-Zeile, falls vorhanden
+        const dataRows = withHeaders ? rawRows.slice(1) : rawRows;
     
-            this.dataSetCols.forEach(({ colType, colDetail, mappedToRawCol }) => {
-                newRow[colDetail] = row[mappedToRawCol]?.trim() || null; // Spaltenwert aus raw
+        // Spaltenanzahl prüfen
+        const columnCount = rawRows[0].split(separator).length;
+    
+        // Initialisiere das Spalten-basierte Dataset
+        const dataSet = {};
+    
+        // Erstelle Arrays für jede Spalte basierend auf dataSetCols
+        this.dataSetCols.forEach(col => {
+            const { colType, colDetail, mappedToRawCol } = col;
+    
+            if (mappedToRawCol >= columnCount) {
+                throw new Error(`Mapped column index ${mappedToRawCol} exceeds raw column count.`);
+            }
+    
+            // Initialisiere den passenden Array-Typ basierend auf dem colType
+            switch (colType) {
+                case "value":
+                    dataSet[colDetail] = new Float64Array(dataRows.length);
+                    break;
+                case "index":
+                    dataSet[colDetail] = []; //new Uint32Array(dataRows.length);
+                    break;
+                case "movement":
+                    dataSet[colDetail] = new Float64Array(dataRows.length);
+                    break;
+                default:
+                    throw new Error(`Unsupported colType: ${colType}`);
+            }
+        });
+    
+        // Werte in die entsprechenden Arrays füllen
+        dataRows.forEach((row, rowIndex) => {
+            const rawValues = row.split(separator).map(value => {
+                // Entferne Tausendertrennzeichen und konvertiere Dezimaltrennzeichen
+                if (thousands) {
+                    const regex = new RegExp(`\\${thousands}`, "g");
+                    value = value.replace(regex, "");
+                }
+                if (decimals !== ".") {
+                    value = value.replace(decimals, ".");
+                }
+                return value.trim();
             });
     
-            return newRow;
+            this.dataSetCols.forEach(col => {
+                const { colType, colDetail, mappedToRawCol } = col;
+                const rawValue = rawValues[mappedToRawCol];
+    
+                switch (colType) {
+                    case "value":
+                    case "movement":
+                        dataSet[colDetail][rowIndex] = parseFloat(rawValue) || 0;
+                        break;
+                    case "index":
+                        dataSet[colDetail][rowIndex] = rawValue; //new Date(rawValue).getTime() || 0;
+                        break;
+                    default:
+                        throw new Error(`Unsupported colType: ${colType}`);
+                }
+            });
         });
     
         return dataSet;
