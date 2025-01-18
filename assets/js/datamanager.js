@@ -31,7 +31,7 @@ export class RawDataSet {
         this.readCsvOptions = null; // Optionen für das Lesen und Verarbeiten des .raw Attributes/csv-Files (initial null)
         this.rawCols = null; // Identifizierte Spalten für das raw file (welche Spalten sind aus .raw gewählt)
         this.dataSet = null; // Verarbeitetes Dataset basierend auf raw und readCsvOptions (initial null)
-        this.dataSetCols = null; // Liste von Identifizierten Spalten für das dataset (colType: value, index-spalte, mvmt)
+        this.dataSetCols = null; // Liste von Identifizierten Spalten für das dataset (colType: value, date-spalte, mvmt)
     }
 
     /**
@@ -44,8 +44,8 @@ export class RawDataSet {
 
     /**
      * Setzt DataSetCols: Liste von Identifizierten Spalten für das dataset (
-     * colType: value/index-spalte/mvmt, 
-     * colDetail: date/nav/price/index/mvmt/subsription/redemption/distrib, 
+     * colType: value/date-spalte/mvmt, 
+     * colDetail: date:YMD;DMY;MDY/nav/price/index/mvmt/subsription/redemption/distrib, 
      * mappedToRawCol:)
      * @param {Array} identifiedCols - sep (str), dec (str), headers (bool), thou (str) ...
      */
@@ -55,8 +55,91 @@ export class RawDataSet {
 
     setDataSet() {
         try {
-            this.dataSet = this.rawToDataSet();
+            if (!this.raw || !this.dataSetCols) {
+                throw new Error("raw or dataSetCols is not properly initialized");
+            }
+        
+            // Rohdaten in Zeilen aufteilen
+            const rawRows = this.raw.split("\n").filter(row => row.trim() !== "");
+        
+            // Header und Daten extrahieren
+            const withHeaders = this.readCsvOptions.headers;
+            const separator = this.readCsvOptions.sep || ",";
+            const decimals = this.readCsvOptions.dec || ".";
+            const thousands = this.readCsvOptions.thou || "";
+        
+            // Entferne Header-Zeile, falls vorhanden
+            const dataRows = withHeaders ? rawRows.slice(1) : rawRows;
+        
+            // Spaltenanzahl prüfen
+            const columnCount = rawRows[0].split(separator).length;
+        
+            // Initialisiere das Spalten-basierte Dataset
+            const dataSet = {};
+        
+            // Erstelle Arrays für jede Spalte basierend auf dataSetCols
+            this.dataSetCols.forEach(col => {
+                const { colType, colDetail, mappedToRawCol } = col;
+        
+                if (mappedToRawCol >= columnCount) {
+                    throw new Error(`Mapped column index ${mappedToRawCol} exceeds raw column count.`);
+                }
+        
+                // Initialisiere den passenden Array-Typ basierend auf dem colType
+                switch (colType) {
+                    case "value":
+                        dataSet[colDetail] = new Float64Array(dataRows.length);
+                        break;
+                    case "date":
+                        dataSet[colDetail] = []; //new Uint32Array(dataRows.length);
+                        dataSet["month"] = new Uint8Array(dataRows.length);
+                        dataSet["year"] = new Uint16Array(dataRows.length);
+                        break;
+                    case "movement":
+                        dataSet[colDetail] = new Float64Array(dataRows.length);
+                        break;
+                    default:
+                        throw new Error(`Unsupported colType: ${colType}`);
+                }
+            });
+        
+            // Werte in die entsprechenden Arrays füllen
+            dataRows.forEach((row, rowIndex) => {
+                const rawValues = row.split(separator).map(value => {
+                    // Entferne Tausendertrennzeichen und konvertiere Dezimaltrennzeichen
+                    if (thousands) {
+                        const regex = new RegExp(`\\${thousands}`, "g");
+                        value = value.replace(regex, "");
+                    }
+                    if (decimals !== ".") {
+                        value = value.replace(decimals, ".");
+                    }
+                    return value.trim();
+                });
+        
+                this.dataSetCols.forEach(col => {
+                    const { colType, colDetail, mappedToRawCol } = col;
+                    const rawValue = rawValues[mappedToRawCol];
+        
+                    switch (colType) {
+                        case "value":
+                        case "movement":
+                            dataSet[colDetail][rowIndex] = parseFloat(rawValue) || 0;
+                            break;
+                        case "date":
+                            dataSet[colDetail][rowIndex] = rawValue; //new Date(rawValue).getTime() || 0;
+                            dataSet["month"][rowIndex] = RawDataSet.isValidDate(rawValue, colDetail, "m");
+                            dataSet["year"][rowIndex] = RawDataSet.isValidDate(rawValue, colDetail, "y");
+                            break;
+                        default:
+                            throw new Error(`Unsupported colType: ${colType}`);
+                    }
+                });
+            });
+
+            this.dataSet = dataSet;
             console.log("DataSet successfully created and assigned", this.dataSet);
+
         } catch (error) {
             console.error("Error setting the DataSet:", error.message);
         }
@@ -247,87 +330,6 @@ static isValidDate(value, format, returnType = null) {
         return [headerLine, ...rowsLines].join("\n");
     }
 
-    rawToDataSet() {
-        if (!this.raw || !this.dataSetCols) {
-            throw new Error("raw or dataSetCols is not properly initialized");
-        }
-    
-        // Rohdaten in Zeilen aufteilen
-        const rawRows = this.raw.split("\n").filter(row => row.trim() !== "");
-    
-        // Header und Daten extrahieren
-        const withHeaders = this.readCsvOptions.headers;
-        const separator = this.readCsvOptions.sep || ",";
-        const decimals = this.readCsvOptions.dec || ".";
-        const thousands = this.readCsvOptions.thou || "";
-    
-        // Entferne Header-Zeile, falls vorhanden
-        const dataRows = withHeaders ? rawRows.slice(1) : rawRows;
-    
-        // Spaltenanzahl prüfen
-        const columnCount = rawRows[0].split(separator).length;
-    
-        // Initialisiere das Spalten-basierte Dataset
-        const dataSet = {};
-    
-        // Erstelle Arrays für jede Spalte basierend auf dataSetCols
-        this.dataSetCols.forEach(col => {
-            const { colType, colDetail, mappedToRawCol } = col;
-    
-            if (mappedToRawCol >= columnCount) {
-                throw new Error(`Mapped column index ${mappedToRawCol} exceeds raw column count.`);
-            }
-    
-            // Initialisiere den passenden Array-Typ basierend auf dem colType
-            switch (colType) {
-                case "value":
-                    dataSet[colDetail] = new Float64Array(dataRows.length);
-                    break;
-                case "index":
-                    dataSet[colDetail] = []; //new Uint32Array(dataRows.length);
-                    break;
-                case "movement":
-                    dataSet[colDetail] = new Float64Array(dataRows.length);
-                    break;
-                default:
-                    throw new Error(`Unsupported colType: ${colType}`);
-            }
-        });
-    
-        // Werte in die entsprechenden Arrays füllen
-        dataRows.forEach((row, rowIndex) => {
-            const rawValues = row.split(separator).map(value => {
-                // Entferne Tausendertrennzeichen und konvertiere Dezimaltrennzeichen
-                if (thousands) {
-                    const regex = new RegExp(`\\${thousands}`, "g");
-                    value = value.replace(regex, "");
-                }
-                if (decimals !== ".") {
-                    value = value.replace(decimals, ".");
-                }
-                return value.trim();
-            });
-    
-            this.dataSetCols.forEach(col => {
-                const { colType, colDetail, mappedToRawCol } = col;
-                const rawValue = rawValues[mappedToRawCol];
-    
-                switch (colType) {
-                    case "value":
-                    case "movement":
-                        dataSet[colDetail][rowIndex] = parseFloat(rawValue) || 0;
-                        break;
-                    case "index":
-                        dataSet[colDetail][rowIndex] = rawValue; //new Date(rawValue).getTime() || 0;
-                        break;
-                    default:
-                        throw new Error(`Unsupported colType: ${colType}`);
-                }
-            });
-        });
-    
-        return dataSet;
-    }
 
     /**
      * Generiert ein Dummy-Dataset für Testzwecke.

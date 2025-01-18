@@ -177,22 +177,95 @@ function toggleParseButtonSpinner(showSpinner) {
  * Formatiert einen Wert basierend auf Dezimal- und Tausendertrennzeichen.
  * Für die Vorschau wird der Wert standardisiert (Dezimalzeichen ".", keine Tausendertrennzeichen).
  */
-function formatValue(value, decimals, thousands) {
-    if (!value) return "";
-
-    // Entferne Tausendertrennzeichen
-    if (thousands) {
-        const regex = new RegExp(`\\${thousands}`, "g");
-        value = value.replace(regex, "");
+function formatValue(value, decimals, thousands, toDecimal=".", toThou="", digits=2) {
+    // Prüfen, ob der Wert eine Zahl ist
+    if (value === null || value === undefined || isNaN(value)) {
+        return value; // Leeren String zurückgeben, wenn der Wert ungültig ist
     }
 
-    // Ersetze Dezimaltrennzeichen durch "."
-    if (decimals !== ".") {
-        value = value.replace(decimals, ".");
-    }
+    // Sicherstellen, dass der Wert ein Float ist
+    const numberValue = parseFloat(value);
 
-    return value;
+    // Konvertiere den Wert in eine Zahl mit zwei Dezimalstellen
+    const fixedValue = numberValue.toFixed(digits);
+
+    // Teile die Zahl in Ganzzahl- und Dezimalteil
+    const [integerPart, decimalPart] = fixedValue.split(decimals);
+
+    // Füge Tausendertrennzeichen hinzu
+    const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, toThou);
+
+    // Setze die Ganzzahl und den Dezimalteil zusammen
+    return `${formattedIntegerPart}${toDecimal}${decimalPart}`;
 }
+
+/**
+ * Erstelle Editors Table im DataCenter (slideView) um ggf. das .dataSet anzupassen und zu prüfen
+ * @param {DM.RawDataSet} rawDataSet - RawDataSet-Klasse die das .dataSet enthält zum Befüllen der Tabelle
+ */
+function createEditorsTable(rawDataSet) {
+    const tbody = document.getElementById("editor-body");
+    const theader = document.getElementById("editor-header");
+    
+    theader.innerHTML = "";
+    tbody.innerHTML = ""; 
+
+
+    if (!rawDataSet || !rawDataSet.dataSet) {
+        console.error("RawDataSet oder dataSet nicht verfügbar.");
+        return;
+    }
+
+    const dataSet = rawDataSet.dataSet;
+    const displayedColumns = Object.keys(dataSet).filter(colDetail => {
+        return (
+            colDetail === "DMY" ||
+            colDetail === "MDY" ||
+            colDetail === "YMD" ||
+            rawDataSet.dataSetCols.some(col => col.colDetail === colDetail && col.colType !== "date")
+        );
+    });
+
+    const numRows = dataSet[displayedColumns[0]].length; // Anzahl der Zeilen anhand der ersten Spalte
+
+    // create table header
+    const theadrow = document.createElement("tr");
+    displayedColumns.forEach(col => {
+        const cell = document.createElement("td");
+        const value = col;
+
+        cell.textContent = value !== undefined ? value : "NA";
+        theadrow.appendChild(cell);
+    });
+
+    // create extra column for actions
+    const cellextra = document.createElement("td");
+    cellextra.textContent = "Actions";
+    theadrow.appendChild(cellextra);
+    theader.appendChild(theadrow);
+
+    // fill table body
+    for (let i = 0; i < numRows; i++) {
+        const row = document.createElement("tr");
+
+        displayedColumns.forEach(col => {
+            const cell = document.createElement("td");
+            const value = dataSet[col][i];
+
+            cell.textContent = value !== undefined ? formatValue(value, ".", "", ".", " ", 4) : "-";
+            cell.title = formatValue(value, ".", "", ".", " ", 6);
+            row.appendChild(cell);
+        });
+
+        // create extra column for actions
+        const cellextra = document.createElement("td");
+        
+        row.appendChild(cellextra);
+
+        tbody.appendChild(row);
+    }
+}
+
 
 /**
  * Extrahiert die Zuordnung der Spalten aus dem Editor (Dropdowns) und erstellt eine Liste für das Dataset.
@@ -215,8 +288,8 @@ function createListFromIdentifiedCols() {
 
         // Mapping für colType und colDetail basierend auf der Auswahl
         if (selectedValue.startsWith("dateColumn")) {
-            colType = "index";
-            colDetail = "date";
+            colType = "date";
+            colDetail = selectedValue.replace("dateColumn", "");
         } else if (selectedValue === "priceColumn") {
             colType = "value";
             colDetail = "price";
@@ -287,7 +360,7 @@ function loadDataSetIntoSystem(rawDataSet) {
     viewMode("analysis");
 
     // erstelle Editor-Table (mit Prüffunktionen und Operations)
-
+    createEditorsTable(rawDataSet);
 
 }
 
@@ -866,49 +939,6 @@ document.addEventListener("DOMContentLoaded", () => {
             behavior: "smooth",
         });
     }, 10);
-
-
-    // erstelle Editor-Table
-    const tbody = document.getElementById("editor-body");
-
-    const generateRandomValue = (min, max) => {
-        return (Math.random() * (max - min) + min).toFixed(2);
-    };
-
-    for (let i = 1; i <= 100; i++) {
-        const row = document.createElement("tr");
-
-        // Date column
-        const dateCell = document.createElement("td");
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - i);
-        dateCell.textContent = currentDate.toISOString().split("T")[0];
-        dateCell.classList.add("bold");
-        row.appendChild(dateCell);
-
-        // Price column
-        const priceCell = document.createElement("td");
-        priceCell.textContent = generateRandomValue(50, 500);
-        row.appendChild(priceCell);
-
-        // Movements column
-        const movementCell = document.createElement("td");
-        movementCell.textContent = i % 5 === 0 ? generateRandomValue(-50, 50) : "-";
-        row.appendChild(movementCell);
-
-        // Dividends column
-        const dividendCell = document.createElement("td");
-        dividendCell.textContent = i % 10 === 0 ? generateRandomValue(0.1, 5) : "-";
-        row.appendChild(dividendCell);
-
-        // Indexed column
-        const indexCell = document.createElement("td");
-        indexCell.textContent = (100 + i).toFixed(2);
-        row.appendChild(indexCell);
-
-        tbody.appendChild(row);
-    }
-
 
 
     // Öffne den Datei-Upload-Dialog

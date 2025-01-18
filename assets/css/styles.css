@@ -596,6 +596,16 @@ footer {
     cursor: pointer;
 }
 
+.editor-table-action {
+    height: 25px;
+    width: 25px;
+    border-radius: 50px;
+    background-color: #01010198;
+    color: var(--act-text);
+    margin: 0 5px;
+    border: 1px solid var(--act-border);
+}
+
 /* Alternative: Dünne Scrollbars (wenn nicht komplett verstecken möglich) */
 .editor-container::-webkit-scrollbar {
     width: 7px; /* Breite der Scrollbar */
