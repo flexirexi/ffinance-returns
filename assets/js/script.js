@@ -239,10 +239,10 @@ function createEditorsTable(rawDataSet) {
     });
 
     // create extra column for actions
-    const cellextra = document.createElement("td");
-    cellextra.textContent = "Actions";
-    theadrow.appendChild(cellextra);
-    theader.appendChild(theadrow);
+    //const cellextra = document.createElement("td");
+    //cellextra.textContent = "Actions";
+    //theadrow.appendChild(cellextra);
+    //theader.appendChild(theadrow);
 
     // fill table body
     for (let i = 0; i < numRows; i++) {
@@ -258,9 +258,9 @@ function createEditorsTable(rawDataSet) {
         });
 
         // create extra column for actions
-        const cellextra = document.createElement("td");
+        //const cellextra = document.createElement("td");
         
-        row.appendChild(cellextra);
+        //row.appendChild(cellextra);
 
         tbody.appendChild(row);
     }

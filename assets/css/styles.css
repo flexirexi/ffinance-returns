@@ -1033,6 +1033,42 @@ footer {
     cursor: unset;
 }
 
+.editor-buttons-container {
+    display: flex;
+    flex-direction: row; /* Nebeneinander ausrichten */
+    gap: 20px; /* Abstand zwischen Tabelle und Button-Grid */
+    align-items: flex-start; /* Vertikale Ausrichtung */
+    margin-top: 20px; /* Optional: Abstand zur oberen Seite */
+}
+
+.button-grid {
+    flex-shrink: 0; /* Verhindert, dass das Grid verkleinert wird */
+    width: 200px; /* Feste Breite für die Buttons */
+}
+
+.editor-container {
+    flex-grow: 1; /* Nimmt den restlichen Platz ein */
+}
+
+.button-grid button {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-grid button:hover {
+    background-color: #0056b3;
+}
+
+
 @media (min-width: 768px) {
     body {
         grid-template-columns: 1fr 31vw; /* Hauptinhalt + Platz für aside */
@@ -1193,7 +1229,27 @@ footer {
         margin-top: 4px;
     }
 
+    .editor-buttons-container {
+        flex-direction: row;
+    }
+
+    .button-grid {
+        width: 100%; /* Volle Breite im Mobile-Modus */
+    }
+
+    .button-grid button {
+        width: auto;
+        height: auto;
+        padding: 10px;
+        margin: 5px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
+
+
 
 
 
