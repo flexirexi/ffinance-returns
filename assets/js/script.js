@@ -242,7 +242,7 @@ function createEditorsTable(rawDataSet) {
     //const cellextra = document.createElement("td");
     //cellextra.textContent = "Actions";
     //theadrow.appendChild(cellextra);
-    //theader.appendChild(theadrow);
+    theader.appendChild(theadrow);
 
     // fill table body
     for (let i = 0; i < numRows; i++) {
